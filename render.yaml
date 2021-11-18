@@ -4,8 +4,5 @@ services:
     env: node
     plan: starter
     buildCommand: yarn; yarn nx run personal-site:build:production
-    startCommand: yarn start
+    startCommand: yarn nx run personal-site:serve:production
     pullRequestPreviewsEnabled: true
-    envVars:
-      - key: NODE_ENV
-        value: production
