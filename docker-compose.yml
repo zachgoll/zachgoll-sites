@@ -1,0 +1,40 @@
+---
+version: '3.9'
+services:
+  postgres:
+    image: postgres:13-alpine
+    container_name: personal-postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: pguser
+      POSTGRES_DB: zachgoll-sites
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  personal-site:
+    env_file: .env
+    container_name: personal-site
+    restart: always
+    build:
+      context: .
+      dockerfile: dev.nextjs.Dockerfile
+    volumes:
+      - .:/app
+    ports:
+      - '4200:4200'
+  design-system:
+    env_file: .env
+    container_name: personal-design-system
+    restart: always
+    logging:
+      driver: none
+    build:
+      context: ./
+      dockerfile: dev.storybook.Dockerfile
+    volumes:
+      - .:/app
+    ports:
+      - '4400:4400'
+volumes:
+  postgres_data:

@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: personal-site
+    env: node
+    plan: starter
+    buildCommand: yarn; yarn nx run personal-site:build:production
+    startCommand: yarn start
+    pullRequestPreviewsEnabled: true
+    envVars:
+      - key: NODE_ENV
+        value: production
