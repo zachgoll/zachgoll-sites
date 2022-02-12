@@ -32,16 +32,21 @@
       }
     ]
   },
-  "projects": {
-    "design-system": {
-      "tags": ["shared:ui"]
+  "cli": {
+    "defaultCollection": "@nrwl/next"
+  },
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "babel": true
+      }
     },
-    "personal-site": {
-      "tags": []
-    },
-    "personal-site-e2e": {
-      "tags": [],
-      "implicitDependencies": ["personal-site"]
+    "@nrwl/next": {
+      "application": {
+        "style": "css",
+        "linter": "eslint"
+      }
     }
-  }
+  },
+  "defaultProject": "personal-site"
 }
