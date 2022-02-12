@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "docker-compose up",
+    "build": "yarn nx build personal-site",
     "dev:prisma": "NX_DATABASE_URL=postgresql://pguser:pguser@localhost:5432/personal-site prisma",
     "dev:prisma:generate": "yarn dev:prisma generate",
     "dev:prisma:push": "yarn dev:prisma db push",
@@ -51,7 +52,7 @@
     "@testing-library/react": "12.1.2",
     "@testing-library/react-hooks": "7.0.2",
     "@types/jest": "27.4.0",
-    "@types/node": "17.0.17",
+    "@types/node": "^17.0.17",
     "@types/react": "17.0.39",
     "@types/react-dom": "17.0.11",
     "@typescript-eslint/eslint-plugin": "5.11.0",
