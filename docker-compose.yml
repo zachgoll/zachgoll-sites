@@ -8,12 +8,12 @@ services:
       - 5432:5432
     environment:
       POSTGRES_USER: pguser
-      POSTGRES_PASSWORD: pguser
-      POSTGRES_DB: zachgoll-sites
+      POSTGRES_PASSWORD: pgpw
+      POSTGRES_DB: personal_local
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_personal_data:/var/lib/postgresql/data
   personal-site:
-    env_file: .env
+    env_file: apps/personal-site/.env.local
     container_name: personal-site
     restart: always
     build:
@@ -37,4 +37,4 @@ services:
     ports:
       - '4400:4400'
 volumes:
-  postgres_data:
+  postgres_personal_data:

@@ -11,8 +11,9 @@
     "dev:prisma:create": "yarn dev:prisma migrate dev --create-only",
     "dev:prisma:reset": "yarn dev:prisma migrate reset",
     "dev:prisma:seed": "yarn dev:prisma db seed",
-    "dev:prisma:studio": "NX_DATABASE_URL=postgresql://maybe:maybe@localhost:5432/maybe_local npx prisma studio",
-    "prisma:deploy": "yarn dev:prisma migrate deploy"
+    "dev:prisma:studio": "NX_DATABASE_URL=postgresql://pguser:pgpw@localhost:5432/personal_local npx prisma studio",
+    "prisma:deploy": "yarn dev:prisma migrate deploy",
+    "dev:docker:reset": "docker-compose down -v --rmi all --remove-orphans && docker system prune --all --volumes && docker-compose build"
   },
   "private": true,
   "dependencies": {
