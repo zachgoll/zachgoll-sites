@@ -65,7 +65,8 @@
           "outputs": ["{options.outputPath}"],
           "options": {
             "root": "apps/personal-site",
-            "outputPath": "dist/apps/personal-site"
+            "outputPath": "dist/apps/personal-site",
+            "assets": ["apps/personal-site/posts"]
           },
           "configurations": {
             "production": {}

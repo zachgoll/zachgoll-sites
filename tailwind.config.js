@@ -1,11 +1,14 @@
 const defaults = require('tailwindcss/defaultTheme');
 
-console.log(defaults.colors);
-
 module.exports = {
   theme: {
     ...defaults,
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['Lora', ...defaults.fontFamily.sans],
+        display: ['Nunito', ...defaults.fontFamily.sans],
+      },
+    },
   },
   variants: {
     extend: {},
