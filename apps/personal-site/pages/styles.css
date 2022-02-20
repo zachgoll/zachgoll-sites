@@ -20,6 +20,6 @@
   }
 
   p {
-    @apply mb-4;
+    @apply mb-6 leading-6 font-light;
   }
 }

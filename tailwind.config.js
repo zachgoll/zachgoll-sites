@@ -5,8 +5,8 @@ module.exports = {
     ...defaults,
     extend: {
       fontFamily: {
-        sans: ['Lora', ...defaults.fontFamily.sans],
-        display: ['Nunito', ...defaults.fontFamily.sans],
+        sans: ['Montserrat', ...defaults.fontFamily.sans],
+        display: ['Montserrat', ...defaults.fontFamily.sans],
       },
     },
   },
