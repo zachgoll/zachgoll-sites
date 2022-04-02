@@ -7,7 +7,7 @@ export function Index({ posts }) {
   return (
     <div className="flex justify-center p-12">
       <div className="w-full max-w-screen-md">
-        <h1 className="font-thin">Zach Gollwitzer</h1>
+        <h1>Zach Gollwitzer</h1>
         <h2>Recent posts</h2>
         <div className="my-4">
           {posts.map((post) => {

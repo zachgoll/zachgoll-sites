@@ -1,0 +1,136 @@
+---
+title: File (NAS) vs. Block (SAN) vs. Object Cloud Storage
+excerpt: >-
+  When designing your application's architecture, one of the most important considerations from both a cost and performance standpoint is what type of data storage to use.  Unfortunately for startups and lone developers, most of the descriptions around data storage are highly generalized and highly technical without much in between.  It is no surprise considering the cloud storage and computing platforms are the ones explaining the topics.  Just type "file vs. block vs. object storage" into Google and you'll find several platforms explaining/advertising their products.
+date: "2019-03-28"
+thumb_img_path: images/2020/old-posts/storage-types.png?nf_resize=fit&w=500
+template: post
+---
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/3r9RGJ0_Bls" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+When designing your application's architecture, one of the most important considerations from both a cost and performance standpoint is what type of data storage to use. Unfortunately for startups and lone developers, most of the descriptions around data storage are highly _generalized_ and highly _technical_ without much in between. It is no surprise considering the cloud storage and computing platforms are the ones explaining the topics. Just type "file vs. block vs. object storage" into Google and you'll find several platforms explaining/advertising their products.
+
+In this post, I hope to explain data storage in a way that those from all backgrounds (not just IT) can understand.
+
+## Ephemeral Storage
+
+We first must understand what "ephemeral" storage is, as it explains why we need cloud storage in the first place.
+
+Take a moment to think about what a cloud computing and storage company provides. Among others, they provide virtual machines and storage. If you had 1 large server in your house and wanted to rent it out, how would you do it? Would you find a single customer and give them access to the entire server? Chances are, that customer will not use all the possible space on that server, so this approach would be cost inefficient. If you really wanted to maximize the value of that server taking up space in your garage, you might consider renting it out five different clients at a time.
+
+You probably already guessed, but the way we could do that is through virtualization. Instead of renting the entire server, we create five separate virtual machines that all use a portion of the [computer's resources](/blog/2019/bash-essentials/#Process-Management-and-System-Management) (CPU, memory, storage, I/O).
+
+When a new client comes on board, we allocate resources and give them some login credentials. When an existing client moves out, we take the portion of that server that we gave to them and delete everything on it.
+
+This is an efficient process, but with efficiency comes tradeoffs. It's similar to an apartment building. The owner of the building can rent out hundreds of units at a time and make profits off each. When a tenant stops paying or leaves, the unit they left needs to be completely cleared out and ready for the next tenant. You cannot break a lease, store your couch and TV there for a year, and then come back to it later.
+
+A virtual machine is like an apartment unit. Once you leave, everything is gone. You do not have rights to store your data there for "just another 3 days".
+
+This is why the storage on a virtual machine is considered "ephemeral". The minute you terminate your virtual machine instance (or a freak accident happens and the server goes down), that data is wiped out forever. "Terminating" a virtual machine is the equivalent of taking a hammer and smashing your PC to pieces.
+
+Sure, you could store all your data on that virtual machine and hope that the server never crashes and you never have to shut it down, but this is risky; especially if you are handling user data. Ideally, you would store your user data on an entirely separate machine(s) that can be "attached" to the virtual machine. You should also have a backup of your data stored somewhere.
+
+But what type of storage is available for this purpose?
+
+## Direct Attached Storage
+
+The type of storage most people are familiar with is DAS (direct attached storage). This type of storage is anything that is directly attached to your server or computer (i.e. internal/external hard drives, usb devices).
+
+![](/images/2020/old-posts/hard-drive.png)
+
+As you may have inferred, there are two big problems with this type of storage:
+
+1. It cannot be shared - the cloud computing center cannot manually walk around plugging and unplugging these storage devices whenever a user needs to share their data
+2. It cannot be scaled - if a site goes viral and the client needs to extend their storage, the operators at the data center cannot just find the computer, walk over, and plug in a bunch of external hard drives.
+
+For these reasons, this is also the cheapest option. You can purchase several terabytes of data storage for \$100 these days.
+
+## Network Attached Storage (file storage)
+
+One of the most common solutions is something called NAS (network attached storage). This is the equivalent of saying "shared drive", and is commonly associated with what we call "file storage". I really don't like the name "file storage", but we are not yet to the point where we can discuss why.
+
+Many explanations online start with architectural diagrams of NAS trying to explain how it works. This does not work. You need to see what a NAS is first.
+
+![](/images/2020/old-posts/nas-storage.png)
+
+Nope, NAS is not some esoteric storage configuration. It is simply a big box with a bunch of disk drives (also called "hard drives") loaded into it. This NAS device is a simplified computer that runs an efficient operating system. It only knows how to handle data and connect to wifi. You cannot connect peripherals like a keyboard, monitor, or mouse to it.
+
+When talking about NAS, you'll also see the acronym RAID (redundant array of independent disks), which can be made as simple or as confusing as possible. Simply put, RAID just explains how the disks that you put in that big NAS box are organized and how they store data. You could set up a "RAID configuration" where disks 1 and 2 are exact replicas of each other, and disks 3 and 4 are exact replicas of each other (This configuration is called RAID 1). Since there is data replication going on in a NAS, you cannot utilize the entire storage space for new data, but you have the assurance that there are backups if one disk fails.
+
+The last question is... How do all the computers get the files off of that big NAS device?
+
+![](/images/2020/old-posts/nas-storage-diagram.jpg)
+
+In the most basic form, these files are transferred over a network. The NAS computer connects to the router which then connects to all the computers in the network.
+
+This type of storage is essentially a personal Dropbox, iCloud, Google Drive, or Sharepoint, and is great for collaborating on files that are changed often (lots of read/write operations).
+
+## Storage Area Network (block storage)
+
+Most commonly, you will hear the phrases "block storage" and SAN (storage area network) used synonymously. To me, this is a contrived way to explain the concept. Yes, block storage is the type of storage commonly used in a SAN, but block storage can also be used in a NAS. It totally depends on the _context_ in which you are talking about block storage. Let's take a quick detour.
+
+### Block vs. File Storage
+
+You'll see many headlines (including this post) that say "file vs. block vs. object storage". To me, this is like comparing an apple (file) to two oranges (block and object).
+
+Everyone knows what a filesystem is:
+
+![](/images/2020/old-posts/filesystem.png)
+
+But this is not really a type of storage per se. If you take a closer look at a hard drive, it is simply made of partitions that run filesystems and store files as 512 byte (usually) blocks.
+
+![](/images/2020/old-posts/hard-drive-partitions.png)
+
+Even though the files are stored in 512 byte blocks, you see them as files on your computer because each partition runs a filesystem within it.
+
+Let's say you are on a Windows computer, and you plugged in the hard drive above. Since NTFS is the only filesystem of the four that works on windows, the files you can access are in partition 4. Maybe you decide to open a Word document that is a few pages in length and a size of 32kb (32,000 bytes). When you open this, you are performing a "read" operation, and your filesystem is retrieving roughly 62 blocks (assuming 512 bytes per block). Now, you decide to make a change to the first page of the document (a "write" operation). When you do this and click save, only the blocks relevant to that part of the file are updated.
+
+Based on the above example, you can see why this hard drive can be considered a "block storage device", meaning it stores the _files_ as multiple _blocks_.
+
+Here's where the confusion happens...
+
+When you hear "block storage" from a cloud computing context, this refers to the _emulation_ of a physical block storage device like the one shown above. So moving forward, let's be clear that "block storage" from a cloud storage/computing context is referring to the _emulation_ of block storage devices combined into a network called a SAN (storage area network). Essentially, you are creating a network of hard drives that communicate over fiber optic cables and is highly efficient.
+
+### SAN (Storage Area Network)
+
+Remember when we talked about a DAS and how it doesn't scale? Well a SAN (storage area network) is a bunch of hard drives (which could also be used as DAS) that are connected together via the Fibre Network. Why not "Fiber" Network? Well, this network could include fiber optic cables _or_ copper wires. If using fiber optic cables to connect the storage area network, you will get data transfer of up to 128 Gbps. To put that in perspective, your home internet has a download speed around 96Mbps, which means data transfer is over 1,000x faster via SAN vs. HTTP (internet).
+
+Remember, each of the storage devices (hard drives) on this SAN are "block storage devices", which means they are good at reading/writing lots of data at once. This makes a SAN great for running high performance databases, websites, etc. It also allows you to mount the SAN to your computer as if it was a single drive.
+
+A SAN is basically a NAS with the following exceptions:
+
+- Data is communicated differently. In a NAS, the NAS box connects to the local area network (LAN) via ethernet. In a SAN, a bunch of servers, switches, and storage devices (hard drives) are connected via fiber optic cables. This in effect creates an isolated network that is not affected by TCP/IP traffic in the LAN.
+- SAN is the combination of storage, but not necessarily in a "NAS box". A SAN is not a single box with hard drives inserted into it. Instead, a SAN is just a bunch of hard drives all connected together.
+
+## Object Storage
+
+The last type of storage is kind of an outlier. It does not work similarly to a DAS, NAS, or SAN, and it is a newer technology than all of them.
+
+Instead of storing files as a bunch of blocks, files are stored as "blobs". Every file has three components:
+
+1. ID
+2. Metadata (i.e. permissions, author, timestamps, etc.)
+3. Blob (the actual file data)
+
+![](/images/2020/old-posts/object-storage.png)
+
+To read and write the objects in the object store, you need to submit an HTTP request. This is great for developers because adding, modifying, and removing files can be integrated seamlessly in a few lines of code. It is also great for developers who are storing user pictures, videos, or other files that once uploaded will never change.
+
+The only two downsides to this type of storage is:
+
+1. Expensive (but most services implement a "pay as you go" structure)
+2. Not great for read/write operations
+
+Every time you need to make a change to an object, you must change the _entire_ object rather than just the part you modified. This means that if you are working with files that will change often, object storage is the wrong route to go.
+
+## Storage on Various Platforms
+
+Below is a chart which shows the product names of various storage types.
+
+|     Service     | File Storage |   Block Storage   | Object Storage  |
+| :-------------: | :----------: | :---------------: | :-------------: |
+|     Amazon      |    "EFS"     |       "EBS"       |      "S3"       |
+| Microsoft Azure |   "Files"    |      "Disks"      |     "Blobs"     |
+|     Google      | "Filestore"  | "Persistent Disk" | "Cloud Storage" |
+|  Digital Ocean  |     n/a      |     "Volumes"     |    "Spaces"     |

@@ -1,0 +1,554 @@
+---
+title: The Most Confusing Thing in JavaScript - The "this" keyword
+excerpt: >-
+  You know those concepts that you learn over and over again, yet they seem to vanish from your memory no matter how many notebooks you fill with detailed notes?  The `this` keyword in Javascript was one of those concepts for me, until I finally took an afternoon to understand the inner-workings of the code rather than hopelessly trying to memorize the 4 types of "bindings" (default, implicit, explicit, and "new") that influence the value of `this`.
+date: "2019-01-11"
+thumb_img_path: images/2020/old-posts/this-keyword.png?nf_resize=fit&w=500
+content_img_path: images/2020/old-posts/this-keyword.png?nf_resize=fit&w=600
+template: post
+---
+
+You know those concepts that you learn over and over again, yet they seem to vanish from your memory no matter how many notebooks you fill with detailed notes?
+
+The `this` keyword in Javascript was one of those concepts for me, until I finally took an afternoon to understand the inner-workings of the code rather than hopelessly trying to memorize the 4 types of "bindings" (default, implicit, explicit, and "new") that influence the value of `this`.
+
+Grab a coffee, put your focus cap on, and stay with me for the next 15 minutes and you too will finally understand what the `this` keyword is all about.
+
+## Compile Time vs. Run Time
+
+Writing code does not require a deep understanding of compilers and runtimes, and if you learned to code in the 21st century, there probably wasn't someone force-feeding you operating system theory.
+
+But to understand the `this` keyword in Javascript, we need at least a basic understanding of the difference between compile time and run time.
+
+All languages are slightly different in how they compile and execute code, but Javascript is a bit unique in this area. Since Javascript runs in the browser, it needs to be compiled and executed all at once; and fast! As opposed to a language like C where we must first compile our code and then run it, this "all in one" magic makes it seem as if the Javascript Engine (usually a browser like Chrome) is one entity that does everything.
+
+### But hold on, I'm not sure I know what "compilation" is?
+
+You've probably read the word a thousand times, but what does it actually mean?
+
+Compilation can be understood in two contexts:
+
+1. As a _process_
+2. As a _point in time_
+
+Let's throw some code on the screen to understand this better.
+
+```javascript
+function simpleFunction() {
+  console.log("I am a useless function");
+}
+
+simpleFunction();
+```
+
+Defined as a _process_, compilation of this code is the _process_ of getting it from what you see on the screen now to the 1s and 0s (binary code) that a computer can execute.
+
+The specifics of how this happens is defined by the compiler itself, but it might go something like this:
+
+1. Hmmm... I see the word "function" first. Is this part of the Javascript language syntax? Yep! Okay, let's move on.
+2. I just saw the keyword "function", so the next word "simpleFunction" must be the name of it. Does this name meet my standards? It doesn't have any odd characters or spaces, so yep! Next!
+3. I see a "{", which is what I might expect after seeing "function" and "simpleFunction". All good here.
+4. What is this thing called "console"? Not really sure, but it must be an object. Let's see if a "." comes next.
+5. Ahh, there it is! The "." means some sort of method is coming.
+6. Yep, "log" is the method being called on "console". Don't know if it actually exists, but that's not my job! Moving onward!
+7. I see a "(" character. I expect that because I just saw a method called "log" right before this. We must be defining parameters to this method now.
+8. I see a string "I am a useless function". Hmmm, don't know what the point of that is, but it's valid string syntax, so I'll accept it.
+9. And here is the closing parenthesis ")" followed by a ";". This method is done and valid!
+10. And now, I see a "}". This means that my function definition is now complete!
+11. I see "simpleFunction" again with "()". This is a valid way to call the function that was declared earlier.
+12. And that's it! No more tokens to parse through. This program is compiled.
+
+After reading through this imaginary conversation with the compiler, you can see that the compiler's job is to go through a program, look at the symbols (also called "tokens"), and determine whether they make sense according to the language specifications. If the compiler saw the code below, it would get mad and throw an error without compiling the code into 1s and 0s:
+
+```javascript
+variable myvariable = 1;
+```
+
+Here's how that conversation would go:
+
+1. I see a word "variable". There is no "const", "let", or "var" at the beginning of this line, so this must be an implicitly declared variable. I don't love it, but technically it's valid!
+2. Whoaaaaaa whoaa whoaa hold on here. I was fine with the previous line, but now I'm seeing "myvariable". This is not valid Javascript syntax. I'm throwing a SyntaxError!
+
+As you can glean from the examples above, when we look at compilation in the context of a _process_, it is all about reading code, validating it, and transforming it into something a computer can then execute.
+
+But many experienced developers will talk about this thing called "compile time", which is viewing compilation in the context of a _point in time_.
+
+This is much harder to understand because as you saw, compilation is more of a process than a point in time.
+
+When you hear "compile time", this is really referring to that moment right before you hit compile, or in our case with Javascript, run the program.
+
+So really, "compile time" is another way of saying "what our code looks like before the compiler transforms it".
+
+### Run Time
+
+The Compiler is great at making sure that your code has the correct syntactical structure, but it doesn't really check to make sure the code works.
+
+```javascript
+invalidFunction();
+```
+
+If you run this in a Javascript console, you'll get `ReferenceError` because the compiler compiled the code down, but when the Javascript Engine tried to run it, it couldn't find a declaration `invalidFunction` anywhere.
+
+So the run time is when the program is being executed, which includes things like the call stack, memory locations, etc.
+
+### "Run Time" vs. "Runtime"
+
+I think where things get confusing is the lack of distinction online between the phrase "run time" and word "runtime".
+
+We know that "run time" is once the program has started executing, but we haven't yet asked _where_ it is executing.
+
+I can open up Google Chrome and in the Developer Tools, go to the console. Once I am there, I can write and execute Javascript code.
+
+I can also open up the terminal on my computer, type `node`, and I will enter the NodeJS console where I can write and execute code.
+
+I've written the same code in two different runtimes.
+
+But why do we need different runtimes?
+
+Because a Windows Computer is different than a Mac computer which is different than a Browser. Specifically, their hardware components and thus their assembly languages that high level code like Javascript needs to be compiled into are different!
+
+When Javascript is compiled down into the 1s and 0s that the computer can run, it needs to keep in mind the runtime environment that it is in. If it doesn't, it may end up with Windows low-level system calls happening on a Mac, which would obviously not work!
+
+## Coming back to the "this" keyword
+
+So we chatted about how compilation and runtimes mean different things when viewed in different contexts. Compilation as a process refers to the transformation of code from what the developer writes to what the computer reads. What the computer reads happens during the process of runtime and is different depending on the "runtime environment".
+
+But to understand the `this` keyword in Javascript, we have to think about run time and compile time from the context of a _point in time_.
+
+### Static (lexical) vs. Dynamic Scope
+
+The _reason_ we must look at compile time and run time from the context of a _point in time_ is because the _values_ of your variables and functions are entirely dependent on whether they are being defined at run time or compile time!
+
+Understanding static (lexical) vs. dynamic scope is the last item you must understand before the `this` keyword starts making sense!
+
+#### What is "Scope"?
+
+If you're reading this still, you probably have an idea what scope is already. Take a look at the following code:
+
+```javascript
+let a = 1;
+
+function printA() {
+  a = 2;
+  console.log(a);
+}
+
+printA(); // 2
+console.log(a); // 1
+```
+
+When we call `printA()`, it will first look for the value of `a` within the scope of the `printA` function, and since that value exists, it will print that value.
+
+Since the `console.log` statement does not have access to the scope of `printA`, it has to look in the global scope, which is the only scope it has access to.
+
+In other words, the Javascript Engine will look for the variable in the current scope, and if it cannot find it, it will look up one scope. If it gets to the `global` scope and still cannot find the variable, then a `ReferenceError` will be thrown because that variable does not exist.
+
+Here is a contrived example of this process:
+
+```javascript
+let globalVariable = 2;
+
+function outer() {
+  middle();
+  function middle() {
+    inner();
+    function inner() {
+      console.log(globalVariable);
+    }
+  }
+}
+
+outer(); // 2
+inner(); // ReferenceError: inner is not defined
+```
+
+When we call the `outer` function, this function calls the middle function which calls the inner function. When the inner function is called, it first looks for the value of `globalVariable` in its own scope. It doesn't find it, so it then looks in the scope of `middle`. It again doesn't find it, so it looks in the scope of `outer`. It doesn't find it, so it finally looks in the global scope. It finds it there and prints a value of 2.
+
+On the other hand, when we call the `inner` function from the global scope, a `ReferenceError` is thrown!
+
+This is because scopes in Javascript (and pretty much any language) work in only one way. In this case, the scope of `inner` is "encapsulated" and therefore, the global scope does not even know that the `inner()` function exists.
+
+#### Makes sense, but why?
+
+You probably didn't realize it, but likely, all the programming languages that you have used implement static, or "lexical" scope--Javascript included. What I just explained are _static scoping rules_.
+
+But there is another type of scope called dynamic scope, and it assigns the value of variables _at run time_! Let's take a look at another program keeping in mind what we just learned.
+
+```javascript
+let x;
+x = 1;
+
+function a() {
+  x = 2;
+}
+
+function b() {
+  let x;
+  a();
+}
+
+b();
+
+// With Lexical scope, this will print 2
+// With dynamic scope, this will print 1
+console.log(x);
+
+a();
+
+// With Lexical scope, this will print 2
+// With dynamic scope, this will print 2
+console.log(x);
+```
+
+If we actually run this in lexically ("statically") scoped Javascript language, no matter which function we call, we will always print a value of 2 for x. This is because function `a` will always reassign the variable x to a value of 2.
+
+But with dynamic scope, we have to think in terms of call stacks. I know it is really confusing to do (hence why most languages aren't dynamically typed and why most people don't understand the Javascript `this` keyword), but let's walk through it.
+
+In this program, the call stack is first populated with the global scope `x` variable, which is set to 1. We then call `b()`, which will push the variable `x` from the scope of `function b()` to the call stack. Our call stack looks like this:
+
+```
+x (function b scope)
+x (global scope)
+```
+
+Please note that although they are named the same variable, both `x` variables occupy their own segment of memory and are assigned their own value.
+
+So at this point, we call `a()`, which sets `x=2`.
+
+But _which_ x does it set??
+
+In a lexically scoped language, we get to function `a` and we don't see a variable declaration. Since there is no variable declaration, the compiler looks up one scope and finds x declared in the global scope. It then assigns this global `x` variable to a value of 2.
+
+With dynamic scope, the value of 2 is assigned to the variable `x` which sits at the _top_ of the call stack. If you remember, the `x` in `function b` scope sits at the top of the stack, which means that value of 2 is going to be assigned to it.
+
+Therefore, when we print the value of x from the global scope, it is still a value of 1!
+
+But things change a bit when we call `a()` from the global scope. This time, our call stack looks like this:
+
+```
+x (global scope)
+```
+
+Therefore, the value of 2 will be assigned to the variable `x` in the global scope, and we will print out a value of 2!
+
+### Rewind
+
+That was a lot.
+
+Why again are we here? Well, in order to understand the Javascript `this` keyword, you have to get into the mindset of dynamically scoped variables. In order to understand dynamically scoped variables, you have to understand what statically scoped variables are. To understand statically scoped variables, you need to know what compilers do.
+
+Sounds like a pretty big call stack of knowledge to me!
+
+Anyways, to review:
+
+- Javascript is a statically scoped language, which means variable values evaluate based on their "compile time" condition. Variables can evaluate "up a scope" but not "down a scope" (i.e. A nested function can use a global variable but a global function cannot use an encapsulated variable)
+- The Javascript `this` keyword acts in a similar manner to dynamic scope, but it is not exactly the same. Nevertheless, understanding dynamic scope will help you understand the `this` keyword.
+- If you're completely lost, it may be the case that you are just not ready for this type of discussion yet. It took me years before I could understand many of these concepts, and it required lots of programming and practice to do so! If this is the case, you might revisit this article in the future.
+
+## Finally. The `this` keyword explained
+
+Just like dynamic scope depends on the order of the call stack at run time, the `this` keyword depends on the call stack to determine which "context" `this` is a part of.
+
+There are 4 ways that `this` can be "bound". We will start with the easiest and work our way to the hardest.
+
+### The `new` keyword
+
+This one is simple. When declaring a new instance of a function using the `new` keyword, `this` will always refer to the declared function.
+
+```javascript
+function myFunction() {
+  this.customProp = 20;
+
+  console.log(this);
+  console.log(this.customProp);
+}
+
+/**
+  When called, `this` will refer to the global `this` context
+  (because that's where the function was called, aka the "call site")
+  
+  The first console.log statement will print: 
+    Window {}
+
+  The second console.log statement will print:
+    20
+ */
+myFunction();
+
+// Since our function assigned `customProp` to the global `this` object, 
+// we can print it from the global scope
+console.log(this.customProp); // 20
+
+// PART 2: Using the `new` keyword, which changes the `this` context
+const functionObj = new myFunction();
+
+/**
+  The `this` object is now equivalent to the object, `functionObj`
+ */
+console.log(functionObj.customProp); // 20  
+```
+
+Even though the call site of `functionInstance` is in the global scope, the `new` keyword overrides any rules regarding `this` and explicitly binds to the new function instance.
+
+I consider this the easiest situation to identify what `this` represents because it is so explicit.
+
+### Explicit Binding
+
+This type of `this` binding is very similar to the `new` keyword, but in the case that you try to use both this method and the `new` keyword at the same time, the `new` keyword will take precedence.
+
+There are actually multiple ways to explicitly bind the value of `this`, but some are more outtdated than others. For simplicity, we will just look at one of these ways, which is the most common.
+
+By using the `bind()` prototype function that exists on all Javascript functions, you can explicity assign an object to represent the value of `this`.
+
+```javascript
+function myFunction() {
+  console.log(this.customProp);
+}
+
+const explicitlyBoundObject = {
+  customProp: 2,
+};
+
+window.customProp = 4;
+
+// The call-site is the global scope, so `this.customProp` is the globally
+// declared variable equal to 4
+myFunction(); // 4
+
+// Now, `this` is bound to the object, and `this.customProp` equals 2
+const boundFunction = myFunction.bind(explicitlyBoundObject);
+boundFunction(); // 2
+```
+
+As with the `new` keyword, explicit binding allows you to completely eliminate the idea of dynamic scope and call stacks out of your head and know exactly what `this` represents.
+
+Later, we will see that there are a few exceptions here, but for simplicity, take the above example at face value.
+
+### Default Binding
+
+Default binding is a little trickier than the `new` and explicit binding because there are a few nuances that you might not expect.
+
+A good rule of thumb is this: **If a function has been called in a "normal" fashion, then it has default binding and `this` refers to the global scope**.
+
+When I say "normal", I'm referring to a function call that looks like this:
+
+```javascript
+function myFunction() {
+  console.log("does something");
+}
+
+// Call function "normally"
+myFunction();
+```
+
+There are only three other ways you could call this function, shown below:
+
+```javascript
+var obj = {
+  myFunction: function () {
+    console.log("does something");
+  },
+};
+
+// Call function as a method
+obj.myFunction();
+```
+
+```javascript
+function myFunction() {
+  console.log("does something");
+}
+
+// Call function using the call() method
+// We have already covered -- `this` is bound to the function itself
+myFunction.call();
+```
+
+```javascript
+function myFunction() {
+  console.log("does something");
+}
+
+// Call function as newly constructed object
+// We have already covered -- `this` is bound to the function itself
+var myFunctionObj = new myFunction();
+myFunctionObj();
+```
+
+So if you see a function that is called "normally", you can reasonably assume that `this` refers to the global object. The global object will be `global` if using a NodeJS console, and `window` if using a browser console.
+
+In my opinion, there are two things that can throw a programmer off when thinking about default binding.
+
+1. `const` and `let` keywords
+2. Nested functions
+
+Let's start with the `const` and `let` keywords:
+
+```javascript
+function myFunction() {
+  console.log(this.a);
+  console.log(this.b);
+}
+
+const a = 2;
+let b = 4;
+myFunction(); // undefined, undefined
+```
+
+Using the `const` and `let` keywords does not make the variable available on the global object. To see this in action, open up Google Chrome and go to the console. Type the following:
+
+```javascript
+var a1 = 2;
+const a2 = 2;
+let a3 = 2;
+
+// When "strict mode" is unset, this will be created as a global variable
+a4 = 2;
+
+// In a browser, window is the global object
+// In a NodeJS console, you would replace "window" with "global"
+window.a1; // 2
+window.a2; // undefined
+window.a3; // undefined
+window.a4; // 2
+```
+
+And finally, nested functions:
+
+```javascript
+function f1() {
+  function f2() {
+    var a = 6;
+
+    function f3() {
+      // Call Stack at this point in the program
+      // f3 (top)
+      // f2
+      // f1
+      // global (bottom)
+
+      console.log(this.a);
+    }
+    f3();
+  }
+  f2();
+}
+
+var a = 2;
+
+f1();
+```
+
+With all this talk about call stacks and call sites, you might look at the above code and infer that `this` represents something other than the global object. When `this.a` is printed, the call stack has f3() at the top, which means that "call site" of `f1()` is at `f2()`. Said another way, even though `f1()` is executed in the global scope, that does not mean its call site is in the global scope. The call site is in the scope of `f2()`.
+
+Knowing this, you might guess that the value of `this.a` would be 6, since that is the value of `a` at the call site of `f1()` when `this.a` is printed.
+
+But this is not the case. Since `f1()` is called as a "normal" function call, its scope will always be global, and therefore `this.a` is equal to 2 in the above code.
+
+### Implicit Binding
+
+And finally, the part where `this` gets a little confusing. If we are calling a function as a property of an object, the value of `this` is entirely based on the call site of the function.
+
+```javascript
+window.color = "blue";
+
+const obj1 = {
+  color: "green",
+  func: () => {
+    console.log(this.color); // blue
+  },
+};
+
+const obj2 = {
+  color: "green",
+  func: function () {
+    console.log(this.color); // green
+  },
+};
+
+obj1.func(); // blue
+obj2.func(); // green
+```
+
+In the above example, I have demonstrated the two concepts that you must understand for implicit binding of `this`. Obviously, both of these functions are called from the global scope, but if you determine the real call site, it is within the context of each object, and therefore, the value of `this` is the context object.
+
+In the second function call, `obj2.func()`, the results are unsurprising. We have determined the call site of this function to be the `obj2` object, which has a property of `color` equal to green.
+
+The first function call is a bit confusing though, and it has to do with the syntax of the function property. In ES6, the fat arrow function was introduced. Unlike a normal function declaration, the `this` keyword within a fat arrow function follows lexical (synonymous to "static") scoping rules as opposed to dynamic scoping rules where we have to look at call stacks and determine call sites to determine the value of `this`.
+
+Therefore, the value of `this` in the fat arrow function is the global object, whose `color` property is equal to `blue`.
+
+Fat arrow functions' treatment of `this` solves a problem for developers, best demonstrated by example.
+
+```javascript
+function myAsyncFunction(callback) {
+  callback();
+}
+
+var obj = {
+  color: "green",
+  func: function () {
+    myAsyncFunction(function () {
+      console.log(this.color);
+    });
+  },
+};
+
+obj.func(); // undefined
+```
+
+Based on the previous examples, you might guess that `this.color` is equal to green. But if you remember from the section on [default binding](#default-binding), if we call a function "normally" (i.e. `myAsyncFunction` has been called normally), `this` will represent the global object. To solve this problem, Javascript developers have used something like the following:
+
+```javascript
+function myAsyncFunction(callback) {
+  callback();
+}
+
+var obj = {
+  color: "green",
+  func: function () {
+    var self = this;
+
+    myAsyncFunction(function () {
+      console.log(self.color);
+    });
+  },
+};
+
+obj.func(); // green
+```
+
+By assigning the value of `this` to a variable while we have access to it, we can pass it into the callback and use it.
+
+Obviously, this is a contrived way to use `this`. There is a better way, and it involves ES6 fat arrow functions:
+
+```javascript
+function myAsyncFunction(callback) {
+  callback();
+}
+
+var obj = {
+  color: "green",
+  func: function () {
+    myAsyncFunction(() => {
+      console.log(this.color);
+    });
+  },
+};
+
+obj.func(); // green
+```
+
+Using this pattern requires a fairly deep understanding of the `this` keyword, and makes you wonder why anyone would go to the trouble in the first place?
+
+## Why use `this` in the first place?
+
+After all this explanation, you might wonder why anyone would go to the trouble of using `this` in their code?
+
+Although entirely a personal opinion, I do not see an overly compelling reason to use the `this` keyword while writing Javascript. Even if you become comfortable with the syntax, that doesn't mean that everyone that reads your code in the future will be comfortable with it. Sure, using `this` has marginal benefits like code reuse, but I would much rather have a few extra lines of code that are highly intuitive than a codebase with a bunch of `this` keywords that don't always behave as expected.
+
+The one scenario where `this` is extremely useful in JavaScript is with classes.  Many front-end frameworks use ES6 classes heavily, and by using `this`, you can significantly simplify your code and reduce the number of lines of code required.
+
+Furthermore, no matter how large a crusade you start against the use of `this` in codebases, there will always be codebases that utilize it. Therefore, regardless of if you choose to implement `this` in your codebase, you will certainly need to know how it works.
+
+And with that, I hope this deep dive into the `this` keyword has helped your understanding like it did mine.

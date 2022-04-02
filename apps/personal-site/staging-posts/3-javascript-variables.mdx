@@ -1,0 +1,755 @@
+---
+title: Lesson 3 - JavaScript Variables and Data Types (Fullstack developer roadmap series)
+excerpt: >-
+  In this post, we will learn the basics of JavaScript variables
+date: "2020-12-25"
+thumb_img_path: images/2021/series-banner-sm.jpg?nf_resize=fit&w=500
+content_img_path: images/2021/series-banner.jpg?nf_resize=fit&w=600
+template: post
+---
+
+<div style="margin-top: 50px; margin-bottom: 50px; text-align: center; max-width: 200px; border: 1px solid #002942; display: flex; align-items: center;">
+  <div style="border-right: 1px solid #002942; padding: 10px; width: 40%;">Difficulty</div>
+  <div style="color: white; background-color: #002942; padding: 10px; width: 60%;">Beginner</div>
+</div>
+
+This is part of my fullstack developer series, where **you'll go from never having written a line of code to deploying your first fullstack web application to the internet.** [Click this link](https://www.zachgollwitzer.com/posts/2021/fullstack-developer-series/introduction/) to get an overview of what this series is all about.
+
+Please share this series with the hashtag **#fullstackroadmap** and help me spread the word!
+
+## Useful series links
+
+* [Series Table of Contents](/posts/2021/fullstack-developer-series/fullstack-roadmap-toc)
+* [Github Repository](https://github.com/zachgoll/fullstack-roadmap-series) - where you'll find all the code we write in this series
+* [YouTube Playlist](https://www.youtube.com/watch?v=ZZJT5uskuvI&list=PLYQSCk-qyTW37zDPzcAyzCsnypFQrhUcq)
+* [Series Overview](https://www.zachgollwitzer.com/posts/2021/fullstack-developer-series/introduction/)
+* [100 Days of Code Challenge](https://www.100daysofcode.com/) - I highly recommend you take this on while reading this series!
+* [My CodeWars Profile](https://www.codewars.com/users/zachgoll) - Follow me and I'll follow you back.  This is where we will do our coding challenges throughout the series!
+* [My Twitter Profile](https://twitter.com/zg_dev) - Where you can stay updated
+
+## Hold yourself accountable with 100 days of code
+
+Today marks the first lesson where we actually start writing some real code.  Because of this, I encourage you to take the 100 days of code challenge.  This is a challenge created by Alexander Kallaway, who was a guy just like you and me trying to hold himself accountable to learning to code.
+
+He started #100DaysOfCode on Twitter a few years back, and it has grown into a large community of people learning to code.  Here are the rules:
+
+1. **Write code for at least 1 hour every day.**  If you have to wake up at 4am and get your hour in before your day job, DO IT.  If you have to stay up an extra hour, DO IT.
+2. **Tweet your progress** and encourage at least 2 other people doing the challenge each day.  I'll leave templates for you in each post, and **if you include the hashtag #fullstackroadmap, I'll do my best to like and retweet you!**
+
+> Just finished my first lesson of the #fullstackroadmap on JavaScript variables and data types! #100DaysOfCode     [Click to tweet](https://ctt.ac/7b54p)
+
+## We won't cover everything in JavaScript here
+
+When learning a new coding language, there are many features that one could teach about that language. Some are extremely important while others are likely to be forgotten shortly after you learn them and never used again.
+
+JavaScript has a lot of features. For example, there are a lot of "shorthand" ways to write JavaScript code as shown below.
+
+```javascript
+// Oh hey, this is a comment because the line starts with two forward slashes.  It doesn't affect the code
+
+let counterVariable = 1;
+
+// Increases the variable by 1
+counterVariable = counterVariable + 1;
+
+// ALSO increases the variable by 1 (this is the shorthand version)
+counterVariable++;
+```
+
+We could certainly try to learn ALL of these neat little features, but I don't think we should. The **last thing that I want** is for you to get lost in the shiny features of JavaScript and gloss over the things that really matter at the beginning.
+
+**So you're telling me we're only going to learn a portion of JavaScript?**
+
+**YES.**
+
+And believe it or not, most employed developers can't claim full understanding of the JavaScript language; hence the popularity of Kyle Simpson's free book series, [You Don't Know JavaScript](https://github.com/getify/You-Dont-Know-JS/tree/1st-ed).
+
+While this book has been extremely helpful to my understanding of the JavaScript language, I have to be honest–I learned a lot more from it years after learning to code than I did when first learning to code. The book has an introduction to JavaScript, but in my opinion, it was written for someone who already knows JavaScript and who wants to level up.
+
+Be sure to reference YDKJS (You Don't Know JavaScript) throughout your career, but in this full-stack series, I'm going to be keeping the technical details of how JavaScript runs behind the scenes to a minimum.  **This is not because I don't want you to learn how JavaScript works**.  This is so we can focus on things like creating web apps rather than learning everything about JavaScript prototypes and why JavaScript is technically not a class-based language.  These things are important down the road, but in my opinion, create unnecessary confusion when getting started.
+
+Just like a Finance professional rarely needs to know much more than basic Algebra, a full-stack web developer rarely needs to know more than the basics of a given programming language. **The reason we code is to build useful things**. And to build useful things, you don't need to be the next JavaScript wizard.
+
+The most challenging part of becoming a full-stack web developer is not learning the intricacies of a given language, but **being able to clearly define your ideas, write them in code, deploy that code, and distribute your product to the people who need it most.**
+
+So let's start building.
+
+## Two important JavaScript concepts
+
+Throughout this series, I'm going to be showing lots of example code snippets. Throughout those snippets, you might see things like this:
+
+```javascript
+// This is a comment
+
+/*
+  This is also a comment, and extends 
+  to multiple lines
+  */
+
+console.log("the console.log statement prints values to the console");
+```
+
+Comments can be written as a single line or multiple lines, and are often used to describe lines of code. **These do not affect the code.**
+
+The `console.log()` function is built-in to the JavaScript programming language and allows us to print values to the console. Remember the "Console" from the [first lesson](https://www.zachgollwitzer.com/posts/2021/fullstack-developer-series/1-first-program/)?
+
+Go ahead and type out the following program in the Firefox dev tools Console to get a feel for comments and `console.log` statements.
+
+```javascript
+// This comment won't affect the console.log statement below
+console.log("but this should print to the console");
+```
+
+## Intro to Variables and Data Types
+
+Every programming language has the concept of "variables". In my mind, a variable can be thought of as a "container" for data.
+
+Think of variables like an Amazon warehouse. The warehouse has thousands of containers filled with various products, and it is meticulously organized so that the robots can find the products when they need to. 
+
+![amazon container](/images/2021/Jan/amazon-container.jpg)
+
+A computer is the same way. During the execution of a program (not before, not after), the computer constructs a "warehouse" similar to that of Amazon. It has thousands of "containers" that store different _types_ of data, and all the while, the computer knows EXACTLY where to find each of these containers.
+
+Before we get too detailed, let's see a couple examples.
+
+```javascript
+const yourFirstVariable = "learning to code gives you superpowers";
+
+const yourSecondVariable = 10;
+
+const yourThirdVariable = { name: "third variable", value: 40 };
+```
+
+Go ahead, open up Firefox developer tools, go to the console, and type in these variables! And if you don't know how to get to the console, [go back to lesson 1](https://www.zachgollwitzer.com/posts/2021/fullstack-developer-series/1-first-program/) for an intro to dev tools.
+
+Remember, each of Amazon's containers have different types of products stored in them just like each variable we declare in our code has different types of data stored in them. But before we get into those data types, let's talk about some of these symbols in the code above.
+
+## Pay attention to every "token"
+
+Let's look at the first variable again.
+
+```javascript
+const yourFirstVariable = "learning to code gives you superpowers";
+```
+
+If you remember from the [previous lesson](https://www.zachgollwitzer.com/posts/2021/fullstack-developer-series/2-what-is-javascript-and-how-is-it-used/), we briefly talked about how our computer doesn't actually understand JavaScript; it only understands 1s and 0s. And to convert this line of code to 1s and 0s, we need to use something called a "compiler" to read through it and translate each character.
+
+For a few minutes, we are going to think like a compiler, because in programming **every character matters**. Don't believe me? Try running this in the console.
+
+```javascript
+const yourFirstVariable = learning to code gives you superpowers';
+```
+
+Notice what happened?
+
+![syntax err](/images/2021/Jan/syntax-err.JPG)
+
+Look closely at this program and the one a few paragraphs above, and you'll notice that we're missing a `'` character, which is causing our `SyntaxError`. You'll also notice that the JavaScript debugger calls it a "token", which is generally what we call an individual character in a program whether that be `c`, `=`, `;`, `8`, or `'`.  To see all valid characters, you need to refer to something called an [ASCII Table](http://www.asciitable.com/). These are all "tokens" and when the computer reads through your code, it is looking at every single token **in a specific order**.
+
+As a beginner, you might find it intimidating that you have to pay attention to every single token of your program, but I can assure you, it is not as hard as you might think. Furthermore, a lot of the [code editors](https://www.zachgollwitzer.com/posts/2020/which-code-editor-to-learn-first/) that you'll be using in future lessons are pretty darn smart these days and will alert you when you've made what we call a "syntactical mistake".
+
+So now that you know how important every "token" of your code is, let's walk through some important concepts within our line of code.
+
+## Declare, then assign
+
+When working with variables in JavaScript (and most other languages), there are actually two steps required to create and use a variable.
+
+1. Declaration of the variable
+2. Assignment of the variable
+
+Take a look at our line of code again. Can you tell where we declare it and where we assign it?
+
+```javascript
+const yourFirstVariable = "learning to code gives you superpowers";
+```
+
+**It's a trick question.** We are actually doing both at once. But if we re-write the program a little bit differently, we might be able to see it.
+
+```javascript
+// Once again, this is a comment and doesn't affect the code
+
+// Declaration
+let yourFirstVariable;
+
+// Assignment
+yourFirstVariable = "learning to code gives you superpowers";
+```
+
+This code does the same thing as the previous code, but declares and assigns the variable in two steps. You might also notice that instead of `const`, we used `let`. I'll explain why in a minute, but first, let's conceptualize what's going on here.
+
+Remember our Amazon analogy? When we create a new container in the warehouse, we need to first register that container (probably with a unique ID). After we have registered the container, the Amazon robots know exactly where to find it. Now that the robots can find the container, we can place products in it! 
+
+The same concept works with programming. You first need to declare a variable so that the computer can allocate a place in memory for it to be stored. Once it has a place to be stored, you can then assign it some data.
+
+### var, let, const
+
+Now back to the question you're probably asking. Why did we use `let` in the second example? To answer that, go ahead and run the following code in the console.
+
+```javascript
+const yourFirstVariable;
+yourFirstVariable = "learning to code gives you superpowers";
+```
+
+![syntax err 2](/images/2021/Jan/syntax-err-2.JPG)
+
+Yet another `SyntaxError`. If you're observant, you might have noticed that we are getting a lot of these `SyntaxError` errors. That's because when you write improper JavaScript, you are "syntactically incorrect" and the JavaScript debugger will feel no shame in telling you that you're wrong!
+
+In this case, we are getting an error because there are specific ways that `var`, `let`, and `const` can be used in JavaScript.
+
+Whenever you write a variable in JavaScript, **you will always place one of these "reserved words" in front of your variable**. Each of the following lines of code are valid.
+
+```javascript
+const variable1 = 10;
+let variable2 = 10;
+var variable3 = 10;
+```
+
+The question becomes, **how do I know when to use each of them?.**
+
+#### When to use "var"
+
+**Never**.
+
+The `var` keyword is actually a legacy keyword in JavaScript, and many JavaScript style guides (more on this later) advise programmers to use either `let` or `const`.
+
+I am bringing this up because as you read through online tutorials or open-source codebases, you will surely see programs with the `var` keyword in them. This usually means that the code was written years ago or the programmer has not caught up with the times.
+
+The main reason `var` is not used anymore is because while using it, variables can be re-declared, which caused a lot of confusion for developers in the past. I will not be getting into the details of this as they become very confusing very quickly and I don't want to distract from what we are learning here.
+
+#### When to use "let"
+
+**If you expect the value of the variable to be _reassigned_ during the program, use `let`**.
+
+This probably doesn't make sense yet, but consider the following example.
+
+```javascript
+// Declaration
+let myVariable;
+
+// Assignment
+myVariable = 2;
+
+// Re-Assignment
+myVariable = 4;
+```
+
+If you run this code in the console, it is perfectly valid and after running it, the value of your variable will be `4` because we "reassigned" it.
+
+#### When to use "const"
+
+**If you expect the value of the variable to _remain the same_ during the program, use `const`**.
+
+In all programming languages, there are "constants". These are variables that never change and are often written in all capital letters. For example, if you're writing a program to calculate the circumference of a circle, you might define a constant variable like `TAX_RATE = 0.08`. You know this tax rate won't change throughout your program, so you define it as a "constant".
+
+While there are some technical differences in how the variables are stored between `let` and `const`, the true value of using them is to indicate to _other programmers_ how certain variables are meant to be used. Let's say that I'm reading through someone's code and I see this:
+
+```javascript
+// Top of the program
+let count = 0;
+
+// A bunch of code here
+```
+
+Without reading past the first couple lines, I know that somewhere in this program, the variable `count` will be re-assigned to a different value, and is NOT a constant variable.  But if I saw the following code, I know that these values aren't going to change.
+
+```javascript
+const TAX_RATE = 0.08;
+
+// a bunch of code here
+```
+
+Now you might ask–why do you capitalize the variable here?  What is the difference between `taxRate` and `TAX_RATE`?  This makes no **functional** difference.  It is purely semantic and I am about to explain why we do things like this in programming.  Both of the code blocks below are **functionally identical**.
+
+```javascript
+const TAX_RATE = 0.08;
+
+console.log(TAX_RATE);
+```
+
+```javascript
+// Works the same as above!
+
+const taxRate = 0.08;
+
+console.log(taxRate);
+```
+
+Let's find out why in the next section.
+
+## How to write a variable
+
+Back to our simple program:
+
+```javascript
+const yourFirstVariable = "learning to code gives you superpowers";
+```
+
+Since we are using `const`, we know this variable will never be re-assigned throughout the program, but we haven't talked about the rest of the "tokens" in this line of code.
+
+The next thing we need to discuss is the proper way to write JavaScript variables. Here are valid ways to write JS variables:
+
+```javascript
+const yourFirstVariable = 10;
+const your_first_variable = 10;
+const YOUR_FIRST_VARIABLE = 10;
+const yourfirstvariable = 10;
+const YourFirstVariable = 10;
+```
+
+And here are _invalid_ ways to write them:
+
+```javascript
+const your First Variable = 10;
+const 1stvariable = 10;
+const 'yourFirstVariable' = 10;
+```
+
+You can remember the invalid ways to write a JavaScript variable by **treating them like a Twitter hashtag.** When you write a hashtag on Twitter, the word needs to be all in one piece. If there are spaces in your hashtag, Twitter only recognizes the first word.
+
+Aside from that rule, there are only a couple "gotchas" to look out for. One not-so-obvious rule is you cannot start your variable with a number.
+
+```javascript
+// This is valid
+const variable1 = 10;
+
+// This is NOT valid
+const 1variable = 10;
+```
+
+You also cannot use certain characters in a variable such as `'`, but I would not spend your time trying to remember all the invalid ways to write a variable because you will catch on quickly and if you write a variable incorrectly, you will see errors in your console that will tell you what you've done wrong.
+
+Now for the valid ways...
+
+As you can see above, there are many valid ways to write JavaScript variables, but that doesn't mean you should use them all. Just like we use `const` and `let` to indicate to other programmers what type of variable we are dealing with, we can use these different "styles" to communicate as well.
+
+As you learn programming, you'll come across something called a "Style Guide", which is **a set of guidelines for writing code in a specific language or framework**. No single style guide is more correct than another, but each company might specify certain ways to write code. For example, here is [Google's JavaScript style guide](https://google.github.io/styleguide/jsguide.html) while here is [Airbnb's JavaScript style guide](https://github.com/airbnb/javascript).
+
+If you read through these, you'll notice that they each specify a way to name variables.
+
+- [Google naming conventions](https://google.github.io/styleguide/jsguide.html#naming-rules-common-to-all-identifiers)
+- [Airbnb naming conventions](https://github.com/airbnb/javascript#naming-conventions)
+
+Both guides recommend using `camelCase` for naming regular variables, and the JavaScript community as a whole has adopted this convention.
+
+If you started writing code in the Python coding language, you would see a lot of variables written in `snake_case` indicated by the underscores between variable words.
+
+Some of the most common naming conventions are `camelCase`, `UpperCamelCase` (also called `PascalCase`), `snake_case`, `CONSTANT_CASE`, and `kebab-case`.  Please note, `kebab-case` does not work with JavaScript variables, but all the rest do.
+
+After looking at these style guides, you might be overwhelmed with the quantity of rules that these companies follow when writing their code, but I promise you, employees of Airbnb do not study the style guide for the first 2 weeks of their employment.
+
+There are tools called "code linters" that can automatically detect when you have improperly implemented a certain style guide. These linters often work inside your code editor and give you feedback as you are writing the code. In the screenshot below, I have improperly used `const`, and the linter has let me know that I need to use `let` to declare the `totalFullRounds` variable.
+
+![linter](/images/2021/Jan/linter.JPG)
+
+As you write more and more code, you will catch on to some of these JavaScript conventions, and we will even set up one of these linters to help us write cleaner code!
+
+### Name your variables something meaningful
+
+If you haven't caught this yet, you can use anything you want as a variable name.  These are all valid:
+
+```javascript
+const q = 20;
+const someNumberThatRepresentsTheNumberOfUsersInMyDatabase = 20;
+const numberOfUsers = 20;
+```
+
+While you could use any of these, can you guess which one is best?
+
+Of course, `numberOfUsers` is best because it is short enough to write quickly, but long enough to describe what it represents.  It is often tempting to shorten your variables like `q`, but your future self will thank you when you have to read through your old code and figure out what it does.
+
+I would much rather see you write longer variables that are descriptive than shorter variables that will leave you scratching your head trying to remember what they were for.
+
+## Left vs. Right - Know the difference
+
+Our program, once again:
+
+```javascript
+const yourFirstVariable = "learning to code gives you superpowers";
+```
+
+So far, we have covered everything on the left side of the "equals" sign. To write a variable, you need to use either `let` or `const` followed by 1 space and a variable.
+
+Before we jump to the other side of `=`, we need to understand how variables behave on both sides of it.
+
+### The left side of the equals sign
+
+Everything left of `=` will always be a variable, and will always be the "container" that the values are stored in.
+
+Please note that we are talking about `=`, NOT `==` or `===`. These will come later in our series, but make a HUGE difference in how the left side behaves.
+
+### The right side of the equals sign
+
+Everything right of `=` represents the **value** that will be stored in the "container" (left of `=`).
+
+Going back to our Amazon analogy, think of the left side of `=` as the storage container and the right side of `=` as the products that go in the container.
+
+The right side of `=` is a bit trickier than the left side because there are many valid things you can put there. While the only thing you can put left of `=` is a variable, you can put all of the following things right of `=`.
+
+```javascript
+const variable1 = 10;
+const variable2 = variable1;
+const variable3 = "Zach";
+const variable4 = {
+  variableType: "object",
+  variableValue: "some value",
+};
+const variable5 = (function () {
+  return "Hello, my name is ";
+})();
+const variable6 = variable5 + variable3;
+```
+
+Go ahead, paste the above code in your dev tools Console. Now, write the following line:
+
+```javascript
+console.log(variable6);
+```
+
+It prints "Hello, my name is Zach" because I have actually combined two variables into one.
+
+Don't worry if you can't understand the above code; it is a bit advanced and we will get there eventually. Let's now dive into the different data types in JavaScript.
+
+### The semicolon at the end
+
+You might have noticed that at the end of each line, I have been putting a `;`. This represents the completion of a JavaScript expression.
+
+You can technically run JavaScript without a semi-colon at the end of each line, but it is best practice to put it there and will keep you from experiencing odd behaviors caused by omitting it.
+
+Try running the following code in your browser console:
+
+```javascript
+const variable1 = 10; const variable2 = 20;
+
+console.log(variable1 + variable2);
+```
+
+Works right? Now try this:
+
+```javascript
+const variable1 = 10 const variable2 = 20;
+
+console.log(variable1 + variable2);
+```
+
+It throws an error because you have placed two variable assignments on the same line without telling the compiler when the first assignment ends and when the second begins. This is why the semi-colon matters.
+
+Please note that it is NOT correct to say "every line ends with a semicolon". The following JavaScript program is syntactically correct:
+
+```javascript
+const myObject = {
+  property1: "somevalue",
+  property2: "anothervalue",
+};
+```
+
+To the JavaScript compiler, this is technically one line. You could have also written it like this:
+
+```javascript
+const myObject = { property1: "somevalue", property2: "anothervalue" };
+```
+
+## JavaScript Data Types
+
+Teaching the concept of "data types" with JavaScript is often a difficult task because JavaScript is considered a "dynamically typed" coding language.
+
+Below is some JavaScript code:
+
+```javascript
+const variable1 = 10;
+const variable2 = "some value";
+const variable3 = false;
+```
+
+And below, I have re-written the above code in TypeScript, which is a superset of JavaScript that we may look at (still deciding on this) much later in this series. When I say "superset", I'm referring to the fact that all JavaScript is valid TypeScript, but not all TypeScript is valid JavaScript (and must be "transpiled" into JavaScript to run).
+
+```typescript
+const variable1: number = 10;
+const variable2: string = "some value";
+const variable3: boolean = false;
+```
+
+Notice something here?
+
+In TypeScript, we are specifying what _type_ of value we are assigning to the variable, while in JavaScript, we just assign it.
+
+TypeScript is "statically typed" while JavaScript is "dynamically typed". They don't function any differently, but with statically typed languages like TypeScript, Java, C, and C++, we are being much more explicit with our "type checking".
+
+Since JavaScript is dynamically typed, you might think, "I don't need to worry about data types!". In reality, it is quite the opposite. Because JS is dynamically typed, it is critical that you are paying attention to what types of data you are assigning to your variables and returning from your functions. Many developers prefer to write TypeScript rather than JavaScript (including myself) for this very reason, but we can't start writing TypeScript until we know how to write JavaScript!
+
+### Strings
+
+The first type of data is a string. We can write strings in JavaScript in two ways:
+
+```javascript
+const singleQuoteString = 'this is a string';
+const doubleQuoteString = "this is a string";
+```
+
+Which one is better? Neither. They both work just fine. But as of the time of writing, most JavaScript developers would recommend using single quotes, and most "Style Guides" (as we talked about earlier) will enforce single quotes for string variables.
+
+Anything that you put between either single quotes `''` or double quotes `""` will be treated as a string data type. You can even put other characters and numbers in there.
+
+```javascript
+const stringVariable1 = "I am a string with a number: 10";
+
+// This is still a string, even though it stores a number in it
+const stringVariable2 = "20";
+```
+
+### Numbers
+
+Next, we have the number type. This is assigned without any special characters around it.
+
+```javascript
+const numberVariable = 10;
+```
+
+The only thing that you may be tempted to do that is incorrect is this:
+
+```javascript
+const invalidNumber = 10,000;
+```
+
+By placing the `,` in the number, you have made a syntax error:
+
+![syntax err 3](/images/2021/Jan/syntax-err-3.JPG)
+
+### Booleans
+
+A boolean value is pretty simple to understand–it is either `true` or `false`.  There are no other possible values.
+
+```javascript
+const trueValue = true;
+const falseValue = false;
+```
+
+### Arrays
+
+You can think of an array as a "list" of values.  In JavaScript, you can assign any data type as an array value.  An array is indicated by brackets and comma-separated values.
+
+```javascript
+const numbersArray = [10, 20, 30, 40];
+
+const stringArray = ['red', 'green', 'blue'];
+
+const booleanArray = [true, true, false];
+
+const mixedArray = [true, 'red', 10];
+```
+
+The main concept you must understand with arrays is "indexing".  Each value of an array has a specific "index", and the index values always start at 0.  For example, in the following array, the value `red` is at index 0, the value `green` is at index 1, and the value `blue` is at index 2.
+
+```javascript
+// Indexes             0       1        2
+const stringArray = ['red', 'green', 'blue'];
+```
+
+If you wanted to print a single value of this array, you would reference the appropriate index.  We will get into this more later in the series, but this is how you would print the value `red` from the array:
+
+```javascript
+const stringArray = ['red', 'green', 'blue'];
+
+const singleArrayValue = stringArray[0];
+
+console.log(singleArrayValue);
+```
+
+You could have also done this:
+
+```javascript
+const stringArray = ['red', 'green', 'blue'];
+
+console.log(stringArray[0]);
+```
+
+### Objects
+
+Objects are what JavaScript is built on.  You might hear the phrase that in JavaScript, "everything is an object".  And while I don't want to get into the subtleties of this statement now, I will say that you'll be working with objects quite often.
+
+You can think of objects as "complex containers".  If we go back to the Amazon analogy, you might imagine a container that has containers within it, and in each container, there are Amazon products waiting to be shipped.  Let's take a look at a simple object:
+
+```javascript
+const simpleObject = { myVariable: 'some value' };
+```
+
+`simpleObject` is the variable we are assigning the object to.  `myVariable` is one "property" of the object, and `some value` is the value of that property.
+
+If we wanted to access the value of this property, we would use something called "dot notation":
+
+```javascript
+const simpleObject = { myVariable: 'some value' };
+
+const valueOfProperty = simpleObject.myVariable;
+
+console.log(valueOfProperty);
+```
+
+Think of it like this–the `myVariable` property is a _part of_ the `simpleObject` object, and to access it, we need to first name the object that contains the property, and then the property we want to retrieve, or `simpleObject.myVariable`.  
+
+You can also access the values of properties similar to how we did with arrays, but in this case, we need to know the property name to access it.
+
+```javascript
+const simpleObject = { myVariable: 'some value' };
+
+// Using dot notation to access property value
+console.log(simpleObject.myVariable);
+
+// Using bracket notation to access property value
+console.log(simpleObject['myVariable']);
+```
+
+Notice how I have passed in the string version of my object property to access the value of that property.  This is functionally equivalent to using dot notation.
+
+Objects can have nested properties too.  For example, take a look at this object. 
+
+```javascript
+const nestedObject = {
+  layerOne: {
+    layerTwo: {
+      layerThree: {
+        layerFour: {
+          layerFive: {
+            theValueWeWant: 'here is my value'
+          }
+        }
+      }
+    }
+  }
+};
+```
+
+To get `theValueWeWant`, we would use "dot notation" to get it using the following expression:
+
+```
+nestedObject.layerOne.layerTwo.layerThree.layerFour.layerFive.theValueWeWant
+```
+
+Go ahead, try running the code below in the console.
+
+```javascript
+const nestedObject = {
+  layerOne: {
+    layerTwo: {
+      layerThree: {
+        layerFour: {
+          layerFive: {
+            theValueWeWant: 'here is my value'
+          }
+        }
+      }
+    }
+  }
+};
+
+console.log(nestedObject.layerOne.layerTwo.layerThree.layerFour.layerFive.theValueWeWant);
+```
+
+There are far more data types that you can assign to properties of objects, but we will not go into them at this time.
+
+Also, you might notice how the names of the variables are completely arbitrary.  Properties of objects are written just like a normal variable.
+
+### Functions
+
+While we have a headline here, I will not be covering the concept of JavaScript functions in this post.  I plan to cover functions and many other JavaScript basics in future posts of this series!
+
+## Summary and why variables matter
+
+At this point, we have only covered how to declare and assign a JavaScript variable and what types of data can be assigned to a variable.
+
+With this knowledge, there is actually not much that we can do as programmers.  Variables are critical to every program, but without things like operators, if-then statements, loops, and functions, our variables are no use to us.
+
+We will soon get to a point where we can write useful code, but for now, just remember the following things.
+
+* The first step is to _declare_ a variable, then _assign_ it a value (although we often do it in one step)
+* Use `let` and `const`, NOT `var` to declare and assign variables
+* The left side of `=` represents the variable that will hold the value you are assigning
+* There are many ways to write a JavaScript variable, but `camelCase` is the preferred way
+* There are 5 main types of variables–strings, numbers, booleans, arrays, and objects
+* A semicolon represents the end of a JavaScript expression
+
+## Next Steps
+
+* Be sure to [get on my email list](https://lists.zachgollwitzer.com/) to receive updates when I post lessons in the future!
+* Tweet one thing you learned in this tutorial with the hashtags #fullstackroadmap and #100DaysOfCode
+
+> Just finished my first lesson of the #fullstackroadmap on JavaScript variables and data types! #100DaysOfCode     [Click to tweet](https://ctt.ac/7b54p)
+
+### Your Homework
+
+#### Challenge 1
+
+In the dev tools console, figure out how to do the following (use Google to help):
+
+1. Create a boolean variable called `myBoolean` and set it to `true`.
+2. Create a string variable called `myString` and set it to `hello world`.
+3. Create a number variable called `firstNumber` and set it equal to `20`.
+4. Create another number variable called `secondNumber` and set it equal to `40`.
+5. Re-assign `secondNumber` and set it equal to `80`.
+6. Create an array called `myArray` and put `myBoolean` at index 0, and `myString` at index 1.
+7. Create an object called `myObject` and assign `myArray` to a property called `firstProperty`, and the sum of `firstNumber` and `secondNumber` to a property called `sumProperty` (hint: we didn't cover how to do this here).
+8. Print `myObject` to the console.
+9. Print the `sumProperty` of `myObject` to the console.
+10. Print the value at index 1 of `firstProperty`.
+
+[Solution found here](https://github.com/zachgoll/fullstack-roadmap-series/blob/main/code-challenges/lesson-3/challenge-1-solution.js)
+
+#### Challenge 2
+
+There are three things wrong with this code.  Find them and explain why they are wrong.
+
+```javascript
+const some Number = 20;
+
+someNumber = 50
+```
+
+[Solution found here](https://github.com/zachgoll/fullstack-roadmap-series/blob/main/code-challenges/lesson-3/challenge-2-solution.js).
+
+#### Challenge 3
+
+What does `resultVariable` equal?  What data type is it?
+
+We haven't covered everything here, but research this for a bit and see what you can find.
+
+```javascript
+const variable1 = 20;
+const variable2 = '40';
+
+const resultVariable = variable1 + variable2;
+
+console.log(resultVariable);
+```
+
+[Solution found here.](https://github.com/zachgoll/fullstack-roadmap-series/blob/main/code-challenges/lesson-3/challenge-3-solution.md)
+
+#### Challenge 4
+
+Why is this code invalid?  Edit this until it is valid.
+
+```javascript
+const objectVariable = {
+  property1: 'i am property 1';
+  property2: 'i am property 2';
+  property3: [20, 30, 40];
+};
+
+console.log(objectVariable.property3[2]);
+```
+
+[Solution found here](https://github.com/zachgoll/fullstack-roadmap-series/blob/main/code-challenges/lesson-3/challenge-4-solution.md)
+
+#### Challenge 5
+
+Why does this code not work?  Edit until it works.
+
+```javascript
+const myArray = [20, 30, 40];
+
+console.log(myArray[3]);
+```
+
+[Solution found here](https://github.com/zachgoll/fullstack-roadmap-series/blob/main/code-challenges/lesson-3/challenge-5-solution.md)
+
+[Go to prior lesson](https://www.zachgollwitzer.com/posts/2021/fullstack-developer-series/2-what-is-javascript-and-how-is-it-used/)
+
+[Go to next lesson (coming soon...)]()

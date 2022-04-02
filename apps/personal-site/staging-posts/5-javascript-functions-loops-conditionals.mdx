@@ -1,0 +1,899 @@
+---
+title: Lesson 5 - JavaScript Functions, Loops, and Conditionals (Fullstack developer roadmap series)
+excerpt: >-
+  In this post, we will be focusing on functions, conditionals, and loops in JavaScript.
+date: "2021-01-11"
+thumb_img_path: images/2021/series-banner-sm.jpg?nf_resize=fit&w=500
+content_img_path: images/2021/series-banner.jpg?nf_resize=fit&w=600
+template: post
+---
+
+<div style="margin-top: 50px; margin-bottom: 50px; text-align: center; max-width: 200px; border: 1px solid #002942; display: flex; align-items: center;">
+  <div style="border-right: 1px solid #002942; padding: 10px; width: 40%;">Difficulty</div>
+  <div style="color: white; background-color: #002942; padding: 10px; width: 60%;">Beginner</div>
+</div>
+
+[See this lesson on YouTube here](https://www.youtube.com/watch?v=4LjtotM77Pg&list=PLYQSCk-qyTW37zDPzcAyzCsnypFQrhUcq&index=10)
+
+This is part of my fullstack developer series, where **you'll go from never having written a line of code to deploying your first fullstack web application to the internet.** [Click this link](https://www.zachgollwitzer.com/posts/2021/fullstack-developer-series/introduction/) to get an overview of what this series is all about.
+
+Please tag me on Twitter [@zg_dev](https://twitter.com/zg_dev) and share this series with [#100DaysOfCode](https://twitter.com/search?q=%23100DaysOfCode&src=typed_query)!
+
+## Useful series links
+
+* [Series Table of Contents](/posts/2021/fullstack-developer-series/fullstack-roadmap-toc)
+* [Github Repository](https://github.com/zachgoll/fullstack-roadmap-series) - where you'll find all the code we write in this series
+* [YouTube Playlist](https://www.youtube.com/watch?v=ZZJT5uskuvI&list=PLYQSCk-qyTW37zDPzcAyzCsnypFQrhUcq)
+* [Series Overview](https://www.zachgollwitzer.com/posts/2021/fullstack-developer-series/introduction/)
+* [100 Days of Code Challenge](https://www.100daysofcode.com/) - I highly recommend you take this on while reading this series!
+* [My CodeWars Profile](https://www.codewars.com/users/zachgoll) - Follow me and I'll follow you back.  This is where we will do our coding challenges throughout the series!
+* [My Twitter Profile](https://twitter.com/zg_dev) - Where you can stay updated
+
+## The goal for this lesson
+
+In the previous two lessons of this series, we covered JavaScript variables and operators in a good amount of detail.
+
+I believe that if you've been following along and partaking in the practice exercises at the end of each lesson, you should be in a place where we can start moving a bit faster.
+
+In today's lesson, we will be doing just that.  We will be covering conditionals, loops, and functions in JavaScript rather quickly, and then **supplement that knowledge with a ton of practice.**
+
+The lesson itself is necessary, but a lot of the nuances to the JavaScript language will be realized within the practice problems that I will be solving with you at the end of the lesson.  **My goal is to get through 25 practice problems**, which is going to result in a **REALLY LONG video**, but I believe that is the cost of learning to code.
+
+So let's get into it!
+
+## What are conditionals in JavaScript?
+
+JavaScript conditionals are simpler than I'm making them sound.  Here's a basic JavaScript conditional:
+
+```jsx
+if ('some string' === 'another string') {
+  console.log('the strings are equal'); // this will be skipped
+} else {
+  console.log('the strings are not equal'); // this is what will be printed
+}
+```
+
+If you completed the previous lesson, you know that these strings are not equal, and therefore, our "code path" will result in the "else" statement and `the strings are not equal` will be printed to the console.
+
+To better understand this, here is the basic structure of a "conditional".
+
+```jsx
+if () {
+  // do something here
+} else {
+  // do something here
+}
+```
+
+In the previous lesson, we talked about JavaScript expressions, but we only looked at them in the context of variables.  For example:
+
+```jsx
+const myResult = (20 === 20) && ('orange' === 'orange');
+```
+
+In this case, we have to look at what is right of the `=` and by doing that, we can determine that `(20 === 20) && ('orange' === 'orange')` is the expression that we are evaluating.  This expression equals `true`, and therefore, the `myResult` variable is assigned a value of `true`.
+
+When we look at conditionals, our expressions will be placed between parentheses.
+
+```jsx
+if (put your expression here) {
+  // write some code here
+}
+```
+
+### Conditionals can be written in several different ways
+
+Below are some examples of valid conditional statements in JavaScript.
+
+```jsx
+const firstNumber = 20;
+const secondNumber = 10;
+const jsExpression = firstNumber > secondNumber; // true
+
+// Only using an if statement (no "else" statement required here)
+if (jsExpression) {
+  console.log('this expression is true');
+}
+
+// An if-else statement
+if (jsExpression) {
+  console.log('this expression is true');
+} else {
+  console.log('this expression is false');
+}
+
+// Adding another "code path" with "else if"
+// Hint: you can use as many "else if" statements as you want
+if (jsExpression) {
+  console.log('the expression is true');
+} else if (firstNumber > 0) {
+  console.log('the expression is false and the firstNumber is greater than 0');
+} else {
+  console.log('expression false, and firstNumber 0 or less');
+}
+
+// Works the same, just formatted differently
+if (jsExpression) { console.log('just a different formatting') };
+```
+
+### What about "Switch Statements"?
+
+Now listen up.  If you're using lots of switch statements across your code, you're probably doing something inefficiently.  But... There are some really good use cases for a switch statement and although I can't give you a definitive list of scenarios where you'll need to use this, I can explain why we have it in the first place.
+
+Consider this:
+
+```javascript
+// Index           0         1        2         3        4
+const colors = ['orange', 'green', 'yellow', 'purple', 'blue'];
+
+// Gets a random number between 0 and 4 and stores in a variable
+const randomIndex = Math.floor(Math.random() * colors.length );
+
+/*
+  Remember, to get a value from an array, we use bracket notation
+  For example, to get 'green', we use `colors[1]`
+
+  Since randomIndex will be a random number between 0-4, we can 
+  pass this in as our index to retrieve a random color from the array
+*/
+const randomColor = colors[randomIndex];
+
+// Conditionals
+if (randomColor === 'orange') {
+  console.log('the color is orange');
+} else if (randomColor === 'green') {
+  console.log('the color is green');
+} else if (randomColor === 'yellow') {
+  console.log('the color is yellow');
+} else if (randomColor === 'purple') {
+  console.log('the color is purple');
+} else if (randomColor === 'blue') {
+  console.log('the color is blue');
+} else {
+  console.log('no color found');
+}
+```
+
+The conditional statement we have written at the bottom of the code works fine.  You can use this with no problems, but most developers don't like the look of it.  Here's a cleaner way to write the same thing using a switch/case statement.
+
+```javascript
+// Index           0         1        2         3        4
+const colors = ['orange', 'green', 'yellow', 'purple', 'blue'];
+
+// Gets a random number between 0 and 4 and stores in a variable
+const randomIndex = Math.floor(Math.random() * colors.length );
+
+/*
+  Remember, to get a value from an array, we use bracket notation
+  For example, to get 'green', we use `colors[1]`
+
+  Since randomIndex will be a random number between 0-4, we can 
+  pass this in as our index to retrieve a random color from the array
+*/
+const randomColor = colors[randomIndex];
+
+// Switch / Case statement
+switch (randomColor) {
+  case 'orange':
+    console.log('the color is orange');
+    break;
+  case 'green':
+    console.log('the color is green');
+    break;
+  case 'yellow':
+    console.log('the color is yellow');
+    break;
+  case 'purple':
+    console.log('the color is purple');
+    break;
+  case 'blue':
+    console.log('the color is blue');
+    break;
+  default:
+    console.log('no color found');
+}
+```
+
+To some, the switch statement looks better than a bunch of if-else statements.  Let me explain what's going on here.
+
+```javascript
+const variableToEvaluate = 'some value to match';
+
+switch (variableToEvaluate) {
+  case 'some value to match':
+    // do something here
+    break; // This ensures that if a match is found, no further code is run
+  default:
+    // If nothing matches above, this code is run
+}
+```
+
+A switch statement works the same as an if-else statement.  It looks at the value of `variableToEvaluate`, and then runs down the list of cases until it finds a "case" where the value matches the variable in question.  If no "case" matches, then we reach the code stored in the `default` case.
+
+Think of it like this–the `case` is similar to `else if` while the `default` is similar to `else` in our first example above.
+
+Like I said, if the switch statement feels a bit uncomfortable right now, there is no need for you to use it.  You can always use the good 'ole "if-else" conditional to filter through a list of potential values.
+
+## What are loops in JavaScript?
+
+I can tell you _what_ a loop is, but my goal in this series is to also share with you _why_ we do things.  As a beginner programmer, understanding why we need loops is not going to be apparent.  Sure, you might find yourself writing loops to solve some algorithm coding challenge, but in the real world of web development, there is one use case for loops that I believe trumps all.
+
+That use case is **looping over database resources**.
+
+In the "real world", we deal with a lot of repetitive things with similar characteristics.  Remember how we talked about arrays earlier?
+
+```javascript
+const myArray = ['orange', 'blue', 'green'];
+```
+
+The above array is simple, but in a prior lesson, we talked about how you can put more than just string values in an array.  You might have an array that looks like this:
+
+```javascript
+const blogPosts = [
+  {
+    title: 'What is JavaScript?',
+    author: 'Zach Gollwitzer',
+    publishDate: 'Dec 20, 2020',
+    content: 'some post content here'
+  },
+  {
+    title: 'How do Arrays work?',
+    author: 'Zach Gollwitzer',
+    publishDate: 'Jan 1, 2021',
+    content: 'some post content here'
+  },
+  {
+    title: 'How long does it take to learn coding?',
+    author: 'Zach Gollwitzer',
+    publishDate: 'Jan 20, 2021',
+    content: 'some post content here'
+  }
+]
+```
+
+What do you notice in the code above?  Here are a few things I'm noticing.
+
+**First**, the format of the array above is much different than what we've seen before.  We've looked at a lot of arrays written on a single line, but when coding, you'll often have to write code that breaks on several lines.  While indentation is not necessary (if you are writing Python code it would be, but not JavaScript), it helps with readability.  We will talk later in the series about auto-formatters such as [Prettier](https://prettier.io/) to help us with this. 👍
+
+**Second**, I'm noticing that each object stored in our `blogPosts` array has a very similar structure.  Each object has a `title`, `author`, `publishDate`, and `content` property.  Hmmm... We might be able to take advantage of this in a couple minutes...
+
+When I said "resources" earlier, I'm talking about a group of similar-looking data that is generally stored in a database.  A blog post would be considered an individual "resource".
+
+So you might ask–why would we want to loop over a list of blog posts?
+
+### A good idea to remember - don't hardcode things
+
+Let's say you are coding a blog (like we will do in this fullstack series).  How would you display your blog post titles on the home page using the array we just looked at above?
+
+Here's an idea:
+
+```javascript
+blogPosts[0].title;
+blogPosts[1].title;
+blogPosts[2].title;
+```
+
+Great!  All we need is a little HTML and JavaScript and we have ourselves a list of blog posts.
+
+**But what happens when we add another post?**
+
+We could just add another line of code right?  Maybe `blogPosts[3].title`?
+
+No. No. No. No. No.
+
+This is where loops come in.  Instead of hard coding a new line of code for each additional blog post that we add, we want to be able to have our code automatically detect a new blog post and display it.
+
+Here's how I would display my blog posts instead.
+
+```javascript
+const blogPosts = [
+  {
+    title: 'What is JavaScript?',
+    author: 'Zach Gollwitzer',
+    publishDate: 'Dec 20, 2020',
+    content: 'some post content here'
+  },
+  {
+    title: 'How do Arrays work?',
+    author: 'Zach Gollwitzer',
+    publishDate: 'Jan 1, 2021',
+    content: 'some post content here'
+  },
+  {
+    title: 'How long does it take to learn coding?',
+    author: 'Zach Gollwitzer',
+    publishDate: 'Jan 20, 2021',
+    content: 'some post content here'
+  }
+]
+
+// ---------------------
+//   This is our loop
+// ---------------------
+for (let i = 0; i < blogPosts.length; i++) {
+  const postTitle = blogPosts[i].title;
+  const postAuthor = blogPosts[i].author;
+  const postDate = blogPosts[i].publishDate;
+  const postContent = blogPosts[i].content;
+
+  // Here, we would use these variables to do something with each post
+  // I'll just print the values
+  console.log(postTitle);
+  console.log(postAuthor);
+  console.log(postDate);
+  console.log(postContent);
+}
+```
+
+No matter how many posts we add to our `blogPosts` array, our code is ready to display them!
+
+### The structure of a JavaScript loop
+
+You will learn later in your programming journey that there are several valid ways to write a loop in JavaScript, but there is one way that most programmers would consider the "standard" way of writing a loop.  You saw it in the code above, but here it is again.
+
+```javascript
+for (let i = 0; i < 100; i++) {
+  // Your code goes here
+}
+```
+
+I know, this looks intimidating.  Let's walk through each part.
+
+Just like we start a conditional statement with the `if` keyword, we start our loops with the `for` keyword.
+
+```javascript
+// The code below is not valid, but gives you a visual
+
+if () {
+
+}
+
+for () {
+
+}
+```
+
+Within the parentheses, we need to add the following things:
+
+1. A loop variable
+2. A stop condition
+3. A loop behavior
+
+In this case, we used a loop variable of `i`.
+
+```javascript
+let i = 0;
+```
+
+There are a couple things to point out.  First, notice how we have a `;` at the end of the statement.  This indicates that our statement is complete and is required.
+
+Also, notice that we are using `let` instead of `const`.  This is intentional.  The value of `i` will be changing on each iteration of our loop, and therefore, we need to "re-assign" it and use the `let` keyword to declare it.
+
+Next, notice that we named the variable `i`.  This is merely a convention, and is not required.  We can call this variable whatever we would like.  The following loop would be perfectly valid:
+
+```javascript
+// Your loop variable doesn't have to be called `i`, but this is a conventional way to do it
+for (let anyName = 0; anyName < 100; anyName++) {
+  // Your code goes here
+}
+```
+
+Finally, notice that we initialized this variable with a value of `0`.  This is important because it represents the starting value of our loop.  In almost ALL cases, you will want to start your variable at 0 because when using loops, you'll be looping over an array, and when using arrays, the first value has an index of `0`.
+
+Next up, let's talk about the following code:
+
+```javascript
+i < 100
+```
+
+First off, the value of `100` is entirely arbitrary, and generally, you won't be using a hardcoded number like this.  In most cases, you'll replace `100` with something like `blogPosts.length` for reasons that will become apparent soon.
+
+Second, it is important to understand what this statement is saying.  I call it a "stop condition" because the loop will continue until `i` reaches a value of `100`.
+
+How does `i` reach `100` you might ask?  Well that's where `i++` comes in.  If you remember from the prior lesson of this series when we talked about arithmetic operators, using `i++` increments the value of `i` by 1.  Let's look at the code one more time.
+
+```javascript
+for (let i = 0; i < 100; i++) {
+
+  // This line will run 100 times and each time, i will increase by 1
+  console.log('The value of i is: ' + i);
+}
+```
+
+Go ahead and open your browser dev tools (remember, right click anywhere in the browser, click "Inspect Element", and then select "Console") and paste this code in there.
+
+Although your browser console will print 100 lines in less than a second, the computer is "iterating" through this loop and doing the following:
+
+1. Check if the value of `i` is less than `100`.  If so, continue to the code inside the loop.
+2. Run the code in the loop
+3. Return to step 1
+
+Like I said, loops are not all that useful on their own, but once we start "iterating" (this is just a fancy word programmers use) over a list of blog posts, users, notifications, or whatever else you can think of, they become very useful.
+
+## What are functions in JavaScript?
+
+And finally, we've reached the point in our journey where we can start doing some really cool things with JavaScript.
+
+Like I have been doing throughout this series, I'm going to introduce you to the basics (and most important parts) of functions and leave out the complicated details.  We will cover the complicated details in our practice exercises and as they come up later in the series, but for now, I think they create unnecessary confusion.
+
+Here is how you write a function in JavaScript.
+
+```javascript
+function myFunction() {
+  // do something here
+}
+```
+
+Like I said, there are a lot of things we _could_ talk about here, but I'm going to keep it to the most important things.
+
+### How to write and "call" a function
+
+The first thing that you need to know about functions is this–there is a huge difference between "declaring" and "calling" a function.
+
+We talked extensively about "declaring" and "assigning" variables in prior lessons, and while this is similar, the major difference is that functions don't get declared and called in the same step.
+
+To see this in action, write the following code into your browser dev tools Console.
+
+```javascript
+function myFunction () {
+  console.log('hello');
+}
+```
+
+What happened?  If you answered "nothing", you are correct.  This doesn't do anything that our eyes can see.  We have indeed done something though...
+
+We have talked about declaring variables in the following way: 
+
+```javascript
+const myVariable = 20;
+
+// After declaring and assigning, we can see the type of this variable
+typeof myVariable; // number
+```
+
+When we declare a function, we can do the same thing!
+
+```javascript
+function myFunction () {
+  console.log('hello');
+}
+
+typeof myFunction; // function
+```
+
+That is because our console will store `myFunction` in memory just like it stores `myVariable` in memory.
+
+If we can retrieve the function from memory, how do we "call" it?  Another way to say this is how do we "invoke" it?
+
+To "call" or "invoke" a function, you write the following code.
+
+```javascript
+// Declaring the function
+function myFunction () {
+  console.log('hello');
+}
+
+myFunction(); // "calling" or "invoking" the function
+```
+
+Go ahead, try running the code in your browser.  It should print `hello` to your console.
+
+### Let's add some parameters and arguments to our function
+
+The function we just wrote is pretty useless.  I wouldn't recommend presenting it in a job interview.
+
+So how do we make these functions more exciting?  
+
+**By adding "parameters" and "arguments".**
+
+I'm going to show you and then we are going to get into a long-winded discussion about how it works.
+
+```javascript
+// Declaration
+function myFunction(param1, param2) {
+  const sum = param1 + param2;
+  console.log(sum);
+}
+
+// Invocation
+myFunction(20, 10); // 30
+```
+
+If you're attentive, you'll probably recognize that `param1` somehow relates to `20` and `param2` somehow relates to `10`.  You're 100% correct, but let's explore _how_ they are related.
+
+When we _declare_ a JavaScript function, we have the ability to pass zero to infinity number of "parameters" (although most developers agree that 3-5 is the maximum number of parameters a function _should_ have).  In this case, we passed in 2: `param1` and `param2`.
+
+How did I know to use the names `param1` and `param2`?  It doesn't matter, because these are completely arbitrary.  I can name these whatever I want.  Below, I changed the parameter names.  Try to run the code below and see what happens.
+
+```javascript
+// Declaration
+function myFunction(firstNumber, secondNumber) {
+  const sum = param1 + param2;
+  console.log(sum);
+}
+
+// Invocation
+myFunction(20, 10); // 30
+```
+
+The reason the code above does not run (throws a `ReferenceError`) is because while we have changed the name of the parameters, we forgot to update the _references_ to the parameters within the function.  Here is the correct way to write it:
+
+```javascript
+// Declaration
+function myFunction(firstNumber, secondNumber) {
+  const sum = firstNumber + secondNumber; // I updated this line
+  console.log(sum);
+}
+
+// Invocation
+myFunction(20, 10); // 30
+```
+
+Let's stay on this point for a minute.  Clearly, I am _referencing_ my parameters from within the function, but how do I know what they represent?
+
+Well this is where the _invocation_ part comes in.  Notice at the bottom of my code how I have passed values of `20` and `10` in as something we call "arguments".
+
+You can think of "parameters" and "arguments" as two sides of the same coin.  Developers will often use them interchangeably, but for our discussion, the distinction matters.
+
+By declaring parameters, you are telling the computer, "Hey computer!  When I call this function later in my code, I'm going to pass in two arguments, so make sure you remember them when I do!"
+
+And by "passing arguments", you are telling the computer, "Hey computer! Remember those parameters I told you about when I wrote `myFunction`?  Good, because here are the arguments that I want to use in their place for this function invocation.  I want to replace `firstNumber` with `20` and `secondNumber` with `10`.
+
+### A brief introduction to "scope"
+
+Try running the following code.
+
+```javascript
+// Declaration
+function myFunction(firstNumber, secondNumber) {
+  const sum = firstNumber + secondNumber; // I updated this line
+  console.log(sum);
+}
+
+console.log(firstNumber);
+console.log(secondNumber);
+
+// Invocation
+myFunction(20, 10); // 30
+```
+
+You're gonna get a big fat error that says:
+
+```
+Uncaught ReferenceError: firstNumber is not defined
+```
+
+We will be talking more about "scope" throughout the series, but for now, just remember that not all variables can be _accessed_ from all places in your code.
+
+The variables `firstNumber` and `secondNumber` can only be accessed from _within_ the function, `myFunction`.  This is by design.
+
+Here's how I think about function scope.
+
+```javascript
+function myFunction(param1, param2, param3) {
+  // Any code that you write between the opening bracket {
+  // and the closing bracket } will have access to the 
+  // parameters (which are just variables).  In other words,
+  // any code here can use `param1`, `param2`, and `param3`,
+  // but once we step outside of this area, these cannot be 
+  // accessed anymore
+}
+
+// This is NOT VALID because we are trying to access
+// `param1` outside of its "scope"
+console.log(param1);
+```
+
+I think that's enough for one day about scope.  JavaScript is full of weird "scope" issues that are distracting to our main focus.  We will cover them later as they arise, but no need at the moment.
+
+### We can declare and invoke a function simultaneously
+
+All this time, I've been telling you that functions are declared and "called" or "invoked" in _separate_ steps.
+
+This is true most of the time, but there is a way to do it all at once.  This is called an "immediately invoked function".
+
+```javascript
+(function myFunction () {
+  console.log('hello');
+})();
+```
+
+Go ahead and run that code in your console.  It should print `hello`.  Like I said, this is not often used while programming, but occasionally good to know.  All we are doing is skipping a step.
+
+### There is another way to write a function in JavaScript
+
+I've been withholding information from you for the last couple minutes.  There is another way to write a function in JavaScript.
+
+Here it is.
+
+```javascript
+const myFunction = function() {
+  console.log('hello');
+}
+```
+
+For a closer look, here is how we did it before.
+
+```javascript
+function myFunction () {
+  console.log('hello');
+}
+```
+
+For our learning purposes right now, these are **functionally equivalent**.  There is a subtle difference, but it brings in a concept called "hoisting" which is confusing to even an experienced JS dev, and I believe getting into it is destructive to our learning experience.  You can "call" the first example above the same way you "call" the second example.
+
+```javascript
+const myFunction = function() {
+  console.log('hello');
+}
+
+myFunction(); // hello
+```
+
+What we did here was declare an "anonymous" function and assign it to a variable.  This is what an anonymous function is:
+
+```javascript
+function() {
+  console.log('hello');
+}
+```
+
+If you tried to run this anonymous function in your dev tools console, it would throw the following error.
+
+```
+Uncaught SyntaxError: Function statements require a function name
+```
+
+As you might infer, when we are declaring a function on its own, we need to give it a name.  Otherwise, how will we refer back to it??
+
+### Arrow Functions
+
+The topic of "anonymous functions" brings us to our **final** way of writing functions.  This one is going to be a bit tricky, so brace yourself.
+
+```javascript
+const myFunction = () => {
+  console.log('hello');
+}
+```
+
+What I have written above is called an "arrow function", and it is another form of an anonymous function.  Just like our anonymous function example above, we cannot run these alone.
+
+```javascript
+// This doesn't work
+() => {
+  console.log('hello');
+}
+```
+
+While this "arrow function" might look more complicated than the conventional "anonymous function", there are only a few differences.  Go ahead, look at them side by side.
+
+```javascript
+const myAnonymousFunction = function () {
+  console.log('hello');
+}
+
+const myArrowFunction = () => {
+  console.log('hello');
+}
+```
+
+To get from anonymous to arrow, just remove `function` and insert `=>` between `()` and `{`.
+
+You might ask _why_ we have both of these.  Arrow functions didn't exist prior to ES6 (remember from lesson 2 when we talked about ECMAScript standards?).  They were introduced in the ES6 standard (in 2015) because an arrow function **is easier to write**.  Once you start coding larger projects, you'll realize that these arrow functions are much easier to use and I would recommend getting to know them well.
+
+There are some other benefits relating to these arrow functions, but once again, talking about them will get us into advanced territory we're not ready for yet.
+
+### Let's talk about return values
+
+The function that we've been looking at so far has not had a return value.
+
+```javascript
+function myFunction () {
+  console.log('hello');
+}
+
+myFunction(); // hello
+```
+
+When we invoke it with `myFunction()`, it prints `hello` to the console.  Now, let's assign the result of this invocation to a variable.
+
+```javascript
+function myFunction () {
+  console.log('hello');
+}
+
+const result = myFunction();
+
+console.log(result); // ????
+```
+
+What does `result` equal?  
+
+The correct answer is `undefined` because our function doesn't return a value.  Returning a value is simple; just put a `return` statement at the end of your function.
+
+```javascript
+function myFunction () {
+  return 'hello';
+}
+
+const result = myFunction();
+
+console.log(result); // hello
+```
+
+Now, our `result` variable will be set equal to the return value of the function, which is a string, `hello`.
+
+Whatever comes _after_ the return statement will not be executed.
+
+```javascript
+function myFunction () {
+  let someNumber = 200;
+
+  return someNumber;
+
+  someNumber = 100; // will never get here
+}
+
+const result = myFunction();
+
+console.log(result);
+```
+
+Since we are returning `someNumber` _prior_ to re-assigning it, our `result` variable will be equal to `200` because we will never reach the statement `someNumber = 100`.
+
+## Functions and Objects together
+
+As you have seen in this lesson, you can assign functions to variables and then execute them using the variable name.
+
+In prior lessons, we showed how you can assign variables to object data type properties.  Quick review:
+
+```javascript
+const quantity = 20;
+
+const myObject = {
+  prop1: quantity
+};
+
+console.log(myObject.prop1); // 20
+```
+
+We can also assign functions to properties.
+
+```javascript
+function myFunction () {
+  return 20;
+}
+
+const myObject = {
+  functionProp: myFunction
+};
+
+const result = myObject.functionProp();
+
+console.log(result); // 20
+```
+
+This is going to take us a minute to comprehend, but I promise you, I'm showing it to you for a very specific reason.
+
+The first part is simple.  We define a function that returns a value of `20`.
+
+```javascript
+function myFunction () {
+  return 20;
+}
+```
+
+The second part is a bit trickier.  We are creating an object called `myObject` and assigning our newly created function `myFunction` to a property called `functionProp`.  Again, these are all arbitrary names.  We could have named them differently.
+
+If you remember, we access properties of an object with "dot notation".  To access the function (`myFunction`) stored within the object, we must use `myObject.functionProp`.
+
+And finally, we need to "invoke" or "call" this function, so we need to add `()` at the end of this.  Here is a longer way to write the same code.
+
+```javascript
+// Declare the function
+function myFunction () {
+  return 20;
+}
+
+// Declare the object, assign the function to a property of the object
+const myObject = {
+  functionProp: myFunction
+};
+
+// Get the function from the object property
+const functionFromObject = myObject.functionProp;
+
+// "invoke" or "call" the function
+const result = functionFromObject();
+
+// Print the return value of the function
+console.log(result); // 20
+```
+
+Obviously, this code is more complex than it needs to be.  We could easily just call the function directly.
+
+I wanted to show you this so the next section is a bit more clear.
+
+### Built-in JavaScript Functions
+
+As a programming language, JavaScript comes with several built-in functions that we can use in our code.  These built-in functions help us modify the values of our variables.  Here is an example.
+
+```javascript
+const myString = 'hello world';
+
+const newString = myString.toUpperCase();
+
+console.log(myString); // hello world
+console.log(newString); // HELLO WORLD
+```
+
+Believe it or not, `myString.toUpperCase()` is similar to `myObject.functionProp()` in the code from the previous section.
+
+You might say, "but a string variable is not an object!".
+
+You would be correct in saying this.  A string is not an object in JavaScript.  A string doesn't have properties like an object does.
+
+JavaScript experts would yell at me for this, but just think of the JavaScript built-in methods as function properties of different types of variables.  This is not technically correct, but once again, discussing the nuances will get us into far too advanced topics for now.
+
+You can chain these built-in methods together.
+
+```javascript
+const myString = 'hello world';
+
+const newArray = myString.toUpperCase().split(" ");
+
+console.log(newArray); // ['HELLO', 'WORLD']
+```
+
+In the above example, we first capitalize every letter in our string using `toUpperCase()`, and then `split(" ")` our string by a space delimiter `" "` and place the resulting two strings into an array.
+
+These built-in methods are categorized based on the data type of your variable.  Here are a few examples for each.
+
+```javascript
+// String functions
+const myString = 'some string';
+
+// Makes entire string uppercase
+const string1 = myString.toUpperCase();
+
+// Replaces first occurrence of s with l
+const string2 = myString.replace("s", "l");
+
+console.log(string1); // SOME STRING
+console.log(string2); // lome string
+
+// Number functions
+const myNumber = 41.6978;
+
+// changes the number to a different decimal precision
+const number1 = myNumber.toPrecision(3);
+
+console.log(number1); // 41.7
+
+// Array functions
+const myArray = ['orange', 'blue', 'green'];
+
+// Finds the index of the value in the array
+const array1 = myArray.indexOf('blue');
+
+console.log(array1); // 1
+```
+
+These are just a few examples to demonstrate and get you familiar with using the built-in methods.
+
+[Here is a link](https://www.tutorialspoint.com/javascript/javascript_builtin_functions.htm) to all of the built-in JavaScript functions, but please do not read this and try to memorize them.  You can always look them up and we will cover a few in our coding challenges!
+
+## Combining everything together
+
+Like I have mentioned many times, there is a lot more to JavaScript than what I've taught you in the last three lessons.  That said, we have planted a tree, and now, you just have to fill in the branches and leaves.
+
+The best way to do that is through exercises, so for the remainder of the post, we will be going through JavaScript exercises together.  I have chosen 25 exercises that will help us fill some of our knowledge gaps, and I'll do my best to point these out as we see them.
+
+## 25 JavaScript Exercises
+
+To get the most out of these challenges, I recommend watching my YouTube video where I solve all of them with you.  I walk you through my thought process and hopefully fill in some gaps from these lessons.
+
+Here are the challenges and solutions.
+
+* Solutions - [YouTube video](https://youtu.be/sqRk0Ly66Ps)
+* Challenge Collection - [Lesson 5 Collection on Codewars](https://www.codewars.com/collections/lesson-5-practice-challenges-number-fullstackroadmap)

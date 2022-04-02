@@ -1,0 +1,368 @@
+---
+title: Bash Regular Expressions
+excerpt: >-
+  To me, regular expressions are often made far more complicated than they need to be. Sure, there are a lot of options and little details to learn regarding regular expressions, and on top of that, there are many different flavors of regular expressions (python, extended, rust, etc.).  Despite this, there are only a few core concepts that one must understand about regular expressions that will then translate in the ability to use any flavor of regular expressions effectively.
+date: "2019-02-03"
+thumb_img_path: images/2020/old-posts/regexp-terminal-basics.png?nf_resize=fit&w=500
+template: post
+---
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/NhcaKdt3NdM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+To me, regular expressions are often made far more complicated than they need to be. Sure, there are a lot of options and little details to learn regarding regular expressions, and on top of that, there are many different flavors of regular expressions (python, extended, rust, etc.). Despite this, there are only a few core concepts that one must understand about regular expressions that will then translate in the ability to use any flavor of regular expressions effectively.
+
+Regular expressions exist because a literal text searching program is sometimes not good enough. Let me give you an extremely practical example from my own work to explain.
+
+I recently wrote a script in Microsoft Excel VBA that executed commands from an external library. The code of this external library was not available for me to see, and therefore, I had to use it with limited control. As a result of this, the library would open up a new Excel workbook for every function call I made. In each workbook, there was data that I needed to copy and paste into my main workbook, but in the code, I had no way of determining what the name of this new workbook was. Luckily, Excel opens new workbooks and names them "Book1", "Book2", "Book3", "Book4", etc. Knowing that these new workbooks would always contain the word "Book" at the beginning, I was able to use a regular expression to identify them. My regular expression was quite simple, and looked like this: `^Book[0-9]+`. I have not yet explained what this syntax means, but essentially, we are searching for text that starts with "Book" and ends with 1 or more numbers.
+
+A more common example for regular expressions is searching large documents for email addresses or phone numbers or even validating user input in a web application. Chances are, you will not need to use regular expressions on a daily basis, so I am not going to teach you all the nitty gritty details that you will forget within a day. Instead, I am going to teach you the methodology behind regular expressions that will give you a foundation to work with. You may have to Google for help regarding specific use cases, but you will never have any confusion about regular expressions.
+
+Let me first start by addressing the fact that there are many different versions of regular expressions. Here are three different ways to use the same regular expression:
+
+```javascript
+// This is how we use a javascript regular expression to match a string with 3 or more digits in it
+let myRegExp = /[0-9]{3,}/;
+let myStringToMatch = "345";
+
+myRegExp.exec(myStringToMatch); // ["345", index: 0, input: "345", groups: undefined]
+```
+
+```python
+# This is the same regexp, but in Python
+
+import re
+
+result = re.search('[0-9]{3,}', '345')
+
+print(result.group(0)) # '345'
+```
+
+```bash
+# And finally, the same expression written in the bash shell using the grep command
+
+echo "345" | grep -E '[0-9]{3,}' # 345
+```
+
+As you can see, all three languages utilize regular expressions a bit differently, but the actual expression that we are writing in each is exactly the same. Regular expressions are easily translatable from one language to the next.
+
+The easiest way to explain regular expressions is through practical examples and derivations of _why_ we might need a regular expression for a given scenario. Let us start with the following text.
+
+```
+I am some random text
+```
+
+If I wanted to match the word "random" in this text, I could do this with a regular text searching tool. For example, I could use grep in the following manner.
+
+```bash
+echo "I am some random text" | grep "random"
+```
+
+This is trivial and unexciting. We all understand the basic concept of text matching, but sometimes don't take a moment to think about what it really is. If we were to write a text matching program, it would roughly follow these steps:
+
+1. Store our search string in a variable
+2. Open our file to search
+3. Read each character in the file one by one, seeing if that character matches the first character in our search string
+4. If there is a match, advance to the next letter in the search string and check to see if that matches the next character in the file
+5. If we reach the end of our search string without any errors, then we have matched the text
+
+This is an overly simplified explanation, but you can [read more here](https://stackoverflow.com/a/1627904/7437737) if you're curious. What I just explained is called "literal text matching" and can be done using any text searching utility. It can also be done by a regular expression utility. If we activate the Perl regular expressions feature of `grep`, we can find this same word.
+
+```bash
+echo "I am some random text" | grep -P "random"
+```
+
+If you're wondering how this is any different from my original search, that's good because there is no difference other than the `-P` flag which tells grep to interpret this as a regular expression. At this point, we have concluded in the most anti-climactic way possible that regular expressions can carry out the basic function of literal text matching. But this is exactly where regular expressions start to get interesting, because not only can they match literal strings of characters, but also _patterns_ of characters in specified _quantities_. I will elaborate on this as we move forward, but let's start simple. Let's say that I had the following file of text called `http-request.txt`.
+
+```
+Alt-Svc: quic=":443"; ma=2592000; v="44,43,39"
+Cache-Control: private, max-age=0
+Content-Encoding: br
+Content-Length: 72493
+Content-Type: text/html; charset=UTF-8
+Date: Mon, 11 Feb 2019 21:40:25 GMT
+Expires: -1
+Server: gws
+Set-Cookie: 1P_JAR=2019-02-11-21; expires=Wed, 13-Mar-2019 21:40:25 GMT; path=/; domain=.google.com
+Set-Cookie: SIDCC=AN0-TYtZ7bElYEE0wy8nAaXHUK_GRAsuZzNu7r5OhKVGKwr7a-m7ctz5IIHoZcvmh2s9xuDt0gc; expires=Sun, 12-May-2019 21:40:25 GMT; path=/; domain=.google.com; priority=high
+Strict-Transport-Security: max-age=31536000
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+
+Alt-Svc: quic=":443"; ma=2592000; v="44,43,39"
+Cache-Control: private, max-age=0
+Content-Encoding: br
+Content-Length: 72470
+Content-Type: text/html; charset=UTF-8
+Date: Mon, 11 Feb 2019 21:44:38 GMT
+Expires: -1
+Server: gws
+Set-Cookie: 1P_JAR=2019-02-11-21; expires=Wed, 13-Mar-2019 21:44:38 GMT; path=/; domain=.google.com
+Set-Cookie: SIDCC=AN0-TYsHoOeMCDEAZfNd9umwLDXDEHqyGfAImuc08v4h2e1B1hSKxGQAq7iVt0xFlQKLzVlgSTM; expires=Sun, 12-May-2019 21:44:38 GMT; path=/; domain=.google.com; priority=high
+Strict-Transport-Security: max-age=31536000
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+
+Alt-Svc: quic=":443"; ma=2592000; v="44,43,39"
+Cache-Control: private, max-age=0
+Content-Encoding: br
+Content-Length: 72464
+Content-Type: text/html; charset=UTF-8
+Date: Mon, 11 Feb 2019 21:46:36 GMT
+Expires: -1
+Server: gws
+Set-Cookie: 1P_JAR=2019-02-11-21; expires=Wed, 13-Mar-2019 21:46:36 GMT; path=/; domain=.google.com
+Set-Cookie: SIDCC=AN0-TYuz2RnQRkvCL-vKi53aZ9wq43igGogt5iPF1aveuchWK1_5cZsxzom9-PWiJjy8Sk7bvgY; expires=Sun, 12-May-2019 21:46:36 GMT; path=/; domain=.google.com; priority=high
+Strict-Transport-Security: max-age=31536000
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1; mode=block
+```
+
+Above are three _separate_ HTTP response headers from three separate requests I made to www.google.com. As you can see, they all follow a similar data structure, but are not considered "structured" data of any kind. This is a perfect set of text for us to use to learn regular expressions. Let's say I wanted to get the date and time of each request in this file. I could easily find these 3 lines (each request has a date) using a regular expression.
+
+```bash
+cat http-request.txt | grep -P "^Date.+"
+```
+
+When executed, this command will find and print out the three date lines. The "Date" part of the regex makes sense, but what does the ".+" mean? What is the `^` at the beginning? If we omit these two characters, we will match the word "Date" 3 times, but we won't get the actual date information that we really want. This is a perfect opportunity to introduce the "metacharacters". In regular expressions, the following characters will behave a bit oddly: `. ^ $ * + ? { } [ ] \ | ( )`
+
+If you understand what each of these characters do, you understand how to use regular expressions. When reading through a file, a regular expression will go line by line (each line indicated by the `\n` character). When you write a regex, it will be tested against every line of the file. Knowing this, we can conclude that the "boundary" for a regular expression is just a single line. In some cases, it may be useful if we had a way of matching text at the beginning or end of a line. For example, with a list of phone numbers, we might look for a specific area code.
+
+```
+234-234-1920
+121-726-1382
+```
+
+In line 1, the area code is the same as the middle three numbers. By using the `^` character in our regular expression, we can isolate just the first three characters.
+
+```bash
+cat phone-numbers.txt | grep -P "^234"
+```
+
+This regular expression will match just the area code of the first phone number. Now, let's say that we want to match all the lines of text that end in a question mark.
+
+```
+sentences.txt
+
+The regex will not match me.
+The regex will not match me either.
+But wouldn't it make sense that the regex matched me?
+```
+
+Remember, the `?` is a special character, so we must "escape it" using the backslash.
+
+```bash
+cat sentences.txt | grep -P ".+\?$"
+```
+
+This regex will match the entire line that ends in a question mark because we are using the `$` symbol, which represents the end of the line. This is opposite of the `^` character that we just learned about.
+
+At this point, you've probably already looked up what that period `.` character does in a regex. When used in a regex, the `.` matches all characters except the newline character (remember, regular expressions use that to determine where the end of a line is?). There are also three other "special" characters that we can use to match certain types of characters.
+
+- `.` - matches any character
+- `\d` - matches any digit (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
+- `\s` - matches any whitespace character (including newlines)
+- `\w` - matches any alphanumeric character (letters and numbers)
+
+If you capitalize `\D`, `\S`, and `\W`, it negates the expression. Using this new knowledge, let's try to match the following line of text.
+
+```
+You cannot match me because you don't know what a quantifier is!
+```
+
+If we tried to match this line using just the skills we know now, we might try something like so:
+
+```bash
+echo "You cannot match me because you don't know what a quantifier is" | grep -P "^Youis$"
+```
+
+Shouldn't this work? We are matching "You" at the beginning of the line (`^`) and "is" at the end of the line (`$`). The problem is... We failed to match all those words and letters in the middle. So maybe if we add the `.` in the middle it will match all of them! Let's try it.
+
+```bash
+echo "You cannot match me because you don't know what a quantifier is" | grep -P "^You.is$"
+```
+
+Unfortunately, this isn't going to work either. The reason this isn't working is because we have not specified _how many_ characters we want to match between the literal word "You" and the literal word "is!". To do this, we can use either `*`, `+`, `?`, or `{}`.
+
+- `*` - Matches 0 or more of the preceding character
+- `+` - Matches 1 or more of the preceding character
+- `?` - Matches 0 or 1 of the preceding character
+- `{1}` - Matches exactly 1 of the preceding character
+- `{1,}` - Matches 1 or more of the preceding character (identical to `+`)
+- `{2,6}` - Matches between 2 and 6 of the preceding character
+
+These are what we call "quantifiers", and they are extremely important. As you might have noticed, you can write _any_ quantifier using the `{}` brackets alone, but sometimes, the `*`, `+`, and `?` are quicker and cleaner to write. With these quantifiers, we can complete our expression.
+
+```bash
+echo "You can match me now because you know what a quantifier is" | grep -P "^You.+is$"
+```
+
+To recap, we are matching "You" at the beginning of the line (`^`), then we are matching 1 or more of _any_ character after that (`.+`), and finally we are matching "is" at the end of the line (`$`). Below are a few examples that demonstrate the use of quantifiers.
+
+```bash
+# Single letter
+echo "a" | grep -P "^a" # matches!
+echo "a" | grep -P "^a+" # matches!
+echo "a" | grep -P "^a*" # matches!
+echo "a" | grep -P "^a?" # matches!
+echo "a" | grep -P "^a{1}" # matches!
+echo "a" | grep -P "^a{1,}" # matches!
+echo "a" | grep -P "^a{0,1}" # matches!
+
+# Double letter
+echo "aa" | grep -P "^a" # Only matches first letter
+echo "aa" | grep -P "^a+" # matches!
+echo "aa" | grep -P "^a*" # matches!
+echo "aa" | grep -P "^a?" # Only matches the first letter
+echo "aa" | grep -P "^a{1}" # Only matches the first letter
+echo "aa" | grep -P "^a{1,}" # matches!
+echo "aa" | grep -P "^a{0,1}" # Only matches the first letter
+echo "aa" | grep -P "^a{0,1}$" # Does not match at all!
+
+# Using metacharacters
+echo "a" | grep -P "^\w" # matches!
+echo "a" | grep -P "^\w+" # matches!
+echo "a" | grep -P "^\w*" # matches!
+echo "a" | grep -P "^\w?" # matches!
+echo "a" | grep -P "^\w{1}" # matches!
+echo "a" | grep -P "^\w{1,}" # matches!
+echo "a" | grep -P "^\w{0,1}" # matches!
+
+# Another use of metacharacters (matching anything that is not a digit)
+echo "a" | grep -P "^\D" # matches!
+echo "a" | grep -P "^\D+" # matches!
+echo "a" | grep -P "^\D*" # matches!
+echo "a" | grep -P "^\D?" # matches!
+echo "a" | grep -P "^\D{1}" # matches!
+echo "a" | grep -P "^\D{1,}" # matches!
+echo "a" | grep -P "^\D{0,1}" # matches!
+
+# 10 different ways to match the same word
+echo "regexp" | grep -P "regexp" # matches!
+echo "regexp" | grep -P "^regexp" # matches!
+echo "regexp" | grep -P "^reg\w*" # matches!
+echo "regexp" | grep -P "^reg\w*$" # matches!
+echo "regexp" | grep -P "^\w*$" # matches!
+echo "regexp" | grep -P "\w*" # matches!
+echo "regexp" | grep -P "^\w+" # matches!
+echo "regexp" | grep -P "^regex\w?$" # matches!
+echo "regexp" | grep -P "\D{1,}" # matches!
+echo "regexp" | grep -P "^\S{1}\w+$" # matches!
+```
+
+As you can see in the last couple lines, there are many ways to match the same text. We could probably find 40 different regular expressions that all match the line "regexp". And that is not even considering the last metacharacter that we are going to cover! This entire time, I have not even mentioned "character classes", which are expressions contained within `[]`. The reason I skipped over these is because when we use them, all the rules change. The metacharacters (`. ^ $ * + ? { } [ ] \ | ( )`) will all behave differently when placed inside brackets, and furthermore, you can write an adequate regular expression without them 99% of the time! That said, character classes make your life easier in many cases, so we need to cover them at least briefly.
+
+You can think of a character class as a single character, but with multiple possibilities. For example, the following character class represents every lowercase letter in the alphabet, but only 1 of them since we added a quantifier - `[a-z]{1}`. We could also define only the first 13 letters of the alphabet like so - `[a-m]`. This extends to digits too. `[0-9]` represents every possible digit, and is exactly equivalent to `\d`. `[0-9a-zA-Z_]` represents all alphanumeric characters and is exactly equivalent to `\w`.
+
+You might be wondering why you would ever need something like `[0-9]` when you could just use `\d`, and you are wondering for good reason! These character classes are not necessary in most cases and I would encourage you to use `\d` rather than `[0-9]` whenever possibly for utmost brevity. That said, there are certain situations where this could be useful. Maybe you want to only match numbers 1-5. There is no abbreviation for the character class `[1-5]` and therefore we must utilize it.
+
+When using character classes, there are a few "gotchas" that we need to cover. They all relate to the use of metacharacters and how those metacharacters behave in a character class. In general, I would not recommend trying to use any metacharacter inside a character class (`[]`), but if you do, here are the rules.
+
+- The `^` character does not mean the beginning of a line. It is a negation symbol.
+
+```bash
+# This expression will match. The first ^ means "beginning of line" while the
+# second ^ (inside the brackets) means "not".  Therefore, this expression
+# will match 1 or more characters starting at the beginning of the line that
+# are not digits.
+echo "regexp" | grep -P "^[^0-9]+"
+```
+
+- The `.` character matches literally inside brackets
+
+```bash
+# You might think that this will match, but it does not.  This expression matches
+# 1 or more period characters starting at the beginning of the line.
+echo "regexp" | grep -P "^[.]+"
+
+# This expression does match!
+echo "regexp..." | grep -P "^regexp[.]+"
+```
+
+Finally, I want to briefly mention why I never talked about the metacharacters `|` and `()`. These both relate to the topic of "groups", which allows you to group different parts of your regular expression. If your regular expression is a really long one, it is often helpful to group off different sections of it. The reason I did not cover this topic is because this topic is far more useful if you are using a programming language like Python for regular expressions because with such a language, you can refer to different groups of your regular expression later in your code. Since we are learning regular expressions in bash, we generally don't need or have this functionality.
+
+So...
+
+The ultimate conclusion about regular expressions??
+
+_There are MANY ways to write them_.
+
+The remainder of this section will walk through a practical example using our newfound regexp skills. I have attempted to solve the problem two different ways using two different types of regexp syntax to demonstrate that there is more than one way to do things.
+
+### Detailed Example Regular Expression
+
+Let's say we had the following file called `email-addresses.txt`:
+
+```bash
+jon23@gmail.com
+bob879@yahoo.com
+not an email
+sally2@customsite.com
+fred.jones@hotmail.com
+not an email address
+```
+
+Learning how to match all four of the emails with a single regular expression will demonstrate a lot of the concepts that we have covered. We start by matching all characters with the `.` metacharacter starting at the beginning of each line (`^`).
+
+```bash
+cat email-addresses.txt | grep -P "^.+"
+```
+
+The expression we just wrote means that we are starting at the beginning of each line and looking for _any_ character except line breaks in a quantity of 1 or more characters. We could easily have written the same expression differently like so:
+
+```bash
+cat email-addresses.txt | grep -P "^[^\r\n]{1,}"
+```
+
+As you can see, regular expressions can be used in a multitude of ways. In this version, we are doing the _same_ thing we did above with different syntax. The `^` still indicates that we are looking at the beginning of each line. The `[^\r\n]` means that we are matching _any_ character that is _not_ (`^`) a carriage return or new line (`\r`, `\n`). Notice how when we place the `^` inside the character set it now acts as a negation rather than "search from the beginning of the line". Remember, symbols behave differently when placed inside a character set, so be careful! Finally, we want to match these characters 1 or more times, so we use the `{1,}` syntax. The comma after the 1 indicates that we want 1 or _more_ matches. Anyways, if we run this, we will again match all six lines of the text file. Since we only want to match the email addresses, we will need to tweak the expression. Moving forward, I will be writing two regular expressions with different syntax that **both do the same things**.
+
+```bash
+cat email-addresses.txt | grep -P "^[^\r\n]{1,}@.{1,}"
+cat email-addresses.txt | grep -P "^.+@.+"
+```
+
+The two expressions above both match the four email addresses while excluding the other two lines. All we had to do was add an "@" symbol followed by the same thing we had before the symbol. This is great, but what if we modified the text file so it looked like this:
+
+```
+jon23@gmail.com
+bob879@yahoo.com
+not an email
+sally2@customsite.com
+this line has an @ symbol in it so it will mess with our regex
+fred.jones@hotmail.com
+not an email address
+```
+
+Now when we run our regular expressions, we will match all the email addresses and the new line that I added. As you can see, depending on the complexity of the text you are searching, you may have to go through some trial/error before you get the right regular expression for the job. In this case, we are going to need to modify the back half of the regular expression to the following.
+
+```bash
+cat email-addresses.txt | grep -P "^[^\r\n]{1,}@.{1,}\.com"
+cat email-addresses.txt | grep -P "^.+@.+\.com"
+```
+
+We are now matching just the email addresses again. All I did was add `\.com` at the end of our regular expression for a _literal_ match (we had to "escape" the period here because otherwise it refers to all characters as it did earlier in the expression. To escape a special character, we use the backslash right before it). But what if I modified the text file one more time like so?
+
+```
+jon23@gmail.com
+bob879@yahoo.com.yahoo.com
+not an email
+sally2@customsite.net
+this line has an @ symbol in it so it will mess with our regex
+fred.jones@hotmail.com
+not an email address
+```
+
+I made two changes here. First, I made one of the email addresses invalid. "bob879@yahoo.com.yahoo.com" is obviously an invalid email and we do not want to match it. Second, "sally2@customsite.net" no longer has ".com" at the end, so this will not match our regexp. Here is how we would modify the regular expressions to match only the valid email addresses.
+
+```bash
+cat email-addresses.txt | grep -P "^[^\r\n]{1,}@[a-zA-Z0-9]{1,}(.com|.net){1}"
+cat email-addresses.txt | grep -P "^.+@\w+(.com|.net){1}"
+```
+
+The above regular expressions will get us a lot closer. In both expressions, we replaced `\.com` with `(.com|.net){1}` to match _either_ ".com" or ".net" email addresses exactly once. Then, in the first regex, we replaced `.{1,}` with `[a-zA-Z0-9]{1,}` which will now not match the "yahoo.com.yahoo.com" because the periods do not match the character set. Likewise, we changed the second regular expression from `.+` to `\w+`, which does the same thing. The only problem we face now is that the regular expressions are still matching the first part of the "bob879@yahoo.com.yahoo.com". We do not want to match this line _at all_. To fix this, we modify the regular expressions one more time.
+
+```bash
+cat email-addresses.txt | grep -P "^[^\r\n]{1,}@[a-zA-Z0-9]{1,}(.com|.net){1}$"
+cat email-addresses.txt | grep -P "^.+@\w+(.com|.net){1}$"
+```
+
+All I did was add the `$` character at the end of each expression. Just like we have the `^` at the beginning of each expression, we can place the `$` at the end of the expressions to indicate we have reached the end of our line. This will eliminate that invalid email address!

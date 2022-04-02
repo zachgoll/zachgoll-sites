@@ -1,0 +1,1693 @@
+---
+title: Git Crash Course - A Simple Workflow for Small Teams and Startups
+excerpt: >-
+  In this crash course, you'll learn everything you need to know about the Git source control utility.  From the basics to an advanced developer workflow, everything is here in this guide.
+date: "2019-01-01"
+thumb_img_path: images/2020/old-posts/git-crash-course-beginners.png?nf_resize=fit&w=500
+template: post
+---
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/kmGsHjQ2wsY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+## Prerequisites
+
+This course is for anyone who is [familiar with the command line](/blog/2019/bash-essentials) and needs to know all the essential commands for the Git utility. You will need to have the following knowledge:
+
+- Basic understanding of coding languages (we will not write any code, but will be looking at some)
+- Basic mastery of the command line
+- Basic understanding of open source software
+
+## Topics
+
+- Why use Git?
+- Installation, and adding your credentials to Git
+- The differences between Github, Gitlab, Bitbucket, Local
+- A Simple, Effective Workflow
+- Common Git Problems and Solutions
+
+## Why Use Git?
+
+Git is a widely accepted, open source, local source control tool that enables single developers or teams manage their source code in a decentralized way. I devoted an entire section to this question, but truthfully, you won't see the true power of this tool until we start using it.
+
+## Installation and Adding Credentials to Git
+
+To install, run the following command on:
+
+**Windows (using Chocolatey Package Manager)**
+
+```bash
+choco install git -params '"/GitAndUnixToolsOnPath"'
+```
+
+**Mac (using Homebrew Package Manager)**
+
+```bash
+brew install git
+```
+
+**Linux (using Aptitude Package Manager)**
+
+```bash
+sudo apt-get install git
+```
+
+Once installed, you will want to add your credentials with the following two commands.
+
+```bash
+git config --global user.name "Name"
+git config --global user.email "Email"
+```
+
+Also, set the settings related to line endings. These settings are not 100% necessary, but a good default. To learn more, you can read up with [this Stack Overflow post](https://stackoverflow.com/a/10855862/7437737). In short, depending on which OS you are running on and which utility you use to commit files, the byte character used at the end of each line may be different. It could be a legacy CR (carriage return), a LF (line feed), or CRLF. This can cause issues in a repository because it may show that all files have been modified when they have not been. Anyways... Here are the settings.
+
+```bash
+# Windows
+git config --global core.autocrlf true
+git config --global core.safecrlf true
+
+# Mac / Linux / Subsystem for Linux
+git config --global core.autocrlf input
+git config --global core.safecrlf true
+```
+
+If you want to edit these in a file, you can open up `~/.gitconfig` in a text editor. It will look something like this (notice the four lines we added).
+
+```
+[user]
+    name = Zach Gollwitzer
+    email = <your-email-here>
+[core]
+    editor = vim
+    whitespace = off
+    excludesfile = ~/.gitignore
+        autocrlf = input
+        safecrlf = true
+[advice]
+    statusuoption = false
+[color]
+    ui = true
+[push]
+```
+
+The last thing you might want to do if you are setting up Git on a personal computer is authenticate with Github (assuming you are using Github as a source control host). This will eliminate the need to type in your username and password every time you want to push or pull from a remote repository. There is the option to add your Git password to your computer's credential store, but I am not showing that method due to the fact that you password is stored unencrypted.
+
+First, check if you already have an SSH key on your computer named "id_rsa" (this is the one that Github accepts). To do this, run the following command.
+
+```bash
+ls -la ~/.ssh | grep 'id_rsa'
+```
+
+If this command returns two entries or more (id_rsa and id_rsa.pub), then you **do not** need to create a new key. If it does not return anything, then generate a new SSH key. If you are on Windows, you will need to do this with Putty. Otherwise, generate it with the following command.
+
+```bash
+cd ~ && ssh-keygen -t RSA
+```
+
+Once you have this key, login to Github and do the following.
+
+1. Click on your Profile Settings
+2. Click "SSH and GPG Keys" on the left-hand tab
+3. Click "New SSH Key"
+4. Give the key a unique name (I call mine "personal-pc")
+5. Go back to the terminal, and print out the _public_ version of your key. If you followed my instructions and called it "github", then you should have two keys saved in the `~/.ssh` folder--`id_rsa` and `id_rsa.pub`. You want to copy the contents of `id_rsa.pub`. Paste that key into the required field in your Github account.
+
+At this point, Github has a record of the computer you are working from. The last step is to make sure that your "remote origin" (more on this later) is correct for your local repository. In other words, when you go to a repository, there should be two options in the "Clone or download" field:
+
+1. git@github.com:\<username\>/\<repository-name\>.git
+2. https://github.com/\<username\>/\<repository-name>.git
+
+To avoid typing in your password for every push/pull to and from the repo, you will need to use **#1**. If this does not make sense yet, just keep reading and come back to this section when it does.
+
+## Barebones Basics
+
+If you already know the basic Git terms and how to commit, push, and pull, then you can skip down to the section named [A Simple, Effective Git Workflow](#A Simple, Effective Git Workflow). If you are completely new to Git, this section will teach you everything you need to know to successfully use Git.
+
+1. **Source Code** - this is a fancy term for "all the code that belongs to a project in its original state"
+2. **Repository** - A "repo" is another word for a bunch of source code.
+3. **Branch** - An essential concept of Git in general. Each repository can have multiple branches. Each branch can have unique source code.
+4. **Remote** - this word could mean a lot of things, but in the context of Git, it refers to the version of the repo that is sitting on a server somewhere (in most cases, it refers to the version of a repo which lives on Github's servers).
+5. **Local** - this word could also mean a lot of things. It refers to the version of the repo that is sitting directly in front of you on _your physical machine_. It is literally the code that is written to the disk on the computer sitting in front of you. One caveat to this is if you are running Git from a virtual machine. In that case, your repo is being stored on a _remote_ virtual machine _and_ a remote server, but this does not really matter. Just think of the "remote" as "Github" and "local" as "my computer".
+6. **Commit** - This will make more sense in a moment, but it is the action of "saving" your changes with a "receipt of save". This is different from saving a document to your computer because once you save that document, you cannot go back to the previous version before the save unless you had made another copy of the document. In Git, you _can_ go back to the previous version of the save, which is referred to as "reverting to the previous commit".
+7. **Push** - Once you have "saved" (committed) at least one time, you can push those changes to your remote repo.
+8. **Pull** - This means that you are retrieving new changes from your remote repository and updating them in your local version of the repo. You will see why this is useful when we start talking about multi-contributor code projects.
+9. **Clone** - This means you are creating a "copy" of an entire repository. There can be an unlimited number of repo copies stored on an unlimited number of local machines that all push their changes up to the remote repo (i.e. Github).
+10. **Origin** - This refers to the HTTP URL or SSH identifier for a specific remote repository and is how we push/pull to and from our local/remote repos.
+
+To better understand all of these terms, we are going to create a brand-new repository on Github. Be sure to refer to the definitions above throughout.
+
+To do this, either sign in to your account or create a new account (it's free forever). Once you have created an account, click on the + icon in the top right corner of your screen and select "New repository". You will be taken to the following screen:
+
+![](/images/2020/old-posts/create-repo.PNG)
+
+For the purposes of our tutorial, do not click the "Initialize this repository with a README". We will manually do this. Click "Create Repository". You will be taken to the setup screen.
+
+![](/images/2020/old-posts/setup-repo.PNG)
+
+When you first create a repo, you are shown four different options for setting it up, but really, there are only two methods to setup your repo.
+
+1. Clone it
+2. Manually add the remote origin URL (or SSH in our case)
+
+We will go through both processes. Remember, you can have _multiple copies_ of a single remote repository. Open your terminal, navigate to whatever directory you want to put this example repository in, and type the following command (replacing the appropriate information). Make sure you select the SSH version of the link to take advantage of what we setup earlier in this tutorial:
+
+```bash
+git clone git@github.com:zachgoll/basic-git-tutorial.git
+cd basic-git-tutorial
+```
+
+This will create a new folder on your computer called `basic-git-tutorial`. This folder has no files in it yet, but it does have a folder called `.git` which you can see by typing `ls -la`. This folder will keep track of all your commits, branches, etc. as we add them. Since we cloned the repo, the remote origin will already be setup, and we can check this by typing the following command.
+
+```bash
+git remote -v
+
+# origin	git@github.com:zachgoll/basic-git-tutorial.git (fetch)
+# origin	git@github.com:zachgoll/basic-git-tutorial.git (push)
+```
+
+You should see two URLs or SSH URLs which represent the path to your remote repo. We can also set this up manually with the second method.
+
+```bash
+# Create a new directory for your repo
+mkdir git-tutorial-manual
+
+# Enter the new directory
+cd git-tutorial-manual
+
+# Initialize your Git repository
+git init
+
+# Setup the remote origin
+git remote add origin git@github.com:zachgoll/basic-git-tutorial.git
+```
+
+Following the above steps will get you to the same spot as after cloning the repository. You can confirm by running the `git remote -v` command and making sure you have this setup correctly. Now that we have the repository setup, we will create a couple folders and files to work with.
+
+```touch
+mkdir source-code
+touch source-code/index.html
+touch README.md
+```
+
+In the `index.html` file, put a simple HTML document.
+
+```html
+<!-- index.html -->
+<html>
+  <head>
+    <title>Basic Webpage</title>
+  </head>
+  <body>
+    <h1>Hello World</h1>
+  </body>
+</html>
+```
+
+In the `README.md`, add any text you want. Now, we are going to "stage" these files for a commit. You can either add them individually, or all at once.
+
+```bash
+# Method 1: Add each file individually
+git add source-code/index.html
+git add README.md
+
+# Method 2: Add all files in current directory
+git add .
+```
+
+Now, run the following command:
+
+```bash
+git status
+```
+
+This should output the following:
+
+```
+On branch master
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+
+	new file:   README.md
+	new file:   source-code/index.html
+```
+
+Now, we will "commit" the files. Once we commit the files, the current state of them will forever be stored in this Git repository.
+
+```bash
+git commit -m "Add files"
+```
+
+```
+[master (root-commit) 7c076fa] Add files
+ 2 files changed, 10 insertions(+)
+ create mode 100644 README.md
+ create mode 100644 source-code/index.html
+```
+
+The last thing that we must do is push the committed changes "upstream" to the remote repository. We specify that we want to push the changes to the `master` branch (more on branching later).
+
+```bash
+git push origin master
+```
+
+Now let's say that you make some changes to your repository on Github (i.e. you are making changes to your remote repository, not your local repository). Below are screenshots of editing the `README.md` file and committing the changes.
+
+![](/images/2020/old-posts/edit-remote.png)
+
+![](/images/2020/old-posts/edit-remote-2.png)
+
+Once I make this commit, the remote repository (Github) is going to be _ahead_ of my local repository. To avoid conflicts, before I do any more work on my local repository, I need to "pull down", or "push downstream" the changes.
+
+```bash
+git pull origin master
+```
+
+```
+remote: Enumerating objects: 5, done.
+remote: Counting objects: 100% (5/5), done.
+remote: Compressing objects: 100% (3/3), done.
+remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+Unpacking objects: 100% (3/3), done.
+From github.com:zachgoll/basic-git-tutorial
+ * branch            master     -> FETCH_HEAD
+   29d0b59..91b8897  master     -> origin/master
+Updating 29d0b59..91b8897
+Fast-forward
+ README.md | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+```
+
+The output of the `git pull` command shows that 1 file called `README.md` was change, and we made 14 line insertions and 1 line deletion. Now, our local and remote repos are perfectly synced up!
+
+From here, you will continue to go through this process indefinitely.
+
+1. Make changes
+2. Stage changes (`git add`)
+3. Commit changes (`git commit`)
+4. Push changes (`git push`)
+5. Pull changes if necessary (`git pull`)
+6. Repeat
+
+For a more advanced and realistic workflow, continue reading.
+
+## Github vs. Gitlab vs. Bitbucket vs. Local
+
+I won't spend your precious time wasting away on this question, but thought it was necessary to clarify that Github, Gitlab, Bitbucket and others are simply "hosting" platforms for the Git source control tool. In other words, they run the computers that store your code remotely.
+
+Git is an open source software, so you could also setup your own Git host on an AWS, Azure, DigitalOcean, etc. server and it would work the same as with Github. If you are savvy enough, this is a great way to save some money when you need to build software with your team privately (most of these hosting services charge for private repos).
+
+## A Simple, Effective Git Workflow
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/BF2OHMM86Ik" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+The purpose of this tutorial is to provide a simple, systematic workflow that a single developer (or small team) can use to develop production-ready software. If you are working on a larger project with a complex codebase, this method will provide you with a general understanding of how to contribute, but will not be entirely sufficient. Some repositories will utilize 5+ different branches to develop software including branches for features, hotfixes, a main development branch, release branches, and even Git submodules within the project. We do not have the time or reason to get that complex, and therefore the method I will show you includes a workflow with only 3 branches. You can see it below, but I suggest opening it and printing it out for reference.
+
+![](/images/2020/old-posts/github-workflow-diagram.jpg)
+
+In this workflow, we have three branches:
+
+1. Master - This branch will have _production_ code only. In other words, anything you push to the master branch better be free of bugs.
+2. Develop - This branch will be the "live" version of your software. If you are working on a team, this is the branch that developers will push to on a regular basis with new features.
+3. Feature - This technically is not a single branch because there can be tens, or even hundreds of outstanding feature branches at a given moment depending on the team size. Each feature branch represents a new chunk of code that will eventually be tested and added to the codebase.
+
+The basic steps in this flow are as follows:
+
+1. Create a new branch from the develop branch and call it something like "feature-<describe feature here, or give it an ID>".
+2. Work on your feature, committing to this feature branch
+3. Test your feature
+4. Merge your feature into the develop branch
+5. Delete your feature branch
+6. Once enough features have been added, prepare your release
+7. When the release is tested and prepped, merge the develop branch into master
+8. Tag the master branch commit to the correct version (i.e. v1.1)
+9. Repeat
+
+This will make more sense if we actually go through the steps of creating a repository, writing some "production" code (it will be far from it, but for the purpose of the example it will work), and releasing that code. Along the way, you will learn the following topics:
+
+- Creating branches
+- Switching between branches
+- Merging two branches
+- Understanding upstream vs. downstream
+- Tagging commits (for releases on master branch)
+
+### Setting up the Repo
+
+Let's first setup a new repo, add some files, commit the files, and push them "upstream" to our remote repo. If anything here gets confusing, go back and the basics section of this post.
+
+```bash
+git init
+git remote add origin git@github.com:zachgoll/basic-git-workflow.git
+
+touch index.html
+echo "<html><head><title>Simple Webpage</title></head><body><h1>Hello World</h1></body></html>" > index.html
+
+touch README.md
+echo "This repository will show you a basic git workflow for individuals or small teams" > README.md
+
+git add index.html README.md
+
+git commit -m "First commit"
+
+git push origin master
+```
+
+Let's now add a License to this repository. I will add an MIT license, which is common for open source projects.
+
+```bash
+touch LICENSE
+```
+
+Copy the following text into `LICENSE`.
+
+```
+Copyright 2019 Zach Gollwitzer
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
+
+Stage, commit, and push "upstream" to your remote repo.
+
+```bash
+git add LICENSE
+git commit -m "Add license to project"
+git push origin master
+```
+
+### Tagging the first Production Release
+
+After running those commands, we have the first version of our software added to the master branch of our repository. I know it is extremely simple, but we will just go with it and call it our "production web app". Since we committed to the master branch, we will need to tag this first commit as "v1.0". First, we will see what tags already exist in our repository:
+
+```bash
+git tag
+```
+
+This should not return anything because we have not tagged anything yet. To add a tag, we will run the following command.
+
+```bash
+git tag -a v1.0 -m "Added first tag"
+```
+
+The `-a` stands for an "annotated tag", and `v1.0` is the actual tag. With an annotated tag, we need to add a message to our tag. We can then see the details of this tag by typing:
+
+```bash
+git show v1.0
+```
+
+This will show who made the tag, the date of the tag, and the message of the tag along with other information. Let's push this up to Github.
+
+```bash
+git push --tags origin master
+```
+
+Since we haven't added anything since our last push, we must use the `--tags` flag to only push the new tag. This worked easily because we were on both the branch and the commit that we wanted to tag. We will come back to this topic later with a bit more complicated example.
+
+### Creating and working with branches
+
+Now that we have a production release, we cannot continue to commit code to the master branch. Code needs to be tested and reviewed before releasing to production, so it is best that we do all of our development on a new branch. Let's first look at what branches are already in our repository.
+
+```bash
+git branch --list
+
+# * master
+```
+
+All you should see is the master branch. To create a "develop" branch with the exact code that is in the master branch already, we will run the following command.
+
+```bash
+git branch develop
+
+# Now run the list command again
+git branch --list
+
+# develop, * master
+```
+
+At this point, we have two branches (master, develop) and two commits. Before things start getting convoluted in our heads, let's take a moment to visualize what is going on. Type the following command to list out all the commits we have done.
+
+```bash
+git log
+
+# Could also run
+git log --pretty=oneline
+```
+
+This will print out the following:
+
+```
+Author: Zach Gollwitzer <email hidden for confidentiality>
+Date:   Mon Mar 11 17:12:28 2019 +0000
+
+    Add license to project
+
+commit 7087a7eeab6803e957c3d9468e9f7a17d5043a05
+Author: Zach Gollwitzer <email hidden for confidentiality>
+Date:   Mon Mar 11 17:11:49 2019 +0000
+
+    First commit
+```
+
+The alternative "pretty" command will output:
+
+```
+ccb5d8e8c35364f2c98fb9f380404697973e11e8 (HEAD -> master, tag: v1.0, origin/master, develop) Add license to project
+7087a7eeab6803e957c3d9468e9f7a17d5043a05 First commit
+```
+
+Notice how in the second version of the command, we see `(HEAD -> master, tag: v1.0, origin/master, develop)`. What does all this mean? To answer that question, we need to understand what branches are and how they work. Currently, our Git repository looks like this:
+
+![](/images/2020/old-posts/git-branching-1.png)
+
+At its essence, Git is a tool that uses pointers to track "snapshots" of files. In our diagram, the arrows represent where each pointer points to. The two commits are abbreviated to just their first six characters. You can see that the latest commit points to the previous commit, and both the develop and master branches both point to the most recent commit. But what is the `HEAD` box represent?
+
+Understanding what the `HEAD` pointer does is paramount to understanding Git. The `HEAD` pointer will _always_ be pointing at something, and whatever it is pointing at is the snapshot that you are currently working in. In this case, we see that `HEAD` is pointing at `master` which is pointing at the most recent commit. Yes, we created the `develop` branch just a moment ago, but `HEAD` is still pointing at `master`, which means that any changes that we stage and commit will be on the `master` branch. Let's switch to the develop branch because we do not want to make changes to our "production" release v1.0.
+
+```bash
+git checkout develop
+```
+
+![](/images/2020/old-posts/git-branching-2.png)
+
+As you can see in the diagram, this command has told the `HEAD` pointer to point at this new `develop` branch. Now, anything we change in the repository will be updated on this develop branch. Let's go ahead and update our HTML file with some CSS.
+
+```html
+<html>
+  <head>
+    <title>Simple Webpage</title>
+    <style>
+      body {
+        font-family: monospace;
+        color: navy;
+        padding: 40px;
+      }
+
+      .header {
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="header">Hello World</h1>
+    <br />
+    <p>Welcome to the Git Tutorial</p>
+  </body>
+</html>
+```
+
+Now, stage, commit, and push these changes.
+
+```bash
+git add index.html
+git commit -m "Add CSS to HTML"
+git push origin develop
+```
+
+Notice how this time, we are pushing to the develop branch. We now have a repository that looks like the following:
+
+![](/images/2020/old-posts/git-branching-3.png)
+
+The `master` branch is now an entire commit _behind_ the `develop` branch, and if we wanted to do a second "release" to version 1.1, we would need to "fast forward" the master branch pointer to point at this new commit.
+
+Let's make a couple more commits to our develop branch in preparation for our second production release. First, we will break out the HTML and CSS into separate files and commit that change. Edit the `index.html` file to look like the following:
+
+```html
+<html>
+  <head>
+    <title>Simple Webpage</title>
+    <link rel="stylesheet" href="./style.css" type="text/css" />
+  </head>
+  <body>
+    <h1 class="header">Hello World</h1>
+    <br />
+    <p>Welcome to the Git Tutorial</p>
+  </body>
+</html>
+```
+
+And create a new file called `style.css` and add the following to it.
+
+```css
+body {
+  font-family: monospace;
+  color: navy;
+  padding: 40px;
+}
+
+.header {
+  font-weight: 500;
+}
+```
+
+Finally, stage, commit, and push upstream.
+
+```bash
+git add index.html style.css
+git commit -m "Split HTML and CSS into two files"
+git push origin develop
+```
+
+Our repository now looks like this:
+
+![](/images/2020/old-posts/git-branching-5.png)
+
+Before we make any more changes to the `develop` branch, let's create a feature branch called `feat1` to work on adding some javascript to our HTML document.
+
+First, confirm that you are on the `develop` branch:
+
+```bash
+git branch
+
+# * develop
+#  master
+```
+
+Once you have confirmed that, create your feature branch _from_ the `develop` branch.
+
+```bash
+# Create the branch
+git branch feat1
+
+# Set the HEAD pointer to point at this branch
+git checkout feat1
+```
+
+Usually we would only be creating a new feature branch under the following circumstances:
+
+1. We are working on a team and multiple team members are simultaneously working on different features that are all based on the code from the `develop` branch
+2. We are working alone and we know that we will need to make changes to the develop branch before the feature is done.
+
+In this case, we will assume that this feature is super complex and will take us days to finish. Let's do our first "day" of work by creating a javascript file and adding it to the HTML.
+
+Edit `index.html`.
+
+```html
+<html>
+  <head>
+    <title>Simple Webpage</title>
+    <link rel="stylesheet" href="./style.css" type="text/css" />
+  </head>
+  <body>
+    <h1 class="header hidden" id="header-id">Hello World</h1>
+    <br />
+    <p>Welcome to the Git Tutorial</p>
+    <script src="./script.js"></script>
+  </body>
+</html>
+```
+
+Create `script.js` and add the following:
+
+```javascript
+// Wait for window to load
+document.addEventListener("DOMContentLoaded", function (event) {
+  // Get reference to header object
+  let myHeader = document.getElementById("header-id");
+
+  // Wait 3 seconds, then display the header
+  setTimeout(() => {
+    myHeader.classList.remove("hidden");
+  }, 3000);
+});
+```
+
+Finally, update the CSS file `style.css` to have a `hidden` class.
+
+```css
+body {
+  font-family: monospace;
+  color: navy;
+  padding: 40px;
+}
+
+.header {
+  font-weight: 500;
+}
+
+.hidden {
+  display: none;
+}
+```
+
+You are now ready to make your first commit to the `feat1` branch.
+
+```bash
+git add index.html style.css script.js
+```
+
+Since we added several files, let's check to see what is in our staging area with the following command.
+
+```bash
+git status
+```
+
+```
+On branch feat1
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        modified:   index.html
+        new file:   script.js
+        modified:   style.css
+```
+
+It tells us that we are on branch `feat1` and we have 3 files in the staging area waiting to be committed. Now, let's commit and push upstream.
+
+```bash
+git commit -m "Add javascript to code"
+git push origin feat1
+```
+
+We shut the computer down for the day and pat ourselves on the back for writing some super super complex javascript. The next day, we realize that there is no `.gitignore` in our repository! A `.gitignore` file stored at the root of your repository will tell Git to ignore some files. Maybe you created a little `todo-list.txt` file in your repository, but you do not want to track this in your repo.
+
+Although an unlikely story, let's create that todo list and `.gitignore` and commit the `.gitignore` to our `develop` branch.
+
+```bash
+git checkout develop
+
+touch .gitignore
+
+# Tells Git to ignore this todo list file
+echo "todo-list.txt" > .gitignore
+
+# Create the untracked file
+touch todo-list.txt
+echo "Task #1 - Learn Git" > todo-list.txt
+
+# Add all files to staging
+git add .
+
+# See what is in staging
+git status
+```
+
+You will notice when you run `git status` that the only file that Git has recognized is the `.gitignore`. It did not recognize the new `todo-list.txt` file that we put there. Let's commit and push upstream.
+
+```bash
+git commit -m "Add .gitignore file"
+git push origin develop
+```
+
+### Merging Branches
+
+Let's do a little recap here before moving forward. Since last time we looked at our repo we have committed some javascript to our `feat1` branch and a `.gitignore` file to the `develop` branch. This means that we now have two separate branches that have a parent equal to our latest commit. Run the following command:
+
+```bash
+git log --oneline --decorate --graph --all
+```
+
+This will give you the following output for our repository (in color on your screen).
+
+```
+* 547a448 (HEAD -> develop, origin/develop) Add .gitignore file
+| * 69bdc19 (origin/feat1, feat1) Add javascript to code
+|/
+* a4879ce Split HTML and CSS into two files
+* 682f2aa Add CSS to HTML
+* ccb5d8e (tag: v1.0, origin/master, master) Add license to project
+* 7087a7e First commit
+```
+
+You can already start to visualize what your repo looks like using this log command, but here is a cleaner view for us to visualize it with:
+
+![](/images/2020/old-posts/git-branching-6.png)
+
+I know this diagram is getting large and difficult to comprehend, so let's take it piece by piece.
+
+1. First, direct your attention to the `HEAD` box. Since we are currently on the `develop` branch, our `HEAD` pointer is pointing at that branch.
+2. Next, look at the three branches (master, develop, feat1). Obviously, `master` is way behind, and if we ran `git checkout master` to switch back to it, we would see that many of the files we have created (CSS, javascript, .gitignore) would be gone. The `feat1` and `develop` branches on the other hand are both the same length, but with _different content_. If we look at the `develop` branch files, we will see a `.gitignore` file, but no javascript code. If we look at the `feat1` branch files, we will see javascript code, but no `.gitignore` file. What we have is a complete divergence.
+3. Last, look at the individual commit boxes. When you take out all the noise, your project is no more than a series of commits.
+
+![](/images/2020/old-posts/git-branching-7.png)
+
+At some point, those two diverging commits at the end will need to join, or "merge" together into one. But how do we choose which one merges into which?
+
+If you remember, the `develop` branch is the main working branch, so we will want to merge our `feat1` branch back into `develop`. Since we do not have any conflicts between these two commits (i.e. the edited files are completely different in each commit), we can merge `feat1` back into `develop` fairly easily. First, run the `git branch` command to make sure that you are on the `develop` branch. Since we are merging _into_ the `develop` branch, we need to be on it.
+
+```bash
+git branch
+
+# * develop
+#  feat1
+#  master
+```
+
+Once we are sure we are on the `develop` branch, we can merge `feat1` into it.
+
+```bash
+# Merge feat1 branch into develop branch
+git merge feat1
+```
+
+You will be prompted with a message. Just type `:wq` to save and quit the message. After doing this, you have merged `feat1` branch into `develop`! You can confirm this by typing:
+
+```bash
+git branch --merged
+```
+
+You should see `master` in this list because _everything_ that is in `master` is also in `develop`. You will see `feat1` there because after our merge, _everything_ in `feat1` is now also in `develop`. Since this is the case, we can delete the `feat1` branch with the following command.
+
+```bash
+git branch -d feat1
+
+# Deleted branch feat1 (was 69bdc19).
+```
+
+Finally, type that fancy logging command to see what our repo looks like again.
+
+```bash
+git log --oneline --decorate --graph --all
+```
+
+You should see the following:
+
+```
+*   2f7765d (HEAD -> develop) Merge branch 'feat1' into develop
+|\
+| * 69bdc19 (origin/feat1) Add javascript to code
+* | 547a448 (origin/develop) Add .gitignore file
+|/
+* a4879ce Split HTML and CSS into two files
+* 682f2aa Add CSS to HTML
+* ccb5d8e (tag: v1.0, origin/master, master) Add license to project
+* 7087a7e First commit
+```
+
+You can now see that `HEAD` is pointing at the `develop` branch, and we have eliminated the divergence! Here is our updated diagram.
+
+![](/images/2020/old-posts/git-branching-8.png)
+
+The `feat1` branch is gone, and `HEAD` is now pointed at the most recent commit on the `develop` branch. I think at this point, we are ready to do our second release!
+
+Let's merge our `develop` branch into `master`, and then tag the latest commit on `master`. If you are developing a complex project, this is the point where you would want to "bump" your version to the next version.
+
+```bash
+# Switch to master branch
+git checkout master
+
+# Merge develop into master
+git merge develop
+```
+
+Here is the output I got after the merge command:
+
+```
+Updating ccb5d8e..2f7765d
+Fast-forward
+ .gitignore |  1 +
+ index.html | 13 ++++++++++++-
+ script.js  | 11 +++++++++++
+ style.css  | 13 +++++++++++++
+ 4 files changed, 37 insertions(+), 1 deletion(-)
+ create mode 100644 .gitignore
+ create mode 100644 script.js
+ create mode 100644 style.css
+```
+
+Notice how it says "Fast-forward" at the top and says that it is updating `ccb5d8e` to `2f7765d`. This just means that Git has taken the `master` branch pointer and "fast forwarded" it from commit `ccb5d8e` to commit `2f7765d`, which is our latest commit. Let's now tag the release.
+
+```bash
+git tag -a v1.1 -m "Added second release tag"
+```
+
+Since `HEAD` is pointed at `master` which is pointed at our latest commit, the tag will go on the latest commit on the master branch. And finally, our diagram looks like this:
+
+![](/images/2020/old-posts/git-branching-9.png)
+
+You are now ready to start working on the `develop` branch again for your next software release!
+
+```bash
+git checkout develop
+
+# Do lots of work!
+```
+
+## Common Git Problems and Advanced Git
+
+In this section, I will be walking through some of the most common problems you might run into with this workflow and other advanced topics. Since doing everything in the terminal can get tedious at times, I will also be introducing some of Visual Studio Code's source control features that might help you with tricky problems. That said, I will show the terminal version of each feature that VSCode covers so that you can be fully sufficient just in the terminal!
+
+Everything that we covered so far will get you started assuming _perfect conditions_. Everything I have covered assumes that you and/or your team have perfectly coordinated, kept your branches clean, kept track of the state of the repository, etc. This is far from realistic.
+
+While working with Git, you _will_ run into problems, and half the battle is knowing how to solve them without either losing your work or completely screwing up your repository to the point where you just have to re-clone it on your computer and start over. Sometimes, a clean slate is the only option, but usually, you get to the point of no return _because_ your understanding of Git is lacking and you end up trying a bunch of things that cause more damage.
+
+This section should really be called "Git damage control" because it is your troubleshooting guide for the Git workflow I introduced above. In each sub-section, I will introduce a new problematic scenario based on the repository we already created, and then show the solution how to fix it.
+
+### Merge Conflicts between Local and Remote Repos
+
+A merge conflict happens when you try to _combine_ two or more snapshots of code into a single commit, but there exists a point in each snapshot that conflicts.
+
+One of the most common ways that conflicts are created is when the upstream repository (i.e. the remote repository that lives on Github) has been updated by one or more team members and you try to pull down changes to your local repository.
+
+I am now going to create a merge conflict by editing the `README.md` with a test Github user and as my user locally.
+
+First, my test user "testuser-for-git-tutorial" will make a change to the `README`.
+
+![](/images/2020/old-posts/create-merge-conflict.jpg)
+
+![](/images/2020/old-posts/create-merge-conflict-2.jpg)
+
+Now, I will edit the `README.md` file on my local repository.
+
+At this point, my local repository has the following contents in `README.md`.
+
+```
+This repository will show you a basic git workflow for individuals or small teams
+
+A local edit that will conflict with the upstream repository.
+```
+
+And the remote repository has the following contents.
+
+```
+This repository will show you a basic git workflow for individuals or small teams
+
+This line was added by another contributor to the project and will create a merge conflict.
+```
+
+Clearly, these two versions of the same file do not match, and when we try to run the command `git pull` in our local repository, there will be a conflict. Let's give it a try and see what happens.
+
+```bash
+git pull origin master
+```
+
+The output says:
+
+```
+remote: Enumerating objects: 5, done.
+remote: Counting objects: 100% (5/5), done.
+remote: Compressing objects: 100% (3/3), done.
+remote: Total 3 (delta 2), reused 0 (delta 0), pack-reused 0
+Unpacking objects: 100% (3/3), done.
+From https://github.com/zachgoll/basic-git-workflow
+ * branch            master     -> FETCH_HEAD
+   2bb9989..a589f47  master     -> origin/master
+Updating 2bb9989..a589f47
+error: Your local changes to the following files would be overwritten by merge:
+        README.md
+Please commit your changes or stash them before you merge.
+Aborting
+```
+
+It says that our local changes will be overwritten by the merge. We have three options here:
+
+1. We could commit your local changes, and then the `git pull` will just overwrite them in a new commit. In this case, the most recent version will be the one that my test user has edited.
+2. If we do not care about our local changes and just want to get the most recent version from the remote repository, we can run the `git stash` command and then the `git pull` command again. This will "stash" the conflicting local changes for later retrieval (run `git stash list` and `git stash apply` to get those files back).
+3. We could completely reset the local repository to its previous state with the command `git reset HEAD --hard`
+
+I will use the second option because it is usually the safest and most practical. In my local repository, I will run the following.
+
+```bash
+git stash
+git pull origin master
+```
+
+After running this, you will see contents edited by the test user:
+
+```
+This repository will show you a basic git workflow for individuals or small teams
+
+This line was added by another contributor to the project and will create a merge conflict.
+```
+
+But what if we don't want this? What if we want to replace this with our local changes? Well, we can get the contents from our `git stash` command back. Run the following command.
+
+```bash
+git stash list
+
+# stash@{0}: WIP on master: 2bb9989 Create intentional merge conflict
+```
+
+You will see that `stash@{0}` contains the local changes that we want to restore. To restore those changes, run the following command.
+
+```bash
+git stash apply stash@{0}
+```
+
+### Merge Conflicts in local repo
+
+It now tells us that there is a local merge conflict. This is the same message you might receive if you are trying to merge one branch into another that have conflicting snapshots. When Git detects a merge conflict among your local repository, it will place some additional lines in the conflicting file. At this moment, `README.md` has the following contents as the result of our merge conflict.
+
+```
+This repository will show you a basic git workflow for individuals or small teams
+
+<<<<<<< Updated upstream
+This line was added by another contributor to the project and will create a merge conflict.
+=======
+A local edit that will conflict with the upstream repository.
+>>>>>>> Stashed changes
+```
+
+I know it looks intimidating, but all this is doing is telling us what the _incoming_ change is (the stashed file), and what the existing file looks like. Since we want to replace the current contents with the stashed changes, we can just open the file and delete everything but the stashed changes (i.e. lines 3, 4, 5, and 7).
+
+Finally, we must stage and commit the local changes.
+
+```bash
+git add README.md
+git commit -m "Merge stashed changes back into README"
+git push origin master
+```
+
+Okay, okay. I know this example might have seemed pointless. We could have easily just copy and pasted the line we wanted back into `README.md` without going through the merge conflict resolution. But through this simple example, we learned how to fix remote/local conflicts with stashing, how to restore a stash, and how to fix a local merge conflict all in one!
+
+### Fixing Merge Conflicts with VSCode
+
+Let's create a new branch, make some edits that conflict with the master branch, and try to merge this new branch into the master branch.
+
+```bash
+git branch merge-conflict-branch
+git checkout merge-conflict-branch
+```
+
+Now that you are on the new branch, edit `README.md` again to say:
+
+```
+This repository will show you a basic git workflow for individuals or small teams
+
+I made this change from the `merge-conflict-branch`.
+```
+
+Notice how line 3 is once again conflicting with what is on our `master` branch. Go ahead and commit those changes on the `merge-conflict-branch`, and switch back to the `master` branch.
+
+```bash
+git add README.md
+git commit -m "Created another merge conflict from merge-conflict-branch"
+
+# Switch back to master
+git checkout master
+```
+
+Before merging, lets make a small edit to `README.md` from our `master` branch to make the conflict. Edit the file to say:
+
+```
+This repository will show you a basic git workflow for individuals or small teams
+
+Some new text that will create a merge conflict.
+```
+
+Stage and commit these changes, and then try to merge the new branch into `master`.
+
+```bash
+git add README.md
+git commit -m "create merge conflict"
+
+# Merge into master
+git merge merge-conflict-branch
+```
+
+Again, we will get an error.
+
+```
+Auto-merging README.md
+CONFLICT (content): Merge conflict in README.md
+Automatic merge failed; fix conflicts and then commit the result.
+```
+
+But this time, we will fix it using VSCode's built in source control tools. Open up your repository in VSCode and click on the source control tab in the sidebar.
+
+![](/images/2020/old-posts/merge-vscode-1.jpg)
+
+Open the merge conflict file (README.md).
+
+![](/images/2020/old-posts/merge-vscode-2.jpg)
+
+Accept the incoming change.
+
+![](/images/2020/old-posts/merge-vscode-3.jpg)
+
+Save the file and click the plus icon on the file to stage the changes (i.e. the `git add README.md` command).
+
+![](/images/2020/old-posts/merge-vscode-4.jpg)
+
+Click the checkmark to commit the staged changes and add a commit message.
+
+![](/images/2020/old-posts/merge-vscode-5.jpg)
+
+You have now fixed your merge conflict and committed your changes all within VSCode! This may not seem any easier than what we did before, but wait until you have tens, if not hundreds of merge conflicts to fix on a single merge! This tool will come in handy then!
+
+### Reverting, Resetting, and Checking Out
+
+The `git reset`, `git revert`, and `git checkout` commands are similar and therefore confuse lots of users (including myself for the longest time). I really like the comment in [this stackoverflow post on the differences](https://stackoverflow.com/a/8358039/7437737):
+
+"Candlesticks, lead pipes, daggers, and rope can all be used to murder people, but that doesn't mean any of those things are particularly similar."
+
+If you try to learn ALL the capabilities of these commands, it will take a long time and probably create lots of confusion. In this section, we will try and cover the _essentials_ of each. Once you have mastered these essentials, you can start using them for more complex operations.
+
+#### The 3 Trees
+
+To understand any of these commands, we need a basic knowledge of what Git documentation calls the "3 Trees". These include:
+
+1. HEAD
+2. Index
+3. Working
+
+I do not find these three names easy to remember, so we will go with the following:
+
+1. Repo
+2. Staged
+3. Unstaged
+
+In other words, the `HEAD` tree effectively refers to the current state of the repository, the Index tree refers to anything in the staging area (from using the `git add` command), and the Working tree refers to anything that you have changed on your computer but have not yet added (`git add`) to the staging area. There are effectively 4 states that your workflow can be in at any given moment (yes, there are more combinations, but far too unlikely for me to cover):
+
+1. Repo = Staged = Unstaged
+2. Repo = Staged, but unstaged does not equal either
+3. Staged = Unstaged, but repo does not equal either
+4. All three are different
+
+Let's create each scenario in our repo. First, make sure you are in state #1 by typing `git status`. If you are, you will see a message that says
+
+```
+On branch master
+nothing to commit, working tree clean
+```
+
+Let's make a new file called `three-trees.txt`.
+
+```bash
+touch three-trees.txt
+echo "The three trees of Git are simpler than you think!" > three-trees.txt
+```
+
+You are now in state #2, and should see the following when typing `git status`.
+
+```
+On branch master
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        three-trees.txt
+
+nothing added to commit but untracked files present (use "git add" to track)
+```
+
+Let's add this to the staging area.
+
+```bash
+git add three-trees.txt
+```
+
+You are now in state #3, and your `git status` should show:
+
+```
+On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        new file:   three-trees.txt
+```
+
+If you were to commit the file right now, you would be taken back to state #1 where all three trees are equal (repo=staged=unstaged). Let's create one more file to enter state #4.
+
+```bash
+touch additional-file.txt
+echo "Random text contents" > additional-file.txt
+```
+
+Your `git status` will now show:
+
+```
+On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        new file:   three-trees.txt
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        additional-file.txt
+```
+
+You are in state #4, which means that the repo does not equal the staged which does not equal the unstaged. Here is what is in each tree:
+
+Repo - No files
+Staged - three-trees.txt
+Unstaged - three-trees.txt and additional-file.txt
+
+Let's get back to state #1 by adding and committing.
+
+```bash
+git add additional-file.txt
+git commit -m "Create three trees tutorial section"
+```
+
+You are now back to a clean, state #1. As we move through these three commands, always be aware of which of the four states you are in because the commands will react differently to different states. When running any of these three commands, you want to be in state #1 to avoid conflicts and errors.
+
+#### Git Checkout
+
+We will start with `git checkout` because it is something that we have looked at previously. This command serves the function of modifying the view of your _unstaged_ files. With it, you can checkout an entire branch or even just a single commit. We will try both and see the implications of each.
+
+Let's first take a look at our entire repository with the following command.
+
+```bash
+git log --oneline --decorate --graph --all
+```
+
+```
+* 09dda7b (HEAD -> master) Create three trees tutorial section
+*   fa61317 (origin/master) Resolved merge conflict from VSCode
+|\
+| * d13ee52 Create merge conflict
+* | 6598c74 Add new text to README to create merge conflict
+|/
+* e9d7818 Created another merge conflict from merge-conflict-branch
+* 01bc44a Merge stashed changes back into README
+* a589f47 Create intentional merge conflict
+* 2bb9989 Create intentional merge conflict
+*   2f7765d (tag: v1.1, develop) Merge branch 'feat1' into develop
+|\
+| * 69bdc19 (origin/feat1) Add javascript to code
+* | 547a448 (origin/develop) Add .gitignore file
+|/
+* a4879ce Split HTML and CSS into two files
+* 682f2aa Add CSS to HTML
+* ccb5d8e (tag: v1.0) Add license to project
+* 7087a7e First commit
+```
+
+This represents the entire history of what I have done in my repository. For simplicity, we have been committing to our `master` branch, and therefore, the `develop` branch is going to be a few commits behind. You are already familiar with how we checkout this branch. Remember, you need to be in state #1 to do this without errors!
+
+```bash
+git checkout develop
+```
+
+At this point, we are still in state #1, but all three of our trees have changed! Go back and look at the log of our repository. With this `git checkout develop` command, we have switched the `HEAD` pointer (repo) to point at the `develop` branch, which points at commit `2f7765d`. In other words, we are still in state #1, but the contents of each tree does not include any of the latest files we have added to the `master` branch. If you run the following command, you will see the output is far shorter than when we printed it before. Notice that in this command, I have removed the `--all` flag so we are only printing the history of the `develop` branch (which refers to commits from `master` which is why the first couple commits match).
+
+```bash
+git log --oneline --decorate --graph
+```
+
+```
+*   2f7765d (HEAD -> develop, tag: v1.1) Merge branch 'feat1' into develop
+|\
+| * 69bdc19 (origin/feat1) Add javascript to code
+* | 547a448 (origin/develop) Add .gitignore file
+|/
+* a4879ce Split HTML and CSS into two files
+* 682f2aa Add CSS to HTML
+* ccb5d8e (tag: v1.0) Add license to project
+* 7087a7e First commit
+```
+
+You can see that `HEAD` (repo) is pointed at the `develop` branch on commit `2f7765d` which is the most recent commit in this branch. We could even checkout the very first commit of our repository:
+
+```bash
+git checkout 7087a7e
+```
+
+You will get the following message:
+
+```
+Note: checking out '7087a7e'.
+
+You are in 'detached HEAD' state. You can look around, make experimental
+changes and commit them, and you can discard any commits you make in this
+state without impacting any branches by performing another checkout.
+
+If you want to create a new branch to retain commits you create, you may
+do so (now or later) by using -b with the checkout command again. Example:
+
+  git checkout -b <new-branch-name>
+
+HEAD is now at 7087a7e... First commit
+```
+
+It says that we are in a "detached HEAD state" because `HEAD` no longer points at _any_ of our branches. We are still in state #1 and our position looks like this:
+
+![](/images/2020/old-posts/git-checkout-1.png)
+
+We could now create a new branch and start working from the beginning of our repository at the same time other team members are continuing their efforts at the latest commit. We have no reason to do so, so let's get back to our original place and state.
+
+```bash
+git checkout master
+```
+
+We are back where we started in state #1.
+
+#### Git Revert
+
+Take another look at our repository.
+
+```bash
+git log --oneline --decorate --graph --all
+```
+
+```
+* 09dda7b (HEAD -> master) Create three trees tutorial section
+*   fa61317 (origin/master) Resolved merge conflict from VSCode
+|\
+| * d13ee52 Create merge conflict
+* | 6598c74 Add new text to README to create merge conflict
+|/
+* e9d7818 Created another merge conflict from merge-conflict-branch
+* 01bc44a Merge stashed changes back into README
+* a589f47 Create intentional merge conflict
+* 2bb9989 Create intentional merge conflict
+*   2f7765d (tag: v1.1, develop) Merge branch 'feat1' into develop
+|\
+| * 69bdc19 (origin/feat1) Add javascript to code
+* | 547a448 (origin/develop) Add .gitignore file
+|/
+* a4879ce Split HTML and CSS into two files
+* 682f2aa Add CSS to HTML
+* ccb5d8e (tag: v1.0) Add license to project
+* 7087a7e First commit
+```
+
+We are going to do two reversions.
+
+1. Revert to the previous commit
+2. Revert our merge commit `2f7765d`
+
+The first example is the simplest version of a revert, and all it does is takes the content modified by our most recent commit (`09dda7b`), removes it, and makes a new commit to represent the repository without this commit. _This is different_ than deleting a commit because it creates a _new_ commit to represent the change. In other words, it documents the "undo" in our source control and allows us to effectively undo our undo if we want.
+
+Below is a visual (disregard the actual commit hashes as they are made up):
+
+![](/images/2020/old-posts/git-revert-1.png)
+
+Before we run the reversion, let's take a look at what our most recent commit did. We can do this by using the `git show <commit-id>` command.
+
+```bash
+git show 09dda7b
+```
+
+```
+commit 09dda7b75a1bc5d40fe6daa77fc859147d02cf03 (HEAD -> master)
+Author: Zach Gollwitzer <email protected for privacy>
+Date:   Wed Mar 13 14:36:00 2019 +0000
+
+    Create three trees tutorial section
+
+diff --git a/additional-file.txt b/additional-file.txt
+new file mode 100644
+index 0000000..f7c8b7d
+--- /dev/null
++++ b/additional-file.txt
+@@ -0,0 +1 @@
++Random text contents
+diff --git a/three-trees.txt b/three-trees.txt
+new file mode 100644
+index 0000000..e048800
+--- /dev/null
++++ b/three-trees.txt
+@@ -0,0 +1 @@
++The three trees of Git are simpler than you think!
+```
+
+Remember, we created `three-trees.txt` and `additional-file.txt`. After our reversion, we expect those files to be gone from the repo, staged, and unstaged trees. To run this reversion, type the following command.
+
+```bash
+git revert HEAD
+```
+
+The `HEAD` represents the "most recent commit". You could say `HEAD~` for "The second most recent commit" and `HEAD~~` (etc.) for the "The third most recent commit". When you run this command, you will see the following output:
+
+```
+[master 76ba921] Revert "Create three trees tutorial section"
+ 2 files changed, 2 deletions(-)
+ delete mode 100644 additional-file.txt
+ delete mode 100644 three-trees.txt
+```
+
+You can see that both of these files created by the most recent commit was deleted. You can run `ls` to see that they no longer exist in the non-staged area either. Now run the log command again to see where you are at.
+
+```bash
+git log --oneline --decorate --graph --all
+```
+
+```
+* 76ba921 (HEAD -> master) Revert "Create three trees tutorial section"
+* 09dda7b Create three trees tutorial section
+*   fa61317 (origin/master) Resolved merge conflict from VSCode
+|\
+| * d13ee52 Create merge conflict
+* | 6598c74 Add new text to README to create merge conflict
+|/
+* e9d7818 Created another merge conflict from merge-conflict-branch
+* 01bc44a Merge stashed changes back into README
+* a589f47 Create intentional merge conflict
+* 2bb9989 Create intentional merge conflict
+*   2f7765d (tag: v1.1, develop) Merge branch 'feat1' into develop
+|\
+| * 69bdc19 (origin/feat1) Add javascript to code
+* | 547a448 (origin/develop) Add .gitignore file
+|/
+* a4879ce Split HTML and CSS into two files
+* 682f2aa Add CSS to HTML
+* ccb5d8e (tag: v1.0) Add license to project
+* 7087a7e First commit
+```
+
+You'll see that an _additional_ commit has been created with the reversion. Now, run the following command.
+
+```
+git reset --hard HEAD~
+```
+
+This will DELETE everything we just did. I will explain how this command works later, but for now, just imagine that we never made the reversion in the first place.
+
+Now that we are back where we started, we can make the second type of reversion. Let's say that for some reason, we do not like the new feature we introduced from the `feat1` branch. We do not want to delete our most recent changes, but we want to remove the commit that merged our feature into the `develop` branch. If we look at the repo history, we can see that the merge commit was `2f7765d`. Let's take a look at the two commits that were combined to create the merge commit:
+
+```bash
+git show --format="%nHash: %h%nCommit Message: %s%nParent Hashes: %P" --stat-name-width=50 69bdc19 547a448
+```
+
+This command will give us nice and clean output:
+
+```
+Hash: 69bdc19
+Commit Message: Add javascript to code
+Parent Hashes: a4879ceb44e09e386f6c145cc6b0bbd81fe8d8e0
+
+ index.html |  3 ++-
+ script.js  | 11 +++++++++++
+ style.css  |  4 ++++
+ 3 files changed, 17 insertions(+), 1 deletion(-)
+
+Hash: 547a448
+Commit Message: Add .gitignore file
+Parent Hashes: a4879ceb44e09e386f6c145cc6b0bbd81fe8d8e0
+
+ .gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+```
+
+What this tells us is that the commit `69bdc19` added three files (index.html, script.js, and style.css) while commit `547a448` created the `.gitignore` file. When the two commits were merged into one, we were left with a single merge commit `2f7765d` that has all four files in it.
+
+Before we do the reversion, we need to figure out what "parent" we want to revert back to. Before you freak out and run, give me a moment to explain this rather complicated process. First, let's remember what was going on back at commit `2f7765d`. When we created this commit, we were merging the `feat1` branch _into_ the `develop` branch.
+
+For our revert command, we need to specify _which_ of these two divergent branches we want to use as the "parent". In other words, if we choose `feat1` as the parent (commit `69bdc19`), our new commit will incorporate the three files (html, css, js) but lack the `.gitignore` file. If we choose `develop` as the parent (commit `547a448`), our new revert commit will have the `.gitignore` file, but not the three other files.
+
+But how do we know which parent is which? To find out, we can run the same `git show` command as above.
+
+```
+Hash: 2f7765d
+Commit Message: Merge branch 'feat1' into develop
+Parent Hashes: 547a4488bf61da4af4e5b728310ff5694ce381dc 69bdc19075a4f96db92118478255a638f0ce6214
+
+ index.html |  3 ++-
+ script.js  | 11 +++++++++++
+ style.css  |  4 ++++
+ 3 files changed, 17 insertions(+), 1 deletion(-)
+```
+
+But what about the `gitignore` file? Wasn't that supposed to be in the merge commit? Well, it _is_, but since we are merging _into_ `develop`, this merge commit only will show the incoming changes and not the existing ones. Anyways, what we are interested in here are the two parent hashes.
+
+Parent #1 is the `547a448` commit and parent #2 is the `69bdc19` commit. Since we want to remove `feat1` from our repository, we must select parent #1, which has the `.gitignore` file but not the other three files.
+
+```bash
+git revert --edit --mainline 1 2f7765d
+```
+
+You will see the following message:
+
+```
+[master 8e2abf9] Revert "Merge branch 'feat1' into develop"
+ 3 files changed, 1 insertion(+), 17 deletions(-)
+ delete mode 100644 script.js
+```
+
+The `script.js` file will be deleted, and any modifications made to `index.html` and `style.css` on the `feat1` branch will be removed (but not necessarily delete the files).
+
+I know this section on `git revert` was a strenous one, but hopefully it clears up a few things!
+
+#### Git Reset
+
+The `git reset` command is similar to `git revert`, but instead of _adding_ a new commit with the removed changes, the command will just "delete" the unwanted changes completely. I say "delete" in quotations because depending on the options you give this command, you will get a slightly different result. We will start with the _least potentially harmful_ version and move towards the _most potentially harmful_ command. The commands in this section build on each other, so `git reset --soft` is a part of `git reset --mixed` which is a part of `git reset --hard`. Said another way, `git reset --hard` is the combination of all three versions of the command.
+
+Below is a diagram (the commit hashes are not in line with the repository we have been following, but will demonstrate the concept) that illustrates what the git reset command does.
+
+![](/images/2020/old-posts/git-reset-2.png)
+
+We are moving `HEAD` _and_ whatever `HEAD` points to (`master`) backwards to another commit. In effect, the commits that we have moved back from will be floating around in space and we have no way of locating them. Depending on the version of the git reset command that you run, you may or may not be able to recover the changes from those floating commits.
+
+![](/images/2020/old-posts/git-reset-3.png)
+
+Before we start this section, let's recall the four possible states you can be in:
+
+1. Repo = Staged = Unstaged
+2. Repo = Staged, but unstaged does not equal either
+3. Staged = Unstaged, but repo does not equal either
+4. All three are different
+
+We are currently in state #1 according to our `git status` command.
+
+```
+zachgoll:~/workspace/git-workflow (master) $ git status
+On branch master
+nothing to commit, working tree clean
+```
+
+**git reset --soft**
+
+All `git reset --soft` does is move the pointer that `HEAD` points to.
+
+```bash
+git reset --soft 2f7765d
+```
+
+The previous command will move the branch that `HEAD` points to from commit `76ba921` to commit `2f7765d`. This makes more sense with a visual (commit hashes are accurate in this one!):
+
+![](/images/2020/old-posts/git-reset-1.png)
+
+Unlike the `git checkout` command where we literally move the `HEAD` pointer, with `git reset --soft`, we are moving the `HEAD` pointer _and_ the branch it points to, which is `master` in this case.
+
+This command will change the repo, but it will _not change_ the staged changes or the unstaged changes. If you run `git status`, you will see that all of the files that we created _after_ the `v1.1` release are now in the staged and unstaged area, but not the repo, hence we would be in state #3.
+
+Let's commit all the files again.
+
+```bash
+git commit -m "Add all files since v1.1 release"
+```
+
+When we do this, we will have the following history:
+
+```
+* dc8e366 (HEAD -> master) Add all files since v1.1 release
+| *   fa61317 (origin/master) Resolved merge conflict from VSCode
+| |\
+| | * d13ee52 Create merge conflict
+| * | 6598c74 Add new text to README to create merge conflict
+| |/
+| * e9d7818 Created another merge conflict from merge-conflict-branch
+| * 01bc44a Merge stashed changes back into README
+| * a589f47 Create intentional merge conflict
+| * 2bb9989 Create intentional merge conflict
+|/
+*   2f7765d (tag: v1.1, develop) Merge branch 'feat1' into develop
+|\
+| * 69bdc19 (origin/feat1) Add javascript to code
+* | 547a448 (origin/develop) Add .gitignore file
+|/
+* a4879ce Split HTML and CSS into two files
+* 682f2aa Add CSS to HTML
+* ccb5d8e (tag: v1.0) Add license to project
+* 7087a7e First commit
+```
+
+Notice how the reversion is no longer there and it looks like we just added all these files directly after the release.
+
+**git reset --mixed**
+
+Let's do the same exact thing again, but instead of `--soft`, we will use `--mixed`.
+
+```bash
+git reset --mixed 2f7765d
+```
+
+When we run `git status`, we get a slightly different output.
+
+```
+On branch master
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+        modified:   README.md
+        modified:   index.html
+        deleted:    script.js
+        modified:   style.css
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+        additional-file.txt
+        three-trees.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+```
+
+We are now in state #4. The repo now reflects the files that were present back in `v1.1`, the staged area has nothing in it at all, and the unstaged area has all the modifications that we have made since release `v1.1`. Let's add the files back to the staging area and commit them.
+
+```bash
+git add .
+git commit -m "Add all files since v1.1 release"
+```
+
+**git reset --hard**
+
+This last version of `git reset` is the _most dangerous_, because it will permanently undo parts of your repository. For example, if you ran this command and specified the first commit in the repository, all your work would be lost. That said, Git is a decentralized source control tool, and chances are you will still have those changes on your remote repository or maybe even on one of your teammate's computers. Nevertheless, be careful with this one and only use it if you know the implications of what it will do.
+
+Our repository currently looks like this:
+
+```
+* 942fac1 (HEAD -> master) Add all files since v1.1 release
+| *   fa61317 (origin/master) Resolved merge conflict from VSCode
+| |\
+| | * d13ee52 Create merge conflict
+| * | 6598c74 Add new text to README to create merge conflict
+| |/
+| * e9d7818 Created another merge conflict from merge-conflict-branch
+| * 01bc44a Merge stashed changes back into README
+| * a589f47 Create intentional merge conflict
+| * 2bb9989 Create intentional merge conflict
+|/
+*   2f7765d (tag: v1.1, develop) Merge branch 'feat1' into develop
+|\
+| * 69bdc19 (origin/feat1) Add javascript to code
+* | 547a448 (origin/develop) Add .gitignore file
+|/
+* a4879ce Split HTML and CSS into two files
+* 682f2aa Add CSS to HTML
+* ccb5d8e (tag: v1.0) Add license to project
+* 7087a7e First commit
+```
+
+We could certainly reset the entire repository to `v1.1`, but I want to keep all the changes there for your reference when going through this tutorial. Therefore, we need to make a bunch of useless commits for the sole purpose of deleting them. Run all the commands below.
+
+```bash
+touch useless-file.txt
+echo "useless data" > useless-file.txt
+git add useless-file.txt
+git commit -m "Make useless commit #1"
+
+echo "more useless data" >> useless-file.txt
+git add useless-file.txt
+git commit -m "Make useless commit #2"
+
+echo "and some more" >> useless-file.txt
+git add useless-file.txt
+git commit -m "Make useless commit #3"
+
+echo "one more time" >> useless-file.txt
+git add useless-file.txt
+git commit -m "Make useless commit #4"
+```
+
+Here is our new repository.
+
+```
+* b3a997c (HEAD -> master) Make useless commit #4
+* 38e7d0d Make useless commit #3
+* b7748e3 Make useless commit #2
+* e6752da Make useless commit #1
+* 942fac1 Add all files since v1.1 release
+| *   fa61317 (origin/master) Resolved merge conflict from VSCode
+| |\
+| | * d13ee52 Create merge conflict
+| * | 6598c74 Add new text to README to create merge conflict
+| |/
+| * e9d7818 Created another merge conflict from merge-conflict-branch
+| * 01bc44a Merge stashed changes back into README
+| * a589f47 Create intentional merge conflict
+| * 2bb9989 Create intentional merge conflict
+|/
+*   2f7765d (tag: v1.1, develop) Merge branch 'feat1' into develop
+|\
+| * 69bdc19 (origin/feat1) Add javascript to code
+* | 547a448 (origin/develop) Add .gitignore file
+|/
+* a4879ce Split HTML and CSS into two files
+* 682f2aa Add CSS to HTML
+* ccb5d8e (tag: v1.0) Add license to project
+* 7087a7e First commit
+```
+
+Clearly, we do not want the last four commits in our repository, and quite frankly, we probably do not even want anyone to know that they were there in the first place. To completely delete the commits and return to commit `942fac1`, we can run the following command.
+
+```bash
+git reset --hard 942fac1
+```
+
+This will move the `master` branch pointer back to commit `942fac1` (git reset --soft), remove all the files we just created from the staged area (git reset --mixed), and finally delete all these files from the unstaged area (git reset --hard). No matter where you look, you will not find the `useless-file.txt`. Not in the Git history, not in your working directory. This command also has the effect of putting you back in state #1 with a completely clean workspace.
+
+The `git reset` command is most often used in the default state, which is `--mixed`. In state #3 (after running `git add` but before `git commit`), you will often see a message like so:
+
+```
+On branch master
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+        modified:   index.html
+```
+
+It recommends to run `git reset HEAD`. But what does this mean? Let's first look at our repo:
+
+```bash
+git log --oneline
+```
+
+```
+942fac1 (HEAD -> master) Add all files since v1.1 release
+2f7765d (tag: v1.1, develop) Merge branch 'feat1' into develop
+547a448 (origin/develop) Add .gitignore file
+69bdc19 (origin/feat1) Add javascript to code
+a4879ce Split HTML and CSS into two files
+682f2aa Add CSS to HTML
+ccb5d8e (tag: v1.0) Add license to project
+7087a7e First commit
+```
+
+The `HEAD` pointer is pointing at the `master` branch which is pointing at commit `942fac1`. Running `git reset HEAD` is exactly equivalent to the following command.
+
+```bash
+git reset --mixed 942fac1
+```
+
+In effect, your changes will be moved out of the staged area and you will go from state #3 to state #2 where the repo and staged area match up, but we have some changes in our unstaged area still. If you want to delete all your changes that have not yet been committed, just throw in the `--hard` flag.
+
+```bash
+git reset --hard HEAD
+
+# Or...
+git reset --hard 942fac1
+```
+
+### Upstream and Downstream Conflicts
+
+Throughout the last few sections, you might have noticed that we were not running the `git push` command. We were adding commits to the repository, but they were not getting pushed "upstream" to the remote repository. This is going to create a conflict because of the reversions and resets that we performed. Go ahead and try to push your changes upstream.
+
+```bash
+git push origin master
+```
+
+You will probably get something like this:
+
+```
+To github.com:zachgoll/basic-git-workflow.git
+ ! [rejected]        master -> master (non-fast-forward)
+error: failed to push some refs to 'git@github.com:zachgoll/basic-git-workflow.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. Integrate the remote changes (e.g.
+hint: 'git pull ...') before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+```
+
+We are already aware that our remote repository is ahead of our local one because we reverted and reset the local backwards in time. The hint in the Git message says that we should `git pull` and then incorporate the new changes into our local repo, but we do not want to do this. We want the remote repository to reflect what is in the local one.
+
+If we were working on a team, the proper way to handle this would be to run a `git fetch` followed by a `git merge` (same thing as `git pull` but broken into steps). This will allow you to sync up your local repo to the remote repo without deleting anything.
+
+Since we are not working on a team here and we really don't care if things get deleted off the remote repository, we can just force the push.
+
+```bash
+git push --force origin master
+```
+
+Your local and remote repos are now exactly the same and you can continue your work. Again, this is a dangerous command if you are working on a team because it could end up deleting a team member's work on the remote repo!
+
+## Conclusion
+
+Git can be a frustrating tool at times, and you might find yourself in situations where you feel like there is no other solution than to start over completely. Maybe you've run `git reset` too many times and now you have no idea where your files are. Just remember, Git is all about _calculated actions_. Never run a Git command before you are certain what the effects of it are. I know there is a lot to learn here, but if you take the time to learn it, you will spend far less time freaking out where your work went or why you can't get your local repo to sync with your remote repo.

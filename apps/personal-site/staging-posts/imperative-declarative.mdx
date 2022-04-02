@@ -1,0 +1,240 @@
+---
+title: Imperative vs. Declarative Programming (Procedural, Functional, and OOP)
+excerpt: >-
+  Maybe you heard it in an Object Oriented Programming book.  Maybe you read it on Stack Overflow.  Maybe you're reading a textbook for school.  Eventually, you get annoyed reading the terms "declarative" and "imperative" because you know they are important but have no clue why.  In my mind, knowing the difference between imperative and declarative programming is useful for a single reason, and that is to help you better understand the difference between procedural, functional, and object-oriented programming styles.  By understanding these five terms, while reading code libraries, you will begin to see where the authors got their code designs.
+date: "2019-06-19"
+thumb_img_path: images/2020/old-posts/imperative-declarative-programming.jpg?nf_resize=fit&w=500
+content_img_path: images/2020/old-posts/imperative-declarative-programming.jpg?nf_resize=fit&w=600
+template: post
+---
+
+<span>Photo by <a href="https://unsplash.com/@d_mccullough?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Daniel McCullough</a> on <a href="https://unsplash.com/s/photos/construction?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
+
+## Why You Should Care About this Question
+
+Maybe you heard it in an Object Oriented Programming book. Maybe you read it on Stack Overflow. Maybe you're reading a textbook for school.
+
+Eventually, you get annoyed reading the terms "declarative" and "imperative" because you know they are important but have no clue why. In my mind, knowing the difference between imperative and declarative programming is useful for a single reason, and that is to help you better understand the difference between procedural, functional, and object-oriented programming styles. By understanding these five terms, while reading code libraries, you will begin to see where the authors got their code designs.
+
+## The Terms
+
+1. Imperative Programming
+2. Declarative Programming
+3. Procedural Programming
+4. Object-Oriented Programming
+5. Functional Programming
+
+All five of these terms are considered "programming paradigms", although Imperative and Declarative paradigms are parent hierarchies to procedural, object-oriented, and functional programming.
+
+![](/images/2020/old-posts/imperative-vs-declarative.png)
+
+The diagram above doesn't make sense yet; especially because Object-Oriented Programming (OOP) is listed under both categories!
+
+## A High Level Explanation
+
+The difference between Imperative and Declarative programming is related to _how_ a program works vs. _what_ a program does. Imperative programming is about _how_ a program works while Declarative programming is about _what_ a program does. Let's look at an example.
+
+### Building a House "Imperatively"
+
+Imperative is about the HOW. For example, if I was writing an imperative program for building a house, it would go something like this:
+
+1. Build the foundation
+2. Put in the framework
+3. Install the utilities
+4. Add the walls
+5. Finishing touches
+
+In this imperative program, I have told you the exact steps to take in order to build the house (okay, not so detailed, but you get it!).
+
+### Building a House "Declaratively"
+
+Declarative is about the WHAT. Building a house declaratively would include the following steps:
+
+1. I don't care how you build it, but I want a nice fireplace, a lakefront view, and a big kitchen.
+
+Simple right? In this declarative program, I have told you the _outputs_ that I want. I know that if I give you _inputs_ in the form of money, I will get the desired outputs.
+
+### It's all about Abstraction
+
+As programmers, we hear the word "abstraction" a lot. An abstraction is about stripping away the nitty gritty details in order to talk about a higher-level concept. I don't care about all the steps it takes to get hot water to come out of my shower head. I just care that hot water comes out! This is abstraction.
+
+Declarative programming is an _enabler_ of abstraction. Imperative programming is an _inhibitor_ of abstraction. Declarative programming allows you to say "I want this and I don't care how I get it" while imperative programming requires you to define each and every step. If you are programming imperatively and need to print something to the console in the C language, you can write the following program:
+
+```C
+#include <unistd.h>
+
+int main() {
+    int counter;
+    char* str = "Hello, World";
+
+	counter = 0;
+	while (*(str + counter) != '\0')
+	{
+		write(1, str + counter, 1);
+		counter = counter + 1;
+	}
+}
+```
+
+In this program, I looped through each character in my string and printed it to the console using the built-in `write()` function. Luckily, we can just include the `stdio.h` library and simplify this program.
+
+```C
+#include <stdio.h>
+
+int main() {
+
+    // This is imperative, because we
+    printf("Hello, World");
+
+    return (0);
+}
+```
+
+Okay, okay. You hate reading C code and trying to remember what a pointer is. Who uses it anymore anyways?!
+
+I used this example for two reasons:
+
+1. It demonstrates imperative vs. declarative in code.
+2. C is considered a "procedural" programming language, which falls under the imperative category.
+
+So let's recap. Imperative programming is about _how_, and is where you list out every step of a program. It reduces abstraction to a minimum. Declarative programming is about _what_, and specifies a desired output without caring how the program gets to that output. It is the ultimate abstraction.
+
+These are the top level categories, but we can also dive one level below and talk about "procedural" programming, which is nearly synonymous with imperative programming. Sure, there are subtleties that I'm sure plenty of people could point out, but for the desired depth of this post, we will treat imperative and procedural programming as synonymous terms.
+
+## One Big Problem
+
+When talking about imperative vs. declarative programming, there is always the tempation to fall into a rabbit-hole of logical analysis. Let's take another look at our "imperative" program:
+
+```C
+#include <unistd.h>
+
+int main() {
+    int counter;
+    char* str = "Hello, World";
+
+	counter = 0;
+	while (*(str + counter) != '\0')
+	{
+
+		// Cough cough
+		// Notice anything here?
+		// --------------------------
+		write(1, str + counter, 1);
+		// --------------------------
+
+
+		counter = counter + 1;
+	}
+}
+```
+
+I called this program "imperative", but where did this `write()` function come from? Wouldn't this be considered declarative? We have no idea what goes on inside that function, so we wouldn't be correct in saying this is truly an imperative program!
+
+And this is where the abstraction dilemma starts. We could [go look inside](http://lxr.linux.no/linux+v3.9.4/fs/read_write.c#L502) the `write()` function to see how it is written, but then we would find other functions that have internal implementations. We would go at this futile exercise until we were reading the implementation of the C compiler!!
+
+So when talking about imperative coding, we need to realize that it is a loose categorization of a much bigger idea that can be broken apart quickly if you think about it too much.
+
+## Functional Programming
+
+Since we are talking about functions and the internals of those functions already, our transition to the concept of "functional programming". Similar to our discussion about how procedural and imperative programming were synonymous, we can think of functional programming as a synonym to declarative programming.
+
+So at this point, be can assume the following:
+
+imperative = procedural = concrete (opposite of abstract)
+
+declarative = functional = abstract
+
+By understanding what procedural programming is, we implicitly understand what functional programming is. It is the ability to abstract away the internals of your code. Take the following Javascript program for example:
+
+```javascript
+function findIndex(value, array) {
+  for (let i = 0; i < array.length; i++) {
+    if (array[i] === value) {
+      return i;
+    }
+  }
+}
+
+const myArray = ["dog", "cat", "fish"];
+
+const foundIndex = findIndex("cat", myArray);
+
+console.log(`The index of the cat is ${foundIndex}`);
+```
+
+The above code works okay, but by steering towards a "functional" approach, we might realize that Lodash (a javascript utility library) provides us a much more elegant way to implement this.
+
+```javascript
+const _ = require("lodash");
+
+const myArray = ["dog", "cat", "fish"];
+
+const foundIndex = _.indexOf(myArray, "cat");
+
+console.log(`The index of the cat is ${foundIndex}`);
+```
+
+By choosing a more "functional" way of programming, we saved ourselves 6 lines of code. One could argue that both approaches are relatively similar since the internals of Lodash do something similar to the function we wrote, but again, just like we can't get drawn down the rabbit hole of abstraction, we can't think too far into it here.
+
+## Why Use Functional and Procedural Programming?
+
+Let's get one thing straight right away--you're not going to be using procedural programming methods much. Unless you are writing software for your custom piece of hardware and need to get into the details of memory management and all that fun stuff, procedural programming is not going to be on your radar.
+
+So that leaves us with functional programming, which is great for the following scenarious:
+
+1. If the language you are using is primarily dedicated to being a "functional" language (as opposed to object-oriented languages)
+2. If you have a _fixed_ set of "things" and you need to add operations to those "things" over time
+
+And here is where Object Oriented programming comes into the picture. Neither of these statements will make sense until we understand what object-oriented programming is all about.
+
+The real debate is not the merits of procedural vs. functional programming methods, but rather the merits of functional vs. object-oriented programming methods, and furthermore, why are we comparing them?
+
+### Two Camps
+
+On the web, although improving, there is a clear "us vs. them" mentality when it comes to functional vs. object-oriented programming. One camp believes OOP is the way forward while the other camp doesn't believe it is "pure" enough. Despite this, you'd have a hard time finding an Object-Oriented system that doesn't include some sort of functional programming in it! There are subtleties you could compare, but good code isn't about picking one or the other. Good code is about knowing _when_ to use each type of programming.
+
+## Why use OOP?
+
+Object-oriented programming is difficult to examine in the context of imperative vs. declarative programming because it is truly doesn't represent _either_. OOP is a beast of its own that tries to emulate the "real world" through code. If you are making a web app similar to Facebook, your "objects" could be the following:
+
+- Person
+- Video
+- Picture
+- Advertisement
+- Button
+
+This is a non-exhaustive list, but the important thing to understand about OOP is that each "object" has a set of "methods". Said differently, your system has nouns and verbs. A `Person` can `addFriend()`, `likePost()`, or `updateProfile()`.
+
+I have no intention of diving deep into the concepts of OOP, but we now know _just enough_ to understand the reasons why we might use functional vs. OOP in our code.
+
+## When to Use Functional vs. OOP
+
+Remember what I said earlier? Functional programming is great for...
+
+1. If the language you are using is primarily dedicated to being a "functional" language (as opposed to object-oriented languages)
+2. If you have a _fixed_ set of "things" and you need to add operations to those "things" over time
+
+And OOP is great for
+
+1. If the language you are using is built to support it (i.e. Java, Python)
+2. If you have a _fixed_ set of operations that you do on "things", and you need to add more "things" over time.
+
+Now that we have talked about OOP, we could substitute the word "things" with "nouns", or "objects".
+
+In other words, functional programming is great when you are building something that does not mimic the real world, while OOP is great when you are building something that may reflect the real world. For example, you might build a utility library just like [Lodash](https://lodash.com/) (as we used earlier in a code example). The Lodash library has hundreds of utility functions, and if you tried to break it out into the "nouns", you might come up with the following:
+
+1. Array
+2. Object
+3. String
+
+Yes, you could define these as your objects and then implement methods on them, but likely, this kind of system will be written functionally utilizing some of Javascript's internal methods.
+
+You have a fixed set of objects that you may add operations to. You may first release the library with 10 String operations (i.e. `string.length()`, `string.type()`, `string.toJson()`) and later release a version with 20 string operations.
+
+Now if we are building Facebook, we might look towards OOP because we have a fixed number of operations on a growing set of objects. Maybe we start with a Person, Photo, and Video Object, but as the business grows, we add objects like Businesses, Advertisements, Livestreams, etc.
+
+## Conclusion
+
+The differences between imperative, declarative, procedural, functional, and object-oriented programming paradigms are _subtle_, but hopefully you have a better background to understand them from now.
+
+With experience, you will learn which situations call for which programming paradigms, and you may even start to think about design patterns around these building blocks!
