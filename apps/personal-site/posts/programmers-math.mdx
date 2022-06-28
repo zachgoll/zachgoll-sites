@@ -1,0 +1,154 @@
+---
+title: Do you have to be good at math to become a programmer?
+slug: programming-math
+excerpt: >-
+  When you are trying to decide whether learning to code is an achievable path for you, regardless of your skill in math, you probably will wonder at some point just how much math is involved with programming.  In this post, we'll take a look and see.
+published_date: '2020-10-21'
+youtube_video_urls:
+  - https://www.youtube.com/embed/J0l-GzF-I64
+tags: [concepts]
+category: software
+---
+
+No, you really don't.
+
+But...
+
+I think we are better off asking the following three questions to answer it.
+
+1. Are math skills required for all types of programming?
+2. Are you at an advantage in programming if you have strong math skills?
+3. The real question you came here for...
+
+## Before we start: My background
+
+I think it is important to acknowledge that although I have explored several fields within the umbrella of "software engineering", my main expertise is in full stack web development. If you're reading this, you may not be entirely familiar with what full stack development is, so to put it simply, I program things like web apps, browser plugins, web APIs, and anything else related to your experience when you open your web browser.
+
+Secondly, I'll note that I enjoyed math while in school. I didn't major in it and I wasn't a superstar or anything, but I took math through Calculus II and really liked the challenge that came along with it.
+
+So with my biases out of the way, let's get into it.
+
+## Are math skills required for all types of programming?
+
+Depending on who you are, you're going to define the various sub-fields of software engineering differently. You could stick to the high-level categories such as web development, machine learning and data science, network administration, devops, etc., or you could get super detailed and start decomposing each of these categories. For example, in my field of web development, here are some of (not all) the sub-fields that you could go into:
+
+- Front end development
+  - User Experience Design (UX)
+  - User Interface Design (UI)
+  - Graphic Designer
+  - UI Library developer
+  - Expertise in certain framework like React, Angular, Vue, etc.
+- Back end development
+  - Database administrator
+  - API developer
+  - Library developer
+
+This doesn't even get into the tangential fields like devops, software testing, networking, etc.
+
+Clearly, we need to narrow down our scope, which is why I put together the following table. I believe this represents the main fields you might explore as someone starting out in software engineering.
+
+| Category                             | Requires math? |
+| ------------------------------------ | -------------- |
+| Front End Web Development            | No             |
+| Back End Web Development             | Generally, No  |
+| Machine Learning / AI / Data Science | Generally, Yes |
+| Devops                               | No             |
+| QA / Testing Engineer                | No             |
+
+### Before we dive in to each discipline, some definitions
+
+While we will cover what I'm about to say more specifically within each discipline, I want to make a generalization:
+
+> Programming and math both require **problem solving skills**, but programming generally does not require math. Furthermore, the use of math within programming is highly dependent on the discipline AND the type of product you are trying to create.
+
+And since "problem solving" is a vague and overused term that truly doesn't mean anything to me when I think about it, here is my _personal_ definition we can use for this post:
+
+- The ability to solve a problem you know nothing about and have no idea where to look to find the answer to (some programmers might call it [google-fu](https://www.urbandictionary.com/define.php?term=google-fu))
+- Being persistent enough to solve a problem even when you've been unsuccessful solving it for an extended period of time (i.e. refusing to believe that the problem cannot be solved, unless solving that problem is extremely trivial to your goal, and therefore, a waste of time)
+- The ability to think about a single problem in more than one way (because oftentimes your first method of solving it isn't the simplest and most straightforward)
+
+Your definition may be different, but **both math and programming flex this muscle in your brain quite often**, and I would consider it a requirement for both.
+
+### Front-End Web Development
+
+**Short definition of front-end web development** - A front-end dev generally uses JavaScript, HTML, and CSS (often within a framework like Angular or React) to create high-quality user experiences within a web application.
+
+Front-end development is largely visual, and therefore, math doesn't come into play often. I work a lot in the Angular framework, and over the last 4 years, the only application of math that I have used is for responsive web design. When a user is viewing your app on a mobile device vs. a desktop device, the size of various elements on the page must adjust to fit the device it is displayed on. This sometimes requires some "back of the envelope" math to calculate what percentage of the screen a certain element should occupy.
+
+If you are not strong in math, but have a good sense for how the human brain works, how a user interacts with various devices, and how to arrange visual elements in a defined space, then front-end development is a great choice for you. That said, do not make the logical mistake of thinking: **"all front-end developers are bad at math"**.
+
+### Back-End Web Development
+
+**Short definition of back-end web development** - A back-end dev can use several different languages such as JavaScript, Python, Java, Ruby, etc. to create APIs which the front-end application will consume. In other words, a back-end dev is responsible for providing the front-end dev with a structured way (e.g. RESTful APIs) to retrieve application-specific data and present that data to the user.
+
+**Whether you use math as a back-end developer is highly dependent on _what you are trying to build_.**
+
+Let's say that you are the back-end dev writing a web application that allows users to share photos (think Instagram). Although a mature company like Instagram might need to implement image compression algorithms, the back-end dev _initially writing_ an app like this would probably not be using mathematics in any capacity. They simply need to write a backend that supports users, posts, and maybe stories. On the flip side, if you're creating a financial budgeting app like [YNAB](https://www.youneedabudget.com/) (highly recommend this btw), you will be using math extensively on the back-end. The entire app is based on numbers, aggregations of numbers, and financial metrics. Even here though, you probably won't be using much more than basic Algebra.
+
+### Machine Learning / AI / Data Science
+
+**Short definition of Machine Learning / AI / Data Science** - Machine learning/AI and Data Science focus on taking very large sets of information/data and using them to "teach" computers how to do things like speech recognition, textual analysis, and image recognition. If working solely as a data scientist, you may just be analyzing data and not using it to "teach".
+
+While I would generally say that math (especially statistics) is required for these professions, **it does not show up as you might think**. Most of the code that you will write for these disciplines does not require you to write complex equations within the code itself. Where math enters the picture here is in both your understanding of result sets and understanding the tools that you are using. Let's look at an example.
+
+A very popular open-source library for machine learning is Python's (coding language) `sklearn` library, which comes packed with various algorithms for processing and analyzing data sets. Other coding languages have machine learning libraries, but Python is a pretty popular one these days. We'll look at one of the most basic algorithms from the Scikit Learn (`sklearn`) library, **linear regression**:
+
+![linear regression](https://media.zachgollwitzer.com/linear-regression.jpg)
+
+The most basic formula for linear regression is this:
+
+```
+y = a + bX
+```
+
+`a` is the y-intercept, `X` is the slope, `b` is the x-coordinate, and `y` is the y-coordinate. Linear regression aims to show what type of correlation there is between two variables where `y` is the dependent variable and `x` is the independent variable.
+
+If you haven't attended a math/statistics class for quite some time, this simple regression formula might throw you down memory lane. But when you actually write code to calculate a linear regression, it doesn't require you to remember this formula. The Scikit Learn Python library knows how it is calculated, and all you have to do is feed it data. I have pasted some actual Python code below, but don't worry about how it works. I just want to highlight the fact that as a programmer writing a linear regression, you don't even write out the formula--you just use the built-in `LinearRegression()` function! It's similar to how Microsoft Excel allows you to calculate the `PMT` on a loan so that you don't need to remember the actual loan payment formula.
+
+```python{7}
+import numpy as np
+from sklearn.linear_model import LinearRegression
+
+X = np.array([[1, 1], [1, 2], [2, 2], [2, 3]])
+y = np.dot(X, np.array([1, 2])) + 3
+
+reg = LinearRegression().fit(X, y)
+reg.score(X, y)
+# Returns a value of 1.0
+```
+
+While you don't need to actually write the linear regression formula in your code if you are using a library like Scikit Learn, you do need to understand how such a formula works.
+
+Machine learning and data science frequently use algorithms that are much more complex than a simple linear regression and although you probably won't be designing the algorithms yourself (those come from research papers written by PhD's in Computer Science and Applied Mathematics), it is probably advantageous that you have at least an idea of what they are doing.
+
+**In conclusion, you probably won't find these disciplines enjoyable or easy if you despised going to math class.**
+
+### Devops
+
+**Short definition of devops** - Devops, short for "Development and Operations", is all about getting that app that you've built on the web and available to users. Devops engineers spend a lot of time managing servers and making sure that your company's web app runs quickly, doesn't crash, and doesn't cost a fortune to host.
+
+As far as I'm aware, the only math that a devops engineer will be doing is calculating the total cost of hosting an application and explaining why the team is over-budget 😉
+
+### QA / Testing Engineer
+
+**Short definition of QA / Testing Engineer** - A software QA (quality assurance) / testing engineer is responsible for making sure that an app is working correctly. For example, let's say you built a budgeting application, and on the homepage, the user sees their monthly change in net worth. A testing engineer is responsible for making sure that the number displayed on the user's home screen is correct. The last thing we want is to scare our users when they log in:
+
+![budget](https://media.zachgollwitzer.com/change-net-worth.jpg)
+
+Like a back-end developer, a testing engineer may have to use math for certain types of applications, but not others. In the example above, if they are responsible for testing a budgeting app, they might have to write some basic Algebra into their tests to ensure that everything is being calculated correctly in the app.
+
+## Are you at an advantage having math skills?
+
+As we discussed above, the only software engineering discipline that _could_ require extensive math skills beyond basic Algebra is AI, Machine Learning, and Data Science. StackOverflow, one of the most popular programming Q&A sites does an annual survey of the developers on the platform. In 2020, out of 44,636 professional developer responses, only 3.6% of those developers graduated with a degree in math or statistics.
+
+![so survey](https://media.zachgollwitzer.com/so-math-degree.jpg)
+
+While a small subset of math degrees does not necessarily lead to the conclusion that math is not helpful for programming, it is interesting to look at. Paired with my personal experience, I would generally agree that having an expertise in math above basic Algebra is not directly helpful when learning to program.
+
+I have no hard evidence nor any intention on proving this claim, but I would say that the _skills_ you learn in math classes translate to programming, but the _techniques_ learned in math class do not. To solve an integral problem in Calculus I, I need to have good problem solving abilities. To program, I also need to have good problem solving abilities. But I will most likely never use an integral equation while writing software. Therefore, if you come from a background in math, I would argue that you have a slight leg up on someone coming from a social science _because_ you have flexed your problem solving muscles more often.
+
+In conclusion, **it is not math itself that gives you a leg up in programming, but the thought process behind it.** Think about this like running vs. biking. In both cases, you are relying on your cardiovascular fitness, but each activity hits slightly different muscle groups. If a seasoned runner and a couch potato entered a 20 mile bike race, the runner will obviously fare better in most cases. It is not because running directly trains the muscles required for biking, but because running requires similar cardiovascular fitness to biking.
+
+## The real question you're here for
+
+If you are reading this post, you probably have some concerns whether you are cut out to be a programmer. In almost all cases, I would encourage you to continue your journey. You may not be the right candidate to program a Tesla vehicle with machine learning, but I can assure you that there is some type of software engineering discipline that fits your skillset. Keep searching, keep coding, and you will find it.

@@ -1,0 +1,112 @@
+---
+title: 3 Things I Wish I Knew When I Started Using Angular 2+
+slug: angular-lessons
+excerpt: >-
+  It’s 2020, and Angular is on version 10 with over 1200 contributors and 18,500 commits. I think it’s safe to say that this project has picked up some momentum over the years.  But when I started using Angular (it was on version 4 when I started), these things didn’t matter to me. Heck, I probably couldn’t have explained what open source software was and definitely couldn’t have explained what Typescript was...
+published_date: '2020-09-10'
+youtube_video_urls:
+  - https://www.youtube.com/embed/mC9rISej1nE
+tags: [angular]
+category: software
+---
+
+It’s 2020, and Angular is on version 10 with over 1200 contributors and 18,500 commits. I think it’s safe to say that this project has picked up some momentum over the years.
+
+But when I started using Angular (it was on version 4 when I started), these things didn’t matter to me. Heck, I probably couldn’t have explained what open source software was and definitely couldn’t have explained what Typescript was. To me, Angular was just the popular framework that everybody was using — and that was plenty of a reason to start using it.
+
+As I learned more about software engineering, I tried out frameworks like React and Vue, and there were even a few months where I truly thought that Angular “wasn’t powerful enough for my needs” because it didn’t have an easy state management system like React (talk about ignorance). But time kept passing by, I kept learning more, and with each successive project that I completed using Angular, it became harder and harder to switch away from the framework I had come to know so well. I had officially become an Angular developer.
+
+In the last few years, I’ve built [production-ready apps](https://training.thediygolfer.com/) using Angular and have come miles and miles from where I started. That’s probably not saying much considering I started “using” (or more accurately, stumbling around in) Angular at the same time I was learning how to write basic JavaScript.
+
+In this post, I want to share 3 things that I now understand about Angular that I wish I would have much earlier.
+
+## Lesson #1: So what’s this thing called TypeScript?
+
+For a guy who could barely write JavaScript at the time, using TypeScript was more of a burden than anything. Back when I started using Angular, TypeScript was a “necessary evil” that I needed to learn if I wanted to use the Angular framework. Like most beginners, I started off by learning the C language and I had always found the “static typing” concept annoying since it added extra keystrokes to my day. At the time, I thought statically typed languages like C were languages of the past.
+
+I thought to myself _— Why couldn’t every language be like Javascript without the concept of “types”?_
+
+To me, Javascript was easier because I didn’t have to keep track of all my variable types. A variable was a variable, and that was that. I now know that this is *exactly *why someone would avoid writing JavaScript altogether.
+
+**Typescript is “statically typed” while JavaScript is “dynamically typed”.** In other words, with TypeScript, all variable types are known at compile-time as opposed to run-time.
+
+Why does this fact excite so many Angular developers? Some common answers to this question might include:
+
+- All the features of JavaScript plus the benefit of “types”
+
+- Enhanced IDE experiences
+
+- Browser Compatibility
+
+But these don’t really excite me. What excites me about TypeScript is twofold — **it makes my coding process more efficient, and it makes my thinking more disciplined.**
+
+My IDE (Vscode) catches my coding errors as I make them, which in turn forces me to be more disciplined when writing the arguments and return types of my functions. And the cycle repeats.
+
+Let’s say you’re writing an Angular component that fetches some data from a backend API (we can use [JSONPlaceholder](https://jsonplaceholder.typicode.com/) for this example), and the data that you will receive looks something like this:
+
+```json
+{
+  "userId": 1,
+  "id": 1,
+  "title": "delectus aut autem",
+  "completed": false
+}
+```
+
+So you write your component, carelessly place your HTTP client within the component itself (don’t do this for your projects — put it in a service), and render the return data in the template.
+
+This all works, and it’s not hard to follow because of how simple the project is. But once your APIs get bigger and you’re editing hundreds of different files in the same project, it gets difficult to remember the return types of your API.
+
+At the moment, your Angular project has no idea what the API is going to return and will accept pretty much anything. Let’s make a few improvements to these files and save our future selves a few headaches.
+
+The file doesn’t look all that different, but now, our IDE knows exactly what to expect from our API. This allows for all the following things to happen:
+
+1. If the backend model changes, all we need to do is update the interface in our Angular app and then our IDE will tell us if this change caused any errors in our code
+
+1. When we start typing `this.todo.`, our IDE will suggest the known properties on the object
+
+![](https://cdn-images-1.medium.com/max/2000/1*BlIhdiEYhjvAIMzWQC2w4w.gif)
+
+This may not seem like a big deal, but when you’ve got hundreds or even thousands of types defined within a project, having the IntelliSense from your IDE can save you a lot of time.
+
+## Lesson #2: Angular is opinionated, so don’t argue
+
+Not only was I trying to wrap my head around the usefulness of Typescript when I first started learning Angular, but I was also trying to figure out what a class was, how decorators worked, what dependency injection did, and many more concepts (that’s what happens when your first coding language is JavaScript rather than Java or C++).
+
+In a sense, I was coding with design patterns and object-oriented-programming before I knew what either of these concepts meant. I later would read [Head First Design Patterns](https://amzn.to/35aWoEF) and parts of [Elements of Reusable Object-Oriented Software](https://amzn.to/2GyMVwt) to discover that Angular was using several of the design patterns already.
+
+One of the major benefits you’ll find using an opinionated framework like Angular is that you will be forced to learn and write clean code (although no guarantees — there is definitely a way to write sloppy Angular code).
+
+So here are a few “opinions” that Angular has that I wish I would have taken more seriously from the start:
+
+**The concept of “feature modules”** — I think it took me at least 4 full Angular projects to realize that not all code should be placed in `app.component`. Angular has a robust modules system, and once I started learning about [feature modules](https://angular.io/guide/feature-modules) and how to actually apply SOLID principles in my apps, I finally realized the true power of the Angular framework.
+
+**Typescript** — Kind of beating a dead horse here, but Angular “strongly suggests” that you use Typescript, and I think it’s an opinion worth embracing. And yes, when I say “strongly suggests”, I just mean that using vanilla JavaScript in Angular makes your job much harder and you would not be smart to use it in large capacities.
+
+**The Observer Pattern (aka [rxjs](https://rxjs-dev.firebaseapp.com/))** — Angular pairs really well with Observables and functional programming. These concepts take some time to learn, but once you get the hang of it you’ll never turn back. Oh, and learn how to use the [async pipe](https://angular.io/api/common/AsyncPipe), it will save you a lot of time, clean up your code, and automatically manage your Observables.
+
+**Inputs and Outputs: The Component Pattern** — This plays into that “separation of concerns” software principle, and if you take a day to really learn it, your code will be 10x cleaner. Not sure what I’m talking about? Read through [this part of the Tour of Heroes tutorial](https://angular.io/tutorial/toh-pt3). Using Inputs and Outputs can be confusing at first, but by using them, you can create what we call “dumb components” that can function entirely from the inputs that it receives. This can be really useful if you are creating component libraries of common UI elements such as buttons, modals, etc. It can also be great when using `*ngFor` directive with complex objects as the iterables.
+
+Angular has many more “opinions”, which for most developers, is a great reason to use Angular over a less opinionated framework like React. If you’re a superstar software engineer that lives and breathes design patterns, Angular’s “opinions” may not be so inviting, and I’m not sure why you’re still reading this post. But for someone like myself who used Angular as a vehicle to learn software engineering, it’s a lifesaver and has pushed me to write cleaner, more modular code.
+
+## Lesson #3: Angular has a steep learning curve, but don’t let it discourage you
+
+This point encompasses everything else that I’ve talked about, but I think it’s worth repeating.
+
+For at least the first couple of years I used Angular, it was confusing. **Really confusing.**
+
+On top of that, I kept hearing people talk about how “front end development is the easy type of development”. Because of this, I felt like I needed to push myself “past the easy stuff” and on to better things.
+
+**I wish I would have scrapped this mindset much earlier.**
+
+In yesterday’s world, front end development involved HTML, CSS, and some clunky JavaScript. In today’s world, front end developers can write robust, Single Page Applications. Long story short? Front end development is much more powerful than it used to be, and it can certainly be a challenge even for a seasoned developer!
+
+So if you’ve just started using Angular and haven’t quite gotten the hang of it, keep staring at that confusing code in front of you. Eventually, those class decorators, Observables, and directives will make sense. And once they do, you’ll really start to see what Angular has to offer.
+
+— — —
+
+Liked this post? Here are a few more:
+
+[Imperative vs. Declarative Programming](https://www.zachgollwitzer.com/posts/imperative-declarative/)
+
+[The most confusing thing in JavaScript: The ‘this’ keyword](https://www.zachgollwitzer.com/posts/javascript-this-keyword/)

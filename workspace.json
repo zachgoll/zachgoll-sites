@@ -55,6 +55,29 @@
         }
       }
     },
+    "mdx": {
+      "root": "libs/mdx",
+      "sourceRoot": "libs/mdx/src",
+      "projectType": "library",
+      "tags": [],
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/mdx/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/mdx"],
+          "options": {
+            "jestConfig": "libs/mdx/jest.config.ts",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "personal-site": {
       "root": "apps/personal-site",
       "sourceRoot": "apps/personal-site",
@@ -108,29 +131,25 @@
         }
       }
     },
-    "personal-site-e2e": {
-      "root": "apps/personal-site-e2e",
-      "sourceRoot": "apps/personal-site-e2e/src",
-      "projectType": "application",
+    "ui": {
+      "root": "libs/ui",
+      "sourceRoot": "libs/ui/src",
+      "projectType": "library",
+      "tags": [],
       "targets": {
-        "e2e": {
-          "executor": "@nrwl/cypress:cypress",
-          "options": {
-            "cypressConfig": "apps/personal-site-e2e/cypress.json",
-            "devServerTarget": "personal-site:serve",
-            "tsConfig": "apps/personal-site-e2e/tsconfig.json"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "personal-site:serve:production"
-            }
-          }
-        },
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "outputs": ["{options.outputFile}"],
           "options": {
-            "lintFilePatterns": ["apps/personal-site-e2e/**/*.{js,ts}"]
+            "lintFilePatterns": ["libs/ui/**/*.{ts,tsx,js,jsx}"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/ui"],
+          "options": {
+            "jestConfig": "libs/ui/jest.config.ts",
+            "passWithNoTests": true
           }
         }
       }

@@ -1,0 +1,650 @@
+---
+title: Lesson 4 - JavaScript Operators (Fullstack developer roadmap series)
+slug: javascript-operators
+excerpt: >-
+  In this post, we will combine our knowledge of JavaScript variables with operators!
+published_date: '2021-01-01'
+tags: [javascript, fullstackroadmap]
+category: software
+---
+
+[See this lesson on YouTube here](https://www.youtube.com/watch?v=z8gtbI-LbQE&list=PLYQSCk-qyTW37zDPzcAyzCsnypFQrhUcq&index=5)
+
+This is part of my fullstack developer series, where **you'll go from never having written a line of code to deploying your first fullstack web application to the internet.** [Click this link](https://www.zachgollwitzer.com/posts/2021/fullstack-developer-series/introduction/) to get an overview of what this series is all about.
+
+Please share this series with the hashtag **#fullstackroadmap** and help me spread the word!
+
+## Useful series links
+
+- [Series Table of Contents](/posts/fullstack-roadmap-toc)
+- [Github Repository](https://github.com/zachgoll/fullstack-roadmap-series) - where you'll find all the code we write in this series
+- [YouTube Playlist](https://www.youtube.com/watch?v=ZZJT5uskuvI&list=PLYQSCk-qyTW37zDPzcAyzCsnypFQrhUcq)
+- [Series Overview](/posts/fullstack-course-introduction)
+- [100 Days of Code Challenge](https://www.100daysofcode.com/) - I highly recommend you take this on while reading this series!
+- [My CodeWars Profile](https://www.codewars.com/users/zachgoll) - Follow me and I'll follow you back. This is where we will do our coding challenges throughout the series!
+- [My Twitter Profile](https://twitter.com/zg_dev) - Where you can stay updated
+
+## The goal for this lesson
+
+By the end of this lesson, I want you to be able to read the following code and understand exactly what is happening.
+
+```javascript
+let firstNumber = 20;
+const secondNumber = 20;
+
+firstNumber++;
+
+console.log(firstNumber > secondNumber); // true
+console.log(firstNumber - secondNumber === 1); // true
+console.log(firstNumber - secondNumber == '1'); // true
+console.log(firstNumber - secondNumber === '1'); // false
+```
+
+While knowing variables (last lesson) and operators (this lesson) alone will not get you very far, they are extremely important parts of JavaScript to understand that will set you up for the next couple lessons where we will get into things like loops, conditionals, and functions.
+
+## What are JavaScript Operators?
+
+We briefly worked with operators in the prior lesson, but I didn't explain anything about them. Operators aren't unique to JavaScript. In **ANY programming language that you choose,** there will be a series of operators, and these operators are often split into the following categories:
+
+- Arithmetic
+- Assignment
+- Comparison
+- Logical
+
+### Do I have to memorize these categories?
+
+No, and you won't even have to memorize the operators themselves. A handful of them will become second nature to you rather quickly and the rest will probably not be used much at all. Remember, you can always use [Google to remember them.](https://www.w3schools.com/js/js_operators.asp)
+
+### Arithmetic Operators
+
+Addition, subtraction, multiplication, and division are pretty straightforward. You'll use `+`, `-`, `*`, and `/`.
+
+```javascript
+const strVar1 = 'My name is ';
+const strVar2 = 'Zach';
+const numVar1 = 20;
+const numVar2 = 2;
+
+// Addition of numbers
+console.log(numVar1 + numVar2); // Prints 22
+
+// Addition of strings (also called "concatenation")
+console.log(strVar1 + strVar2); // Prints "My name is Zach"
+
+// Subtraction
+console.log(numVar1 - numVar2); // Prints 18
+
+// Multiplication
+console.log(numVar1 * numVar2); // Prints 40
+
+// Division
+console.log(numVar1 / numVar2); // Prints 10
+```
+
+Aside from the obvious ones, here are the other arithmetic operators.
+
+- Modulus - `%`
+- Increment - `++`
+- Decrement - `--`
+- Exponent - `**`
+
+And here's how they work (make sure to read the comments).
+
+```javascript
+/*
+  Modulus Operator
+
+  This might seem useless to you right now, but there are many times where this can come in handy.
+  This will calculate the remainder of a division problem.
+*/
+console.log(18 % 2); // Prints 0 because 2 is a factor of 18
+console.log(18 % 4); // Prints 2 because 4 goes into 18 four times (4 x 4 == 16), with a remainder of 2
+
+/*
+  Increment operator
+
+  This is often used in loops (we will learn about this soon), and will add 1 to a variable
+*/
+let myNum = 0;
+myNum++; // Equivalent to `myNum = myNum + 1;`
+
+console.log(myNum); // Prints 1
+
+/*
+  Decrement operator
+
+  You probably won't use this much.  Works opposite to the increment operator.
+*/
+let myNum = 1;
+myNum--; // Equivalent to `myNum = myNum - 1;`
+
+console.log(myNum); // Prints 0
+
+/*
+  Exponentiation operator
+
+  Raises the value to a desired exponent
+*/
+console.log(8 ** 2); // Prints 64
+```
+
+### Assignment Operators
+
+Remember from the [previous lesson](https://www.zachgollwitzer.com/posts/2021/fullstack-developer-series/3-javascript-variables/) when we talked about how a variable must first be **declared**, and then **assigned**? When we talk about "assignment" operators, we are talking about the same concept.
+
+And really, there is only one assignment operator, and we've already learned about it.
+
+```javascript
+const myVariable = 20;
+```
+
+Did you catch what it is? The `=` is an assignment operator. There are other assignment operators such as `+=`, `-=`, `*=`, `/=`, `%=`, and `**=`, but you will never NEED them, and quite honestly, I wouldn't recommend using them in most cases. Here is why:
+
+```javascript
+let x = 10;
+
+x = x + 5;
+
+console.log(x); // Prints 15
+```
+
+Does the above code make sense to you? It should–no trick questions going on here. The above code is simple and self-explanatory. Now look at the following code, which does the EXACT SAME THING as the code above, but uses one of these fancy assignment operators.
+
+```javascript
+let x = 10;
+
+x += 5;
+
+console.log(x);
+```
+
+In my opinion, you're not gaining much by using the fancier operator, `+=`. So feel free to memorize all these additional operators, but `=` should work just fine for you no matter how skilled of a developer you become.
+
+### Comparison Operators
+
+In my opinion, comparison operators are the most difficult operators to understand, and can often behave in unexpected ways. Before we get into each of them, I want to explain how a JavaScript expression is evaluated. Consider the following code:
+
+```javascript
+const result = 20 > 18;
+
+console.log(result); // true
+```
+
+This code will "evaluates" to `true`, which if you remember, is a boolean value. In this case, we are comparing two _literal_ number values. We could also do this with two variables.
+
+```javascript
+const var1 = 20;
+const var2 = 18;
+const result = var1 > var2;
+
+console.log(result); // true
+```
+
+Same thing, different look.
+
+If you remember from the previous lesson, we talked about the "left side" vs. "right side" of the `=`. This is where that concept comes into play. Let's look at something a bit more confusing.
+
+```javascript
+const result = 20 === 20;
+
+console.log(result); // true
+```
+
+You're probably sitting there with the following thought–"Huh?...".
+
+Yes, the above code is valid JavaScript, and quite frankly, it's pretty common to see something like this. The key to understanding this is to **keep the concept of "left of the equals sign" and "right of the equals sign" clear in your head.** Let's look at it again, but this time, paying attention to this left vs. right concept.
+
+```javascript
+// (1)             (2)
+const result = 20 === 20;
+
+// (1) - The variable
+// (2) - The expression to evaluate
+```
+
+In this code, we are _evaluating_ the expression to the right of the `=`, which resolves to a single boolean value of `true` or `false`.
+
+Think of it this way–a JavaScript statement like the one above happens in two steps.
+
+1. Everything to the right of `=` is evaluated
+2. The value from step 1 is saved into the variable left of `=`
+
+In this example, we first need to evaluate `20 === 20`, and then, we take the result and assign it to the `result` variable.
+
+At this point, I think we are ready to jump in and look at the **comparison operators** in JavaScript.
+
+#### Equality Comparison Operators
+
+**Not all equals signs are created equal.**
+
+`=` is very different from `==`.
+
+`=` is an _assignment_ operator (discussed above) while `==` is a comparison operator.
+
+Here is a list of all the equality operators.
+
+- `==` - equal value
+- `===` - equal value AND equal data type
+- `!=` - not equal value
+- `!==` - not equal value AND no equal data type
+
+If you can understand the first two, you can understand the last two. Let's go through some examples.
+
+```javascript
+const firstVar = 300;
+const secondVar = '300';
+
+console.log(typeof firstVar); // number
+console.log(typeof secondVar); // string
+
+const result = firstVar == secondVar;
+
+console.log(result); // true
+```
+
+When looking at this example, remember two things. First, remember _what_ we are evaluating here. We are evaluating the expression `300 == '300'`, and then _assigning_ the result of this expression to the variable called `result`. Second, notice how `300` is a number data type and `'300'` is a string data type.
+
+Since we are using `==`, we ONLY care about the value. We don't care about the data type, and therefore, our expression (that is assigned to `result`) will evaluate to `true`. Here's how we break this:
+
+```javascript
+const firstVar = 300;
+const secondVar = '300';
+
+console.log(typeof firstVar); // number
+console.log(typeof secondVar); // string
+
+const result = firstVar === secondVar;
+
+console.log(result); // false
+```
+
+There is only one difference here. Can you spot it? Well of course, we substituted `===` in place of `==`. Now, JavaScript cares about both the value _and_ the data type. The value of both variables are the same, but as you can see with our `typeof` expressions, the types are not.
+
+When writing JavaScript, I recommend being as explicit as possible, and therefore, I don't recommend using `==` unless you have a specific reason to do so (which is rare). Take a look at the code below.
+
+```javascript
+const firstVar = 300;
+const secondVar = '300';
+
+console.log(typeof firstVar); // number
+console.log(typeof secondVar); // string
+
+// Remember...
+// (1) - Left side of `=` represents the variable
+// (2) - Right side of `=` represents the expression that will be evaluated
+//   (1)                 (2)
+const result1 = firstVar == secondVar;
+const result2 = firstVar === secondVar;
+const result3 = firstVar == Number(secondVar);
+const result4 = firstVar === Number(secondVar);
+
+console.log(result1); // true
+console.log(result2); // false
+console.log(result3); // true
+console.log(result4); // true
+```
+
+If you remember from the previous lesson, JavaScript has a built-in function called `Number()` that we can use to **explicitly coerce** a string to a number data type.
+
+In `result1`, JavaScript **implicitly** (does it for us) coerces `secondVar` from a string to a number, and _then_ evaluates the expression. In `result2`, JavaScript does not do any coercion and evaluates the expression immediately, which results in a `false` value because `firstVar` is a number while `secondVar` is a string. In `result3` and `result4`, we are **explicitly** coercing `secondVar` from a string to a number _before_ evaluating the expression. Since in both cases, the data type _and_ the value are equal, it doesn't matter whether we use `==` or `===`.
+
+**Zoom out**–We just got really detailed, and I want to back up and reassure you that it is okay if you are getting a little lost here. Our coding exercises at the end of this post will help clarify some of the confusion, and over time, you'll catch on to this stuff. Don't sweat it yet.
+
+#### What about the other data types?
+
+You can also use `==` and `===` to compare data types other than numbers.
+
+```javascript
+const stringValue1 = 'hello';
+const stringValue2 = 'hello';
+
+const result = stringValue1 === stringValue2;
+
+console.log(result); // true
+```
+
+```javascript
+const booleanValue1 = true;
+const booleanValue2 = true;
+
+const result = booleanValue1 === booleanValue2;
+
+console.log(result); // true
+```
+
+But... Once we get into objects and arrays, these comparison operators don't work. Try running the following code in your dev tools console.
+
+```javascript
+console.log([1, 2] === [1, 2]); // false
+console.log([1, 2] == [1, 2]); // false
+console.log({ prop1: 'value1' } === { prop1: 'value1' }); // false
+console.log({ prop1: 'value1' } == { prop1: 'value1' }); // false
+```
+
+Both arrays and both objects we are comparing look the same don't they? Well, JavaScript can be tricky sometimes (you'll hear this statement a lot), and comparing the equality of arrays and objects is a bit more complex. We won't be diving into this, but if you are curious, [here is why you can't compare an array](https://stackoverflow.com/questions/3115982/how-to-check-if-two-arrays-are-equal-with-javascript) and [here is why you can't compare an object](https://stackoverflow.com/questions/201183/how-to-determine-equality-for-two-javascript-objects). Many developers will use a library such as [Lodash](https://lodash.com/) to make these comparisons (but this is too advanced for us at this point).
+
+Alright, moving on to the _inequality_ operators, `!=` and `!==`. They work the same as `==` and `===`, but in reverse. I won't spend too much time on them, but here are a few examples.
+
+```javascript
+console.log(20 != '20'); // false
+console.log(20 !== '20'); // true
+```
+
+#### Numeric Comparison Operators
+
+In addition to `==`, `==`, `!=`, and `!==`, we can also use numeric comparison operators such as `>`, `>=`, `<`, and `<=`. As you might guess, these operators allow us to compare two numbers and represent greater than, greater or equal to, less than, and less than or equal to respectively.
+
+```javascript
+const result1 = 20 > 10;
+const result2 = 20 >= 20;
+const result3 = 20 < 30;
+const result4 = 20 <= 20;
+
+// Yep, this is new to us.  You can actually combine variables in a single console.log statement by using commas
+console.log(result1, result2, result3, result4); // true true true true
+```
+
+#### The dreaded "ternary" operator
+
+I say "dreaded" because some developers love this operator while others think it overly complicates things. In my opinion, this operator will save you some time once you have been doing this for a while, but is not necessary at the beginning of your coding journey.
+
+Here's what it looks like:
+
+```javascript
+const result = 20 === 20 ? 'the values match!' : 'the values do not match';
+
+console.log(result); // the values match!
+```
+
+Say what?...
+
+Although we have not covered the topic of _conditionals_ in JavaScript yet, take a look at this code:
+
+```javascript
+let result;
+
+if (20 === 20) {
+  result = 'the values match';
+} else {
+  result = 'the values do not match';
+}
+
+console.log(result);
+```
+
+While the code above might not be totally clear, you can probably see what's going on. And believe it or not, both of the code blocks above are equivalent. Let's look at that **ternary operator** once more with some annotation.
+
+```javascript
+//      (1)       (2)              (3)                      (4)
+const result = 20 === 20 ? 'the values match!' : 'the values do not match';
+
+// (1) The variable to assign the expression value to
+// (2) The main expression
+// (3) The value to assign if the main expression evaluates to true
+// (4) The value to assign if the main expression evaluates to false
+
+console.log(result); // the values match!
+```
+
+There are 3 important "tokens" in this JavaScript statement. We know what `=` does, but `?` and `:` are actually part of the "ternary operator".
+
+Please don't sweat over this now. We will have plenty of time to review it.
+
+### Logical Operators
+
+And the final category that we need to cover is logical operators, which are:
+
+- `&&` - Represents "and"
+- `||` - Represents "or"
+- `!` - Represents "not"
+
+Sometimes, when writing code, we need to evaluate multiple expressions at once. For example, I might want to check if the user is logged in AND has sufficient permissions to visit a certain page on my app. I can use the "and" `&&` operator to evalute that. It might look something like this.
+
+```javascript
+const isUserLoggedIn = true;
+const doesUserHavePermission = true;
+
+const canUserPerformAction =
+  isUserLoggedIn === true && doesUserHavePermission === true;
+
+console.log(canUserPerformAction); // true
+```
+
+Here is a simplified way to write that code.
+
+```javascript
+const isUserLoggedIn = true;
+const doesUserHavePermission = true;
+
+// When evaluating boolean values, we don't need to use `===`
+const canUserPerformAction = isUserLoggedIn && doesUserHavePermission;
+
+console.log(canUserPerformAction); // true
+```
+
+Both code blocks do the same thing, but the second is more concise.
+
+Here are a few more examples utilizing all the logical operators.
+
+```javascript
+const booleanValue = false;
+
+const result1 = 20 === 20 || 20 === 19;
+const result2 = 20 === 20 && 20 === 19;
+const result3 = !booleanValue;
+
+console.log(result1); // true
+console.log(result2); // false
+console.log(result3); // true
+```
+
+Let me walk through one of these piece by piece.
+
+```javascript
+const result = 20 === 20 || 20 === 19;
+
+console.log(result1); // true
+```
+
+Here are the steps that the computer goes through when reading this line of code.
+
+1. First off, what does `20 === 20` evaluate to? Well, it evalutes to `true`.
+2. Second, what does `20 === 19` evaluate to? Well, this time, it evaluates to `false`.
+3. Let's combine these two values together with `||`. This represents "or", so we are really asking the question, "do either of the evaluated expressions equal true"? In this case, the first one does, so the entire expression is `true`.
+4. Since the entire expression is `true`, let's assign that to the `result` variable.
+
+After the above example, the `||` and `&&` ("or", "and") probably make sense to you, but what's with this `!`? Didn't we already look at this when we used `!=` and `!==`?
+
+Well, kind of. If you place `!` at the beginning of an expression, it _reverses_ the value of that expression. Let's say that we had the expression `20 === 20`. This obviously evaluates to `true`. Now what if we changed this to `!(20 === 20)`. Now, the expression is _reversed_, and equals false. And why did we have to put `()` here? We had to put parenthenses around the entire expression to tell javascript that we want to evaluate it in entirety. If we just said `!20 === 20`, JavaScript will evaluate this as "not 20" equal to 20. The entire expression still equals `false`, but for an entirely different reason that we don't have time to get into here today.
+
+### Other Operators
+
+So far, we have covered arithmetic, assignment, comparison, and logical operators, but there are actually some additional operators that we can use in JavaScript. Since we have a lot of ground to cover in this series, I have intentionally excluded them from our lesson here.
+
+The operators that we didn't talk about are "bitwise" operators and "type" operators. You probably won't ever use "bitwise" operators, so no need to explore those. "type" operators include `typeof` and `instanceof`. We have already used `typeof`.
+
+```javascript
+const numberVariable = 20;
+
+console.log(typeof numberVariable); // number
+```
+
+But we won't be covering `instanceof` yet as it gets us deep into the weeds of JavaScript.
+
+## Combining Operators
+
+The real magic of JavaScript happens when we start combining operators together. Combining operators also gives us an opportunity to clarify our understanding of this "left side of `=`" and "right side of `=`" concept. Take a look at the rather confusing code below.
+
+```javascript
+const trueBoolean = true;
+
+const result = !((40 / 20 === 2 && trueBoolean) || 'yes' === 'no');
+
+console.log(result); // false
+```
+
+And it can get even more complicated if we want:
+
+```javascript
+const trueBoolean = true;
+
+const result =
+  (!((((40 / 20) * 2) % 2 === 0 && trueBoolean) || 'yes' === 'no') === 50) !==
+  50;
+
+console.log(result); // true
+```
+
+But here's the deal. If you ever see something this complicated in somebody's code, **they have done something wrong**. You should never have to think this hard to figure out what a JavaScript expression evaluates to. I'm showing you this to demonstrate that if we pay attention to our order of operations and the meaning of various operators, something like this is possible.
+
+Let's look at the first example again and see how we got to the answer of `false`.
+
+```javascript
+const trueBoolean = true;
+
+//      (1)                              (2)
+const result = !((40 / 20 === 2 && trueBoolean) || 'yes' === 'no');
+
+// Remember...
+// (1) represents the variable that will store the result of (2)
+// (2) represents the expression that we need to evaluate using operators
+
+console.log(result); // false
+```
+
+To better visualize this, let's split this long expression into several smaller expressions.
+
+```javascript
+const trueBoolean = true;
+const complexExpression = !((40 / 20 === 2 && trueBoolean) || 'yes' === 'no');
+
+// "se" for sub-expression
+const step1 = 40 / 20; // 2
+const step2 = step1 === 2; // true
+const step3 = trueBoolean; // true
+const step4 = step2 && step3; // true
+const step5 = 'yes' === 'no'; // false
+const step6 = step4 || step5; // true
+const step7 = !step6; // false
+
+console.log(complexExpression); // false
+console.log(step7); // false
+console.log(complexExpression === step7); // true
+```
+
+Using the order of operations (mathematics concept, not coding concept), we can split our complex expression into pieces. I have gone from `se1` to `se7` to demonstrate how we separate each expression into components and then combine them back together. In this case, `se7` should be equivalent to `complexExpression`.
+
+In reality, if you had to write something this complex, you would probably make your expression simpler than `complexExpression`, but more consolidated than `step1` through `step7` that we did.
+
+## Summary
+
+We covered a lot here, but if I had one thing for you to leave with, it would be this:
+
+- Remember, right of `=` is a JavaScript expression
+- A JavaScript expression can be simple like `20 > 19`, or complex like `20 > 19 && 2 + 2 === 4`. No matter how complex it gets, each expression resolves to a **single value**.
+- That single value is _assigned_ to the variable on the left side of `=`.
+- Order of operations matter.
+
+## Challenges
+
+And now, it's your turn to put your knowledge to the test. Pretty soon, we will be moving over to [CodeWars](https://www.codewars.com/users/zachgoll) for our lesson challenges, but we aren't quite there yet. Here are 5 challenges to work through before next lesson where we will be talking about JavaScript conditionals.
+
+### Challenge 1
+
+Why doesn't this code work? Try to make it work and guess what the result will be (hint: this is a little bit of a review from last lesson).
+
+```javascript
+const numberVariable = 0;
+
+numberVariable++;
+numberVariable++;
+numberVariable++;
+
+console.log(numberVariable);
+```
+
+[Solution here](https://github.com/zachgoll/fullstack-roadmap-series/blob/main/code-challenges/lesson-4/challenge1-solution.md)
+
+### Challenge 2
+
+Do the following two blocks of code result in the same answer? If not, which one would you recommend using and why?
+
+```javascript
+const firstNumber = 20;
+const secondNumber = '20';
+
+const result = firstNumber === secondNumber;
+
+console.log(result);
+```
+
+```javascript
+const firstNumber = 20;
+const secondNumber = '20';
+
+const result = firstNumber == secondNumber;
+
+console.log(result);
+```
+
+[Solution here](https://github.com/zachgoll/fullstack-roadmap-series/blob/main/code-challenges/lesson-4/challenge2-solution.md)
+
+### Challenge 3
+
+What does `expression5` evaluate to? How could you write this in a single line of code (for exercise purposes only; you would never want to combine all this in one line)?
+
+```javascript
+const expression1 = 100 % 50;
+const expression2 = 100 / 50;
+const expression3 = expression1 < expression2;
+const expression4 = expression3 && 300 + 5 === 305;
+const expression5 = !expression4;
+
+console.log(expression5);
+```
+
+[Solution here](https://github.com/zachgoll/fullstack-roadmap-series/blob/main/code-challenges/lesson-4/challenge3-solution.md)
+
+### Challenge 4
+
+What does `result` evaluate to? You might want to review the previous lesson for this one.
+
+```javascript
+const myObj = {
+  prop1: 'first value',
+  prop2: 20,
+};
+
+const myArray = [40, 50, 2];
+
+const result = myObj.prop2 === myArray[0] / myArray[2];
+```
+
+[Solution here](https://github.com/zachgoll/fullstack-roadmap-series/blob/main/code-challenges/lesson-4/challenge4-solution.md)
+
+### Challenge 5
+
+This one is meant to be a tough challenge. You probably will need to Google this and it might take you a while to complete.
+
+What does `result` evaluate to?
+
+```javascript
+const myObj = {
+  nestedObject1: {
+    price: 100,
+    quantity: 5,
+  },
+  nestedObject2: {
+    price: 150,
+    quantity: 2,
+  },
+};
+
+const myArray = [myObj.nestedObject1, myObj.nestedObject2];
+
+const result =
+  myArray[0].price * myArray[0].quantity >
+  myArray[1].price * myArray[1].quantity;
+```
+
+[Solution here](https://github.com/zachgoll/fullstack-roadmap-series/blob/main/code-challenges/lesson-4/challenge5-solution.md)

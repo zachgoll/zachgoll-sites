@@ -1,9 +1,21 @@
 ---
 version: '3.9'
+
+# https://docs.docker.com/compose/compose-file/#using-extensions-as-fragments
+x-common-config: &common-config
+  restart: always
+  image: base_nodejs
+  build:
+    context: .
+    dockerfile: dev.Dockerfile
+  volumes:
+    - .:/app
+
 services:
   postgres:
     image: postgres:13-alpine
-    container_name: personal-postgres
+    profiles: [services, all]
+    container_name: zachgoll-postgres
     ports:
       - 5432:5432
     environment:
@@ -12,29 +24,24 @@ services:
       POSTGRES_DB: personal_local
     volumes:
       - postgres_personal_data:/var/lib/postgresql/data
-  personal-site:
+
+  site:
+    <<: *common-config
+    profiles: [site, all]
     env_file: apps/personal-site/.env.local
-    container_name: personal-site
-    restart: always
-    build:
-      context: .
-      dockerfile: dev.nextjs.Dockerfile
-    volumes:
-      - .:/app
+    container_name: zachgoll-site
     ports:
       - '4200:4200'
+
   design-system:
+    <<: *common-config
+    profiles: [design-system, all]
     env_file: .env
-    container_name: personal-design-system
-    restart: always
+    container_name: zachgoll-design-system
     logging:
       driver: none
-    build:
-      context: ./
-      dockerfile: dev.storybook.Dockerfile
-    volumes:
-      - .:/app
     ports:
       - '4400:4400'
+
 volumes:
   postgres_personal_data:

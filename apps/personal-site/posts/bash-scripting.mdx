@@ -1,0 +1,252 @@
+---
+title: Guide to Bash Scripts
+slug: bash-scripting
+excerpt: >-
+  One of the most important components to a good development environment is a properly configured $PATH variable.  Learn about it in this post.
+published_date: '2019-02-03'
+youtube_video_urls:
+  - https://www.youtube.com/embed/JdvG_H07CNc
+tags: [bash]
+category: software
+---
+
+Throughout this tutorial, we have covered many commands and concepts. Most of the commands we have learned (with the exception of the `awk`) command are for strict usage on the command line, but what if you wanted to put some of these in a script to run? You could always write out a long and elaborate command and execute it, but it will not get saved and is difficult to write. Bash scripting solves this problem by allowing you to write common bash commands within a script file and then execute that script file. You may find this useful if you need to do something on a periodic basis. For example, maybe you need to clean out a specific folder on your computer every day and place the contents of it in an archived folder with today's date on it. You can do this through bash scripting, and in this brief introduction, I will teach you how to do just that. First, we need to understand the basics of a scripting file.
+
+The most basic form of a scripting file is shown below. This file is called `simple-script.sh` where the `.sh` is the file extension for the script (not necessary, but good practice). The permissions on this file are `744`, which means that only we (the owner of the script) can modify or execute it.
+
+```bash
+#!/bin/bash
+
+echo "I am a useless, basic script"
+```
+
+To run this, we can do so in two ways.
+
+```bash
+bash simple-script.sh
+
+./simple-script.sh
+```
+
+Notice that the top of the file has something called a "shebang" (`#!/bin/bash`), which tells the interpreter which executable to run the script against. In this case, we are telling it to run with the bash shell which is stored in `/bin` on our machine. As a note, you generally do not need this shebang as in most cases, your bash shell will execute the scripts by default with bash, but it is good practice and increases portability if you add it.
+
+This is the most basic form of a script, but obviously not all that useful. Throughout this section, we will learn the most important components of a bash script, which includes:
+
+- Variable declarations
+- Built-in variables
+- Command line arguments
+- Reading user input
+- for loops
+- if-then statements
+
+With these concepts, you should be able to accomplish 95% of your tasks. Sure, there will be times where the above concepts are not enough, but again, this is an introduction to scripting rather than a deep dive. For the rest of this section, you can assume that I have replaced the contents of a file called `shell-scripting-basics.sh` every time I run a script unless otherwise noted.
+
+### Variable declarations
+
+```bash
+MY_VARIABLE="some value"
+
+echo $MY_VARIABLE
+echo "Variables can also be added within double-quoted strings: $MY_VARIABLE"
+echo 'But not single-quoted strings. This will not read the variable: $MY_VARIABLE'
+```
+
+Declaring and using variables is rather simple in bash scripting, so I will not spend a lot of time here.
+
+### Built-In Variables
+
+There are several built in variables that you can use in a bash script. They are listed below.
+
+```bash
+echo $0  # Prints the name of the script - shell-scripting-basics.sh
+echo $1  # Prints the first argument given to a script
+echo $2  # Prints the second argument given to a script
+echo $3  # Prints the third... do I need to continue here???
+echo $#  # Prints the number of arguments passed to the script
+echo $@  # Prints all arguments passed to the script
+echo $$  # Prints the process ID
+echo $?  # Prints the exit code of the previous process run
+```
+
+### Command Line Arguments
+
+A shell script can take arguments on the command line. For example, if I ran the following script:
+
+```bash
+#!/bin/bash
+
+echo "The script $0 evaluates to: " $(($1+$2))
+```
+
+```bash
+./shell-scripting-basics.sh 3 9
+
+# The script ./shell-scripting-basics.sh evaluates to:  12
+```
+
+This script will evaluate to - "The script ./shell-scripting-basics.sh evaluates to: 12"
+
+As you can see, we can use the built-in variables inside our scripts.
+
+### Reading user input
+
+We can also read user input from a script. This is similar to reading arguments, but instead of the user typing their input in before execution time, they type it in during execution.
+
+```bash
+#!/bin/bash
+
+# Reading the user's input into the user_input variable
+read user_input
+
+echo "The user entered: $user_input"
+```
+
+```bash
+./shell-scripting basics
+some input
+The user entered: some input
+```
+
+If you want to protect the user input (ex: password entry), just add an `-s` at the beginning of the command like so:
+
+```bash
+read -s user_input
+```
+
+### for loops
+
+The syntax for looping in bash is:
+
+```bash
+#!/bin/bash
+
+for item in $@; do
+        echo $item
+done
+```
+
+In this script, we are looping through all of the user arguments provided to the script. Remember, `$@` is a built-in variable containing all of the user arguments. We can also define an array of variables in bash and loop through them.
+
+```bash
+#!/bin/bash
+
+declare -a my_array=('string 1', 'string 2', 'string 3')
+
+for item in "${my_array[@]}"; do
+        echo $item
+done
+```
+
+The syntax for an array is a bit weird in bash as you can see. We can also use the for loop syntax to loop through a bunch of files. This is a common type of script that you might have to write.
+
+```bash
+#!/bin/bash
+
+# Navigate to the home directory
+cd ~/
+
+# The * refers to all the files and directories in the current directory
+# This script is basically the `ls` command
+for item in *; do
+        echo $item
+done
+```
+
+### if-then statements
+
+I saved if-then statements for last because they can get a bit complicated. The testing syntax that we use for an if-then statement comes from the `test` command, and you can find all of the possibilities on the man page by typing `man test`. For most commands in bash, the man pages are difficult to digest and are generally unhelpful for finding quick answers, but the man page for the `test` command is super straightforward and simple. Therefore, I will not be listing out all of the available testing options and will assume you have read through the man page for `test`. Below is a simple use of `test` on the command line (outside of a script).
+
+```bash
+test 2 -eq 2; echo $?
+# 0
+
+test 2 -eq 3; echo $?
+# 1
+```
+
+If you run these two commands, you will get output of 0 and 1. As we talked about, these numbers are the exit codes of the test commands and are stored in the built-in variable `$?`. Each line shown above is actually two commands. First, we test a condition, and second, we print the exit code of the previous command (which was test). If we want to place a test in a script for an if-then statement, we can write it like so:
+
+```bash
+#!/bin/bash
+
+if [ 2 -eq 2 ]; then
+        echo "2 does equal 2!"
+fi
+```
+
+This will print "2 does equal 2" because the expression evaluates to true (a 0 exit code). We can also test other conditions. For example, we can loop through all the files in our home directory and if they are directories, we will print "$name is a directory" and if not, "$name is a file".
+
+```bash
+#!/bin/bash
+
+cd ~/
+
+for name in *; do
+        if [ -d $name ]; then
+                echo "$name is a directory!"
+        else
+                echo "$name is a file!"
+        fi
+done
+```
+
+The `-d` flag will test whether a given name is a directory. If it is, it returns true (0 exit code).
+
+Now that you know the basics of bash scripting, we can get to the practical example of checking a specific folder for files and moving them to an archive. In this case, I will be checking a directory for files that have not been modified for 7 days or more and placing them in an archive folder named with today's date. This will incorporate the `find` command that we learned earlier!
+
+```bash
+#!/bin/bash
+
+todays_date=$(date +%Y-%m-%d)
+
+# First check if the archives folder exists
+if [ ! -d '/home/zach/archives/' ]; then
+	mkdir /home/zach/archives/
+fi
+
+# Check if today's folder is already created
+if [ ! -d "/home/zach/archives/$todays_date" ]; then
+	mkdir /home/zach/archives/$todays_date
+fi
+
+# A bit of a tricky expression here.  I looked up on StackOverflow how to pipe the output of the find command
+# into a do-while loop because the find exec command gets a permission denied error when running it as a script
+find /home/zach/folder-to-clean -type f -mtime -7 |
+while read filename
+do
+	mv $filename /home/zach/archives/$todays_date/
+done
+```
+
+### Functions
+
+A programming language is not a language without functions, so here is the basic syntax for writing and then later calling a function in your bash script.
+
+```bash
+some_function () {
+
+        # If you pass arguments to me, I can print them
+        if [ $# -eq 0 ]; then
+                # No arguments were passed to function
+                echo "I am a function and no arguments were passed to me"
+        else
+                # At least 1 argument was passed to me, so i will print all of them
+                echo "here"
+                echo $@
+        fi
+
+        # I can return a value that can be retrieved later with the $? built-in variable
+        return 20
+}
+
+# calling our function
+some_function
+
+# calling our function with arguments
+some_function "argument 1" "argument 2"
+
+# Printing the return value of 20
+echo $?
+```
+
+There are endless possibilities to writing bash scripts. Play around a bit and you will be on your way!

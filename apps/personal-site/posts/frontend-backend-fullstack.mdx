@@ -1,0 +1,334 @@
+---
+title: Frontend vs. Backend vs. Fullstack Web Development
+slug: types-web-development
+excerpt: >-
+  In this post, you will learn (with real examples) the differences between front, back, and fullstack web development.
+published_date: '2020-12-04'
+tags: [concepts]
+category: software
+---
+
+See the [YouTube version of this here](https://www.youtube.com/watch?v=XxxQkkdXYEs).
+
+When searching for a career path or even trying to figure out what bootcamp to go to or what online course to take, knowing the differences between front, back, and full-stack development is a big piece to the puzzle.
+
+In this post, I'm going to show you specific examples of each and attempt to explain why this topic is so confusing to most people.
+
+## Zoom wayyyy out
+
+First, let's get clear on what type of software engineering we are talking about here. When someone says any of these terms, they are talking specifically about **web developers**.
+
+What's a web developer? Well, you might have guessed already, but a web dev is someone who builds the experiences we have when we open up our Google Chrome, Safari, Edge, Firefox, or other web browser. While a web developer might code static websites, in this post, we will be talking about the type of web developer who builds full-featured web applications (think Facebook, YouTube, or Reddit).
+
+This gets confusing quickly though because there are many tangential functions involved in creating websites and web apps. For example, if you want to deploy your web app to a specific domain such as `www.myawesomeapp.com`, you will need to briefly dip your toes into the discipline of DevOps to do so.
+
+If you read [my post about math and programming](https://www.zachgollwitzer.com/posts/programmers-math/), you'll remember that there are (roughly) 6 main types of software engineers:
+
+1. Full-stack web developer
+2. Front-end web developer
+3. Back-end web developer
+4. Machine Learning / AI / Data Scientist
+5. DevOps Engineer (Developer Operations)
+6. QA (Quality Assurance) / Testing Engineer
+
+In this post, we're exclusively talking about the first 3.
+
+## Before we begin, a note on salaries
+
+Generally, you will read about how back-end developers make more than front-end developers, but if you are just starting your journey learning to code, please do not let this sway you in either direction. [One of the biggest mistakes that I made when learning to code](https://www.youtube.com/watch?v=osY6kBLy6Ic) was underestimating the skills required to become a front-end developer, and it was largely a result of me reading posts just like this where the author would show Glassdoor and Indeed salary breakdowns for each.
+
+The bottom line is this--If you are a great front-end developer, you have just as much earning potential as a back-end developer. Front-end development is easier to learn, but incredibly difficult to master (good front-end design is what makes a company the money and therefore, companies are willing to pay a lot for good design). Back-end development is a bit harder out of the gate, but in my opinion, becomes less creative over time. Take my opinions with a grain of salt, but please don't make your decisions based on salary.
+
+## Web Browsers and Front-End Development
+
+> Front-end web development represents any code that executes/runs in a browser.
+
+Yes, this is a loaded statement that probably doesn't make complete sense yet. Stick with me here.
+
+You might have heard that front-end web development consists of three coding/markup languages:
+
+1. HTML
+2. CSS
+3. JavaScript
+
+Did you ever wonder why?
+
+To answer that, we have to remember (or learn) what a browser does in the first place. If you really break it down, a web browser (i.e. Google Chrome, Firefox, Edge, Safari, etc.) is simply a _container_ for running these three languages. In Google Chrome's case, it uses something called the [V8 Engine](https://v8.dev/) to compile JavaScript, the [Blink Renderer](https://www.chromium.org/blink) to display HTML/CSS, and the [Chromium project](https://www.chromium.org/) to tie everything together into what we recognize as the "Google Chrome Browser".
+
+So why did we end up with HTML, CSS, and JavaScript?
+
+I think this is similar to asking the question, "Why did we end up with Windows, Mac, and Linux computers?". Browsers could very well have used another set of languages to run, but these are the three that have stuck, and now, all web browsers are expected to be able to compile and run them. Not only that, these are the ONLY languages that can run in a web browser.
+
+### Enough jargon, what is front-end web development?
+
+I understand front-end web development as three primary activites:
+
+1. Communicating clearly to define what is required for the User Interface and Experience (UI/UX Design)
+2. Creating an intuitive experience for the user
+3. Communicating asynchronously with the back-end to retrieve and display data in your app
+
+Some may disagree with me, but I believe that a strong front-end developer should be skilled in each of these areas. Now, let's chat about each of them and what they mean.
+
+#### You have to communicate clearly!
+
+This sounds so cliche and vague, so let me get specific. This matters because in many cases, the person you are building the application for will not know the behind-the-scenes details, and will only care about what they can see.
+
+For example, they might say, "I want the user to be able to click their profile image and see their billing settings, account settings, and notification settings as links. Once they click a link, they should be taken to the relevant page where they can edit their settings".
+
+This is one of many requirements that will come from the business paying for your services, and for each requirement, the front-end developer has to translate words on paper into a visually pleasing (and functional) representation, which in many (but not all) cases, **will drive the back-end development design**.
+
+Oftentimes, changing things on the front-end will require significant design changes on the back-end, which is why the up-front (and ongoing) communication is critical.
+
+Here's an example from one of my own projects:
+
+![dropdown golf app](https://media.zachgollwitzer.com/dropdown-golf-app.jpg)
+
+This screenshot is from my online video course app, and is showing the navigation pane that sits on the right side of the app and allows users to click through the sections and lessons of the course.
+
+I bring this example up because when I originally built the app, I did not have the course progress indicators (i.e. 1/6 complete, 1h39m remaining, etc.) implemented. When I put on my "front-end hat" and decided to implement this feature, it required HOURS to complete because my back-end database model did not have fields to store the user's course progress (because I had not originally designed it that way!).
+
+While I built the front-end and the back-end, communicating a change like this is not as simple as saying "I want my user to be able to see their progress". In a team setting, this kind of change would require clear communication between the front-end and back-end developers (and is why many companies like to hire a developer who can do both; i.e. a "full-stack developer").
+
+#### So... How do I use this app? (intuitive UI/UX)
+
+If your users have to ask this question, something went wrong on the front-end. While some apps require time to get used to, the front-end design should be intuitive enough for them to figure it out on their own. Your user should not need instructions on how to navigate around your application.
+
+This is where front-end development can be extremely engaging and creative. As a front-end developer, you must constantly ask yourself whether the thing you are building will be easy and intuitive for the user. I personally love front-end development for this exact reason.
+
+Check out the gif below.
+
+![design choices](https://media.zachgollwitzer.com/design-choices.gif)
+
+This illustrates the difficulty of designing an intuitive user interface well. In this case, as the front-end developer, we must decide **how a user who is using a mobile device will navigate between sections of the training course.** For better or worse, I decided to use this icon to indicate to the user that if they click it, they can change sections:
+
+![navigation](https://media.zachgollwitzer.com/navigation.jpg)
+
+Once they click this icon, they can use a dropdown menu to select a new section, which will take them back to the original view for the selected section.
+
+This is the same icon that YouTube uses for expanding the comment section on videos.
+
+![yt design](https://media.zachgollwitzer.com/yt-design.jpg)
+
+It isn't perfect, but most people can figure out what this icon means. In the end, it is all about design choices and testing those design choices with your users.
+
+#### Asynchronous What??
+
+The last thing that a front-end developer must understand is asynchronous data flow. If you're new to writing software, this probably doesn't make any sense, so let me try to simplify it a bit.
+
+When I say "asynchronous" in regards to web development, I am almost always referring to reading and writing data from the application's database. While computers can run code in just a few milliseconds, loading data from a database via a web browser (over a network) takes a bit longer. Take a look at a simple bio page:
+
+![bio](https://media.zachgollwitzer.com/bio.jpg)
+
+In the screenshot above, there are 4 pieces of _dynamic_ data on the page--my profile picture, my name, the date I joined, and my bio (which I haven't entered yet).
+
+These pieces of data are not stored in the browser, but rather the database that is running on my cloud-hosted server. In order to retrieve these elements to display on the screen, my front-end code must make a network request (HTTP request) to my back-end API, which will then retrieve the information from the database and return it to the front-end via an HTTP response.
+
+This process takes a couple hundred milliseconds in total (with a fast internet connection), and I need to make sure that my webpage waits until it has loaded to display the picture and profile information. While it is loading, I get a little spinner on the screen:
+
+![spinner](https://media.zachgollwitzer.com/spinner.gif)
+
+While this loading spinner is not necessary for the app to run, it creates a good user experience while we wait for our app to load asynchronous data such as the profile image which is stored in the app's database.
+
+What I mentioned above only scratches the surface of asynchronous web programming. We could talk for hours about this topic alone and get into things like Promises, Observables, Callback functions, and even state management (i.e. making sure the user is always seeing the most up-to-date information). These topics are out of the scope of this post, so just know that as you become more skilled in front-end development, this topic will come back very often and is sometimes difficult to grasp.
+
+### Summary of Front-End Development
+
+- Focuses on how the web app _looks and works for the user_
+- Uses HTML, CSS, and JavaScript along with frameworks like Angular, React, and Vue
+- Requires strong communication skills and the ability to get into the mind of the end-user
+- _Usually_ requires strong design skills, but if you have a dedicated web designer, you just have to know how to code their design
+- Requires a good understanding of asynchronous programming principles
+
+## What is back-end development?
+
+> Back-end development is any code written on the "server-side", which could be written in a variety of programming languages.
+
+Back-end web development has a much wider reach than front-end because it covers so many different technologies and languages.
+
+Front-end development involves mainly HTML, CSS, and JavaScript paired with frameworks like Angular, React, and VueJS. Back-end development on the other hand can be done in various languages such as Python, Java, C++, Ruby, and even JavaScript (yes, JavaScript is unique as it can run on the front-end AND back-end). Not only can you use various languages for back-end development, but there are tons of back-end frameworks for these languages. For example, you might use the Flask framework to build a Python web app's back-end API, or NestJS to build a JavaScript API.
+
+While this can seem overwhelming, I think back-end web development can be summarized by the following attributes.
+
+1. Database management
+2. API management
+3. Server-side logic
+
+Remember how we looked at that profile screenshot a few minutes ago? Let's go back to that in order to understand these three pieces to back-end development.
+
+### What is Database Management?
+
+While some modern approaches to writing web apps abstract database operations away from the developer, if you are learning to code, and more specifically, learning web development, understanding databases is an essential skill to have.
+
+This post is not a tutorial on databases, but you can think of them as the _persistent_ state of your application. On the contrary, some data in your application is _ephemeral_ and will change after a browser refresh. To better understand _ephemeral_ state, just think of any application that you have used in the past where you are required to hit the "Save" button after modifying your user settings. If you refresh the browser before clicking that "Save" button, your changes will be erased. That is because those changes are not _persisted_ to the database until you hit "Save".
+
+As a back-end developer, you must do two primary things related to your database:
+
+1. Design it
+2. Write code to connect and interact with it
+
+Designing a database might look like this:
+
+![db design](https://media.zachgollwitzer.com/db-design.gif)
+
+When designing a database, you have to think about the most efficient way to store the data that your web app relies on.
+
+After you have designed your database, you have to write some code to connect to it. Like I said earlier, back-end development can be done in a variety of languages, so there is no standard way to do this. I write my back-ends with JavaScript (again, this is the only language that can be used on both the front-end and back-end), and here is some example code that connects my back-end web app to my database. Don't try to make sense of this; it is purely for example so that you can take a realistic peek into back-end code.
+
+```javascript
+const mongoose = require('mongoose');
+
+require('dotenv').config();
+
+/**
+ * -------------- DATABASE ----------------
+ */
+
+/**
+ * Connect to MongoDB Server using the connection string in the `.env` file.  To implement this, place the following
+ * string into the `.env` file
+ *
+ * DB_STRING=mongodb://<user>:<password>@localhost:27017/database_name
+ * DB_STRING_PROD=<your production database string>
+ */
+
+const devConnection = process.env.DB_STRING;
+const prodConnection = process.env.DB_STRING_PROD;
+
+// Connect to the correct environment database
+if (process.env.NODE_ENV === 'production') {
+  mongoose.connect(prodConnection, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  mongoose.connection.on('connected', () => {
+    console.log('Database connected');
+  });
+} else {
+  mongoose.connect(devConnection, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  mongoose.connection.on('connected', () => {
+    console.log('Database connected');
+  });
+}
+```
+
+The code above achieves one objective--to allow me to make requests to my database using JavaScript code (but this could be any language). This brings me to the next part of back-end development.
+
+### What is API Management?
+
+Right now, we have designed our database and connected it to our web server, but how does the front-end access the data?
+
+This is where APIs come in.
+
+To retrieve data from the back-end, the front-end must make HTTP requests to the back-end API. I won't dive deeply into this concept here, but if you want a better understanding of APIs, I suggest [checking out my post on them here](https://www.zachgollwitzer.com/posts/what-is-an-api/).
+
+When I say "make HTTP requests", I am talking about a concept in web development that BOTH front-end and back-end developers must understand well. HTTP requests are what run the internet. Every time you load a webpage, one or more HTTP requests are made so the browser (front-end) can retrieve data from the server (back-end). This is done through this standardized web protocol called HTTP, or "Hypertext Transfer Protocol".
+
+Let's go back to that profile screenshot example. How do I retrieve the profile picture URL from the back-end server? Well, I might setup an API "endpoint" at the following address:
+
+```
+https://www.mywebapp.com/api/user/6173
+```
+
+When I make a `GET` request (HTTP term) to this "endpoint" (which is the same as pasting this URL in the browser), my server's API that I have designed will return some data about the user with the ID `6173`. This request might return the following data:
+
+```json
+{
+  "id": "6173",
+  "username": "bob123",
+  "email": "bob@email.com",
+  "profilePictureLink": "https://www.someurl.com/profileimage.png"
+}
+```
+
+The front-end part of my web app could retrieve this piece of data and display it for the user in the browser.
+
+Now let me clarify--this is entirely fictional. I could also design an endpoint like the following which will **retrieve the same user in a different way.**
+
+```
+https://www.mywebapp.com/api/user/email/myusersemail@email.com
+```
+
+Notice how the URL changed and I am now retrieving the user by their email rather than database ID. How you design these "endpoints" will depend entirely on how you design your back-end server's API. The important thing to remember is that these functions are the responsibility of the back-end developer. The back-end developer will decide how the front-end developer retrieves, modifies, and creates data in the database via the API that he/she designs using one of several possible coding languages.
+
+While I generally write my front-end and back-end in JavaScript, you could very well create a back-end API using Python and a front-end using JavaScript.
+
+### What is Server Side Logic?
+
+The last piece that we are missing here is the server-side logic that the back-end developer is responsible for writing.
+
+This is the code that you have to write IN BETWEEN the database and the API that the front-end will utilize for data modification/retrieval. Let's say that the front-end developer designs a form that looks like this:
+
+![diy form](https://media.zachgollwitzer.com/diy-form.jpg)
+
+The front-end developer created this form and is asking the user for his/her email. But notice how in exchange for an email, the user is being offered a free, personalized golf practice plan sent to their inbox. Prior to reaching this screen, the user had answered a few questions about their golf game, so the front-end developer might create an HTTP `POST` request with the following data:
+
+```
+{
+  "email": "someemail@email.com",
+  "skillLevel": "beginner",
+  "budget": "low"
+}
+```
+
+When the user enters their email and clicks the button, the front-end code will make an HTTP `POST` request to the back-end, which will receive the data above. But now that the back-end has received the data, what does it do with it?
+
+Well in this case, the back-end needs to do the following things:
+
+1. Use the personalized attributes sent from the front-end to generate a personalized golf practice plan. Here's a very simplified example (not the actual implementation):
+
+```javascript
+if (skillLevel === 'beginner') {
+  sendBeginnerPlan();
+} else {
+  sendAdvancedPlan();
+}
+```
+
+2. Send an email with this plan to the user (I use Nodemailer + Gmail to send emails in my apps)
+
+While I'm not going to walk through the code required to do this, you can see that beyond managing an API and a database, a back-end developer might need to write additional server-side logic to do other tasks like the ones mentioned above.
+
+### Summary of Back-End Development
+
+- Focuses on how the web app _works_
+- Involves managing databases (SQL or NoSQL)
+- Involves writing APIs (usually RESTful APIs)
+- Could use any coding language, but some common ones are Python, JavaScript, Ruby, PHP, C++, etc.
+- Requires some communication with front-end developers, but communication is less important here than front-end development
+
+## And Finally, Full-Stack Web Development
+
+This one is easy! A full-stack web developer is someone who does both front-end AND back-end development. Since I do a lot of full-stack development myself, I wanted to use this section to give a few quick tips that I've learned along the way.
+
+### Tip #1: Separate Duties for Yourself
+
+So your a full-stack developer... But unfortunately, front-end and back-end development require different ways of thinking, and therefore, if you don't isolate them in your mind as you are building your apps, things can get REALLY CONFUSING.
+
+When I'm building my apps, I try to wear one hat at a time. If I'm working on the back-end API, I like to imagine that I have front-end developers working with me and ask myself how I can code this so that their job is easier. The last thing I want is a web app where the back-end and front-end code is mixed together!
+
+### Tip #2: Start with the front-end
+
+This is an opinion, but one that took me over 3 years to develop. For the longest time, I built my full-stack web apps with no process at all. Sometimes I would start with the back-end database while other times I would start with the front-end design. This frustrated me for a long time, but I have finally found a routine that works for me, and I hope it will work for you too. Here are the steps that I take when building my web apps, although subject to change 😆
+
+1. Create application mockups in [Adobe XD](https://geni.us/adobe-cc) (I also use Adobe Photoshop and Illustrator for various front-end assets)
+2. Review my application mockups to make sure that I've covered as much as I can from a user experience perspective. I don't worry about getting it perfect (things will change as I build the app), but try to get 80% of the way there. [Here are my mockups](https://xd.adobe.com/view/ba0e0a43-abc4-4728-52c6-688530bc6659-cc3f/screen/d998b604-26be-4966-87af-cd3b85e8e963/?fullscreen) that I used for [this application](https://training.thediygolfer.com/).
+3. Create the database design based on the mockups
+4. Pick a small feature of the app (e.g. user profile page) and code the front-end with dummy data (not connected to the database yet)
+5. Once the front-end is where I want it (usually, step 4 results in a few minor design changes), I determine what API endpoints I need to write on the back-end.
+6. Once the API routes (which modify the database) are written, I replace the dummy data on the front-end with real data from the backend (via those API routes)
+7. Go back to step 4 and repeat until the app is done
+
+I know this may not make sense now, but I guarantee after you've built a few apps, this workflow might help you out!
+
+## If you liked this post and want more...
+
+A few extras to keep your journey moving:
+
+- Get on my [mailing list](https://lists.zachgollwitzer.com/learn-to-code/) to stay connected
+- [Here's how I learned to code](https://youtu.be/Zr73KfbiSu0)
+- If you're learning to code, this is an awesome book to supplement your education with - https://amzn.to/3jGPyKO

@@ -1,0 +1,145 @@
+---
+title: SSH and Bash
+slug: bash-ssh
+excerpt: >-
+  This post is a brief introduction to using the bash ssh utility.
+published_date: '2019-02-03'
+youtube_video_urls:
+  - https://www.youtube.com/embed/wWrQdkoBZEI
+tags: [bash]
+category: software
+---
+
+This topic can get quite loaded, and therefore I am not going to dig too deep into it. We will cover the following:
+
+- How to setup a public and private keypair for ssh access
+- Adding your keys to the ssh-agent (if applicable)
+- How to use SSH to connect to a remote machine
+- How to transfer files between your local machine and remote machine using `scp`
+- How to download files from the internet
+- How to use VSCode with your VPS
+
+I primarily use Digital Ocean for my hosting needs, so I will be going through a tutorial on how to setup and connect to a virtual private server on Digital Ocean. That said, the concepts apply across the board whether you are using AWS, Azure, etc. When you first create a VPS in Digital Ocean (also called a "Droplet"), it will ask you whether you want to connect to the machine using a password or SSH key. I almost always connect via an SSH key, so let's first learn how to create that key on our local computer. The process of connecting to a VPS works in the following steps.
+
+1. User creates a private/public SSH keypair on their local computer
+2. User inputs the _public_ key into the SSH field of their hosting provider while setting up the host
+3. When user tries to connect to the host via SSH, the SSH tool will validate the private/public keypair stored on the local computer in the `~/.ssh` directory with the public key stored on the VPS.
+4. If the keys validate, the user now gets remote access to the VPS, and your IP address is stored as a "known host" on the VPS.
+
+So the first step requires us to create a public/private keypair. We can do this on Mac/Linux using the OpenSSH tool. In your terminal, type the following command.
+
+```bash
+ssh-keygen
+```
+
+This will ask you what directory to store the key in. For this to work, you need to put it in the `~/.ssh` folder, but you can give it any custom name. When the command asks you for a password, just press enter twice without entering anything because we do not need to password protect the key since we are using our personal computer. My new key is stored as `/home/zach/.ssh/id_digitalocean_rsa`.
+
+You now need to print out and copy the public version of this key. In my case, I type the command:
+
+```bash
+cat ~/.ssh/id_digitalocean_rsa.pub
+```
+
+Notice how I added `.pub` at the end. When you create a keypair, there will be a `.pub` version always. Once you have copied the contents of this file, paste it into the SSH key box on your hosting provider. On Digital Ocean, I will paste it here.
+
+![](/images/2020/old-posts/digital-ocean-key.png)
+
+Once you have done that, you can create your virtual machine. Now, find the IP address of your new virtual machine and type the following command into your terminal.
+
+```bash
+ssh -p 22 root@157.230.167.2
+```
+
+This should successfully log you into your VPS.
+
+### Permanently Add Keys to ssh-agent
+
+This is generally not a problem on Linux, but on Mac, you will need to alter a few of the default settings. By default, any key that is not `id_rsa` will not be added to the ssh-agent utility, and not the Mac keychain. This means that every time you want to login to your VM, you will have to add the ssh key. For example, I have a key called `digital-ocean` that I use for logging in to my digital ocean droplets.
+
+```bash
+# Loads necessary environment variables
+eval `ssh-agent -s`
+
+# Adds ssh key
+ssh-add -K ~/.ssh/digital-ocean
+
+# Login
+ssh -p 22 root@<some-ip-address>
+```
+
+To avoid doing this every time you login to your Mac, you will need to modify `~/.ssh/config` to have the following entry:
+
+```bash
+Host *
+  UseKeychain yes
+  AddKeysToAgent yes
+  IdentityFile ~/.ssh/id_rsa
+  IdentityFile ~/.ssh/digital-ocean
+```
+
+Above, you are specifying a host of "everything" (you could replace with a domain such as github.com), and telling the agent to use the keychain, add keys, and use the two identity files listed as logins.
+
+### From local computer to remote machine
+
+Next, I want to show how to transfer files to and from your remote machine and local computer. To do this, we use the `scp` utility.
+
+If I had `sample-file.txt`, the way I would upload this to my remote machine is like so:
+
+```bash
+scp -r sample-file.txt root@157.230.167.2:~/
+```
+
+This will upload the `sample-file.txt` file using the `root` user and place that file in the home directory `~/` on my remote machine. You can specify any path to place it on your remote machine so long as you put a colon `:` after the IP address.
+
+### From remote machine to local computer
+
+To download that same file from your remote machine to your local computer, you would just run the following.
+
+```bash
+scp -r root@157.230.167.2:~/sample-file.txt ~/Downloads
+```
+
+This will place that same sample file into my local computer's `~/Downloads` folder.
+
+### Downloading packages to your remote machine with wget
+
+Sometimes, you will need to download software packages from the internet to your VPS. Since you do not have a GUI to work with, you must do this with the command line. Let's say I wanted to download a Google image to my VPS for whatever reason.
+
+Here is a nice golf photo I took - https://raw.githubusercontent.com/zachgoll/example-web-assets/main/golf-image.jpg
+
+We could download this to our VPS using the following command.
+
+```bash
+wget -O my-custom-picture.jpg https://raw.githubusercontent.com/zachgoll/example-web-assets/main/golf-image.jpg
+```
+
+This will download the photo and save it as `my-custom-picture.jpg` in whatever directory I execute the command from.
+
+### Using VSCode with your remote machine
+
+Sure, you could use the Vim text editor for all of your development needs on a VPS, but it is nice to have a feature-rich text editor like VSCode. We can use VSCode with files on our VPS with the help of the `rmate` command. To do this, open VSCode, and download the extension called "Remote VSCode". Once downloaded, open your Settings by typing ctrl-shift + P, and typing ">Preferences:Open User Settings". Scroll down and find the "Extensions" dropdown and select "Remote VSCode". In the settings, you will want the following:
+
+```
+Remote Host: 127.0.0.1
+Remote Port: 52698
+Remote Onstartup: True (will be a checkbox)
+```
+
+Now, type ctrl-shift P again, and type ">Remote: Start Server". This will start the Remote server. Now, in your terminal, enter the following command to connect to your VPS.
+
+```bash
+ssh -R 52698:127.0.0.1:52698 root@157.230.167.2
+```
+
+Obviously, you will replace the IP address with your own. Next, install the `rmate` utility on your VPS.
+
+```bash
+sudo wget -O /usr/local/bin/rmate https://raw.github.com/aurora/rmate/master/rmate
+sudo chmod a+x /usr/local/bin/rmate
+```
+
+You can now edit any file using VSCode by running the following command from your VPS!
+
+```bash
+rmate sample-file.txt
+```

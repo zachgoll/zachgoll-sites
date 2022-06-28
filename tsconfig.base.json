@@ -16,7 +16,9 @@
     "baseUrl": ".",
     "types": ["node"],
     "paths": {
-      "@zachgoll-sites/design-system": ["libs/design-system/src/index.ts"]
+      "@zachgoll/design-system": ["libs/design-system/src/index.ts"],
+      "@zachgoll/mdx": ["libs/mdx/src/index.ts"],
+      "@zachgoll/ui": ["libs/ui/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
