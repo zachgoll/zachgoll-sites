@@ -354,7 +354,7 @@ In the next part of this lesson, we will be connecting some JavaScript with a Co
 
 First, you'll notice that in each Codepen "Pen", there is a section for HTML, CSS, and JavaScript. Any JavaScript you type into the JavaScript section will be automatically connected to your HTML document. Normally, you would have to do something like this:
 
-```html{17,18,19,20}
+```html
 <!DOCTYPE html>
 
 <html lang="en">
@@ -369,8 +369,6 @@ First, you'll notice that in each Codepen "Pen", there is a section for HTML, CS
   </head>
 
   <body>
-
-
     <!-- Normally, you have to manually connect your JavaScript code to your HTML code
           like we are doing here.  We will talk more about this later.
     -->
@@ -915,7 +913,7 @@ There are two ways that we can register an "event listener" on this specific HTM
 
 Here's the first:
 
-```js{9,10}
+```js
 const myButton = document.querySelector('#btn-1');
 
 // eventObj is automatically passed as an argument to this callback function
@@ -930,7 +928,7 @@ myButton.addEventListener('click', respondToClick);
 
 And here's the second:
 
-```js{9,10}
+```js
 const myButton = document.querySelector('#btn-1');
 
 // eventObj is automatically passed as an argument to this callback function

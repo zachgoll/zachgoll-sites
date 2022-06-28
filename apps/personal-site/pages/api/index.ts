@@ -1,5 +1,6 @@
-export default function handler(req, res) {
+import { IncomingMessage, ServerResponse } from 'http';
+export default function handler(req: IncomingMessage, res: ServerResponse) {
   if (req.method === 'GET') {
-    res.send('API Running');
+    res.end('API Running');
   }
 }
